@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "406163509005",
+    "project_id": "saudi-auction-a819c",
+    "storage_bucket": "saudi-auction-a819c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406163509005:android:8a77f8d0fd3601df222a44",
+        "android_client_info": {
+          "package_name": "sa.auction"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "406163509005-2vgpi4illuugv58eqmo54jmdbagtg5t0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqchf2DwHinNmTS1QMcJQVftUVpEYyM0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "406163509005-2vgpi4illuugv58eqmo54jmdbagtg5t0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
