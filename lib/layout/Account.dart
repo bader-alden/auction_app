@@ -26,9 +26,10 @@ class main_acount extends StatelessWidget {
             if(state is is_login_state){
               is_login_bool = true;
             }
-            if(state is error_login_state){
-              tost(msg: "هذا الحساب غير موجود",color: Colors.red);
-
+            if (state is error_login_state) {
+              tost(msg: "هذا الحساب غير موجود", color: Colors.red);
+              //AccountBloc().emit(is_not_login_state());
+              context.read<AccountBloc>().add(Accountlodaded());
             }
           },
           builder: (context,state)  {
@@ -40,7 +41,7 @@ class main_acount extends StatelessWidget {
             if(state is app_check){
               return Container(child: const Center(child: CircularProgressIndicator(color: Colors.red,)));
             }
-            if(state is is_not_login_state || state is error_login_state){
+            if(state is is_not_login_state){
               return Login(context, state);
             }
             if(state is is_login_state ) {
