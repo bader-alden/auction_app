@@ -1,4 +1,6 @@
+import 'package:auction_app/bloc/locale/locale_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/list_auction_model.dart';
 
@@ -7,23 +9,34 @@ class option_details extends StatelessWidget {
   final auction_details_list_model model;
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(title: Text(model.name!),),
-      body: ListView.separated(
-          itemBuilder: (context,index){
-        print(model.details!.length);
-        print(model.details!);
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(child: Text(model.details![index])),
-        );
-      }, separatorBuilder: (context,index){
-        return Container(
-          height: 2,
-          width: double.infinity,
-          color: Colors.grey,
-        );
-      }, itemCount: model.details!.length),
+    return  Directionality(
+     textDirection: context.read<LocaleBloc>().lang ? TextDirection.ltr:TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(leading: IconButton( onPressed: (){
+          Navigator.pop(context);
+        },icon: context
+            .read<LocaleBloc>()
+            .lang
+            ? Icon(Icons.arrow_forward_ios, color: Theme
+            .of(context)
+            .brightness == Brightness.dark ? Colors.white : Colors.black)
+            : Icon(Icons.arrow_back_ios, color: Theme
+            .of(context)
+            .brightness == Brightness.dark ? Colors.white : Colors.black)),title: Text(model.name!),),
+        body: ListView.separated(
+            itemBuilder: (context,index){
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(child: Text(model.details![index])),
+          );
+        }, separatorBuilder: (context,index){
+          return Container(
+            height: 2,
+            width: double.infinity,
+            color: Colors.grey,
+          );
+        }, itemCount: model.details!.length),
+      ),
     );
   }
 }

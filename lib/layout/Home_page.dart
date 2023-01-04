@@ -6,6 +6,7 @@ import 'package:auction_app/layout/auction_list.dart';
 import 'package:container_tab_indicator/container_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import '../bloc/locale/locale_bloc.dart';
 import '../bloc/stram/stream_bloc.dart';
 import '../bloc/theme/theme.dart';
@@ -63,15 +64,11 @@ Widget Home_page(BuildContext context, home_tab_con) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
                           child: context.read<HomePageListBloc>().state.list.isEmpty
-                              ? ListView.separated(
+                              ? GridView.builder(
                                   itemBuilder: (context, index) {
                                     return home_list_shimmer(context);
                                   },
-                                  separatorBuilder: (context, index) {
-                                    return const SizedBox(
-                                      height: 16,
-                                    );
-                                  },
+                              gridDelegate:SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 1.3),
                                   itemCount: 10,
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics())
@@ -128,11 +125,13 @@ Widget sqr_widget(BuildContext context, home_tab_con) {
               return Scaffold(
                   body: Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("العنصر المطلوب غير متاح"),
                     IconButton(
                         onPressed: () {
                           cache.remove_data("sqr");
+                          Phoenix.rebirth(context);
                         },
                         icon: const Icon(Icons.delete))
                   ],

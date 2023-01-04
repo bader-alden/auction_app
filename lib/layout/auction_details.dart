@@ -85,7 +85,8 @@ class Test2 extends StatelessWidget {
                 snapshot.data.runtimeType == list_auction_model ? model = snapshot.data : model = list_auction_model.fromjson(snapshot.data);
                 print(model!.is_auction);
                 if(model.status=="2"){
-                  return const Scaffold(
+                  return  Scaffold(
+                    appBar: AppBar(),
                       body: Center(
                         child: Text("العنصر المطلوب غير متاح"),
                       ));
@@ -103,7 +104,7 @@ class Test2 extends StatelessWidget {
                       leading: IconButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            if (from_go) {
+                            if (from_go&& cache.get_data("sqr") ==null) {
                               Phoenix.rebirth(context);
                             }
                             if(from_fav){

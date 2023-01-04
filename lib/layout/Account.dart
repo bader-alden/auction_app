@@ -5,6 +5,7 @@ import 'package:auction_app/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/locale/locale_bloc.dart';
+import '../const.dart';
 
 var v =
     "{access_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTDNEpUTHQoQUJMHLrErGJyHg89uy71MyuHnaW4iLCJpYXQiOjE2Njk1NzcxNzEsImV4cCI6NjE2Njk1NzcxMTDNEpUTHQoQUJMHLrErGJyHg89uy71MyuHiN2ZqWllYR21rSGs0cnprdiIsInN1YiI6IjE2IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.Mgajzwo7nlrlTYa9HO7AuIW1w7GkytV5b7fKa1qQC5U, token_type: bearer, user: {id: 16, name: wwwwwwwwwwww, email: aaaaaaaas@gmail.comj, mobile_id: null, address: null, Identification-num: null, gsm_token: null, created_at: 2022-11-23T19:04:05.000000Z, updated_at: 2022-11-23T19:04:05.000000Z}}";
@@ -25,6 +26,10 @@ class main_acount extends StatelessWidget {
             if(state is is_login_state){
               is_login_bool = true;
             }
+            if(state is error_login_state){
+              tost(msg: "هذا الحساب غير موجود",color: Colors.red);
+
+            }
           },
           builder: (context,state)  {
             // print("email is ${cache.get_data("email")}");
@@ -35,7 +40,7 @@ class main_acount extends StatelessWidget {
             if(state is app_check){
               return Container(child: const Center(child: CircularProgressIndicator(color: Colors.red,)));
             }
-            if(state is is_not_login_state){
+            if(state is is_not_login_state || state is error_login_state){
               return Login(context, state);
             }
             if(state is is_login_state ) {
@@ -150,7 +155,7 @@ class main_acount extends StatelessWidget {
                         color: Colors.grey.shade400,
                       ),
                       InkWell(onTap: (){
-                        context.read<AccountBloc>()..add(logout_event());
+                        context.read<AccountBloc>().add(logout_event());
                       },
                         child:  account_list_item(
                             context.read<LocaleBloc>().log_out,

@@ -11,10 +11,10 @@ Widget home_list_shimmer(context){
         const Color(0xFFEBEBF4),
       ]:[
       const Color(0xFF212121),
-      const Color(0xFF1B1B21),
+      const Color(0xFF1E1E25),
       const Color(0xFF1F1F21),],
       stops: const [
-        0.1,
+        0.2,
         0.3,
         0.4,
       ],
@@ -27,25 +27,22 @@ Widget home_list_shimmer(context){
     // highlightColor:Theme.of(context).backgroundColor==Colors.white? Colors.black.withOpacity(0.05): Colors.white.withOpacity(0.05),
     child: Padding(
       padding: const EdgeInsets.all(0.0),
-      child: Row(
+      child: Column(
         children: [
           CircleAvatar(radius: 25,backgroundColor: Theme.of(context).backgroundColor),
-          const SizedBox(width: 5,),
+          const SizedBox(height: 10,),
           // Expanded(child: Container(height: 50,width: double.infinity,color: Colors.white)),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(width: MediaQuery.of(context).size.width/6,height: 20,color: Theme.of(context).backgroundColor,),
                 const SizedBox(height: 5,),
-                Container(width:  MediaQuery.of(context).size.width,height: 17,color: Theme.of(context).backgroundColor,),
-
+                Container(width:  MediaQuery.of(context).size.width/3,height: 17,color: Theme.of(context).backgroundColor,),
 
               ],
             ),
           ),
-          const Spacer(),
-          Container(width: 100,height: 17,color: Colors.white,),
         ],
       ),
     ),

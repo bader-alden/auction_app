@@ -42,12 +42,13 @@ Future<void> _initURIHandler(context) async {
           return const AlertDialog(title: Center(child: CircularProgressIndicator()),);
         });
         if(initialURI.queryParameters["id"] != null &&initialURI.queryParameters["type"] != null){
-          Future.delayed(const Duration(seconds: 1)).then((value) {
+          Future.delayed(const Duration(milliseconds: 500)).then((value) {
             Navigator.pop(context);
             Navigator.push(context, MaterialPageRoute(builder: (context)=> Test2(type: initialURI.queryParameters["type"],id:initialURI.queryParameters["id"])));
           });
         }else{
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const App()), (route) => false);
+          Navigator.pop(context);
+          //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const App()), (route) => false);
         }
       } else {
         debugPrint("Null Initial URI received");
@@ -63,13 +64,14 @@ void _incomingLinkHandler(context) {
         return const AlertDialog(title: Center(child: CircularProgressIndicator()),);
       });
       if(uri?.queryParameters["id"] != null &&uri?.queryParameters["type"] != null){
-        Future.delayed(const Duration(seconds: 1)).then((value) {
+        Future.delayed(const Duration(milliseconds: 500)).then((value) {
           Navigator.pop(context);
           Navigator.push(context, MaterialPageRoute(builder: (context)=> Test2(type: uri?.queryParameters["type"],id:uri?.queryParameters["id"])));
         });
 
       }else{
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const App()), (route) => false);
+        Navigator.pop(context);
+       // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const App()), (route) => false);
       }
       print(uri?.query);
       print(uri?.queryParameters);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Color main_red = const Color.fromARGB(255, 222, 82, 81);
 // Color main_red = const Color.fromARGB(255, 235, 29, 54);
@@ -11,7 +12,7 @@ ThemeData theme_light()  {
    // textTheme: TextTheme(bodyText1: TextStyle(color: Colors.green))
   brightness: Brightness.light,
     primaryColor: main_red,
-      appBarTheme: const AppBarTheme(backgroundColor: Colors.white,actionsIconTheme: IconThemeData(color: Colors.black),titleTextStyle: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold)),
+      appBarTheme: const AppBarTheme(backgroundColor: Colors.white,actionsIconTheme: IconThemeData(color: Colors.red),titleTextStyle: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),elevation: 0,systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white,systemNavigationBarColor: Colors.white)),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: Colors.white,selectedItemColor: main_red), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: main_red)
   );
 }
@@ -22,7 +23,7 @@ ThemeData theme_dark()  {
       //textTheme: TextTheme(bodyText1: TextStyle(color: Colors.white)),
     brightness: Brightness.dark,
     primaryColor: main_red,
-      appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
+      appBarTheme: const AppBarTheme(backgroundColor: Colors.black,elevation: 0,),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: Colors.black,selectedItemColor: main_red)
   );
 }
