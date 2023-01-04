@@ -158,7 +158,7 @@ Widget Login(BuildContext context, state) {
                                   width: MediaQuery.of(context).size.width / 1.5,
                                   child: Center(
                                       child: is_loading
-                                          ? SizedBox(
+                                          ? const SizedBox(
                                           height: 20,
                                           width: 20,
                                           child: Center(
