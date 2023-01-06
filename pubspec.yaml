@@ -68,8 +68,9 @@ dependencies:
   flutter_local_notifications:
   #google_map_location_picker_flutter:
   #google_maps_place_picker_mb:
-  ticket_widget:
-
+  firebase_auth:
+  smart_auth:
+  pinput:
 
 
 

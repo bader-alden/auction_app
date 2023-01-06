@@ -81,7 +81,7 @@ List<fav_model> fav_list =[];
           lfav?.removeWhere((element) => element=="");
           lfav?.forEach((element) async {
             if(element!= ""){
-              await dio.get_data(url: "/account/fav_name", quary: {
+              await dio.get_data(url: "/account/get_data", quary: {
                 "id":element.split("|")[0] ,
                 "type": element.split("|")[1],
               }).then((value) {

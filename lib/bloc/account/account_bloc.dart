@@ -48,6 +48,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         cache.save_data("token",value?.data[0]['token'] );
         user = user_models.fromjson(value?.data[0]);
         print(user?.name);
+        cache.remove_data("otp_id");
         emit(is_login_state(user!));
       }else{
         print("errrrrrorrrrrrrrr");
@@ -78,6 +79,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         }).then((value) {
           print(value?.data);
           if (value?.data != "notfound") {
+            cache.remove_data("otp_id");
             user = user_models.fromjson(value?.data[0]);
             emit(is_login_state(user!));
           }
