@@ -8,6 +8,7 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../bloc/locale/locale_bloc.dart';
 import '../bloc/stram/stream_bloc.dart';
 import '../models/list_auction_model.dart';
+import '../models/main_list_model.dart';
 import 'auction_details.dart';
 
 SfRangeValues _values = const SfRangeValues(10.0, 5000.0);
@@ -21,7 +22,7 @@ List<list_auction_model>? a = [];
 
 class Test3 extends StatelessWidget {
   final type;
-  List<String>? kind;
+  List<all_kind_model>? kind;
   final type_name;
 
   Test3({super.key, required this.type, this.type_name, this.kind});
@@ -124,6 +125,7 @@ class Test3 extends StatelessWidget {
                                       children: [
                                         Row(
                                           children: [
+                                            ...kind!.map(kind_widget).toList(),
                                             InkWell(
                                                 borderRadius: BorderRadius.circular(100),
                                                 onTap: () {
@@ -137,8 +139,8 @@ class Test3 extends StatelessWidget {
                                                   radius: 30,
                                                   backgroundColor:
                                                       is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
-                                                  child: const Image(
-                                                    image: AssetImage("assets/img/9.png"),
+                                                  child:  Image(
+                                                    image: NetworkImage(kind![0].img!),
                                                     height: 30,
                                                   ),
                                                 )),
@@ -391,7 +393,24 @@ class Test3 extends StatelessWidget {
       ),
     );
   }
-
+  Widget kind_widget (item) =>
+      InkWell(
+          borderRadius: BorderRadius.circular(100),
+          onTap: () {
+            // StreamBloc().get_all(type, kind[1]);
+            // setstate(() {
+            //   alg = 0.55;
+            //   is_press_kind = false;
+            // });
+          },
+          child: CircleAvatar(
+            radius: 30,
+           // backgroundColor: !is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
+            child:  Image(
+              image: NetworkImage(item.img),
+              height: 30,
+            ),
+          ));
   Widget list_auction_widget(List<list_auction_model> snap, ss) {
     return Builder(builder: (context) {
       return ListView.separated(
@@ -505,7 +524,7 @@ class Test3 extends StatelessWidget {
                               const SizedBox(
                                 height: 10,
                               ),
-                              Text(model.price! + context.read<LocaleBloc>().curunce, style: const TextStyle(color: Colors.grey)),
+                              Text(context.read<LocaleBloc>().price+": " + model.price! + context.read<LocaleBloc>().curunce, style: const TextStyle(color: Colors.grey)),
                             ],
                           ),
                         ),

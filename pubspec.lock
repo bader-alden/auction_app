@@ -642,6 +642,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.8"
+  social_media_flutter:
+    dependency: "direct main"
+    description:
+      name: social_media_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   socket_io_client:
     dependency: "direct main"
     description:
@@ -797,7 +804,7 @@ packages:
     source: hosted
     version: "0.1.0"
   url_launcher:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: url_launcher
       url: "https://pub.dartlang.org"

@@ -54,10 +54,12 @@ class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
   String get city_str => lang ? "city" :"المدينة";
   String get dirct_sele => lang ? "direct sale" :"بيع مباشر";
   String get time_lift => lang ? "Time Left " :"الوقت المتبقي";
-  String get welcom => lang ? "Welcome Back ! " :"أهلا بعودتك";
+  String get welcom => lang ? "Welcome Back ! " :"أهلا بعودتك !";
   String get terms => lang ? "Terms and Condition " :"سياسة الاستخدام";
   String get faq => lang ? "F A Q  " :"الأسئلة المكررة";
-  String get help => lang ? "Help " :"المساعدة";
+  String get social => lang ? "Social " :"التواصل الاجتماعي";
   String get log_out => lang ? "Log Out " :"تسجيل الخروج";
   String get setting => lang ? "Setting " :"إعدادات التطبيق";
+  String get profile => lang ? "Profile " :"الملف الشخصي";
+  String get my_auction => lang ? "My Auction " :"مزاداتي";
 }

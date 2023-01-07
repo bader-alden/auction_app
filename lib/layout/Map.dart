@@ -21,18 +21,14 @@ _Map_screenState(this.lat, this.lng);
   GoogleMapController? mapController;
   Set<Marker> markers = {};
 
-
-
-
-
   @override
   void initState() {
     markers.add(Marker( //add marker on google map
       markerId: MarkerId(LatLng( double.parse(lat), double.parse(lng)).toString()),
       position: LatLng( double.parse(lat), double.parse(lng)),
       infoWindow: const InfoWindow(
-        title: 'My Custom Title ',
-        snippet: 'My Custom Subtitle',
+        // title: 'موقع ',
+        // snippet: 'My Custom Subtitle',
       ),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose),
     ));
@@ -42,23 +38,29 @@ _Map_screenState(this.lat, this.lng);
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      appBar: AppBar(
-        title: const Text("Google Map in Flutter"),
-        backgroundColor: Colors.deepPurpleAccent,
-        actions: [
-          IconButton(onPressed: () async {
-            final availableMaps = await MapLauncher.installedMaps;
-            print(availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
+      appBar: AppBar(leading: IconButton( onPressed: (){
+        Navigator.pop(context);
+      },icon:  Icon(Icons.arrow_back_ios, color: Theme
+          .of(context)
+          .brightness == Brightness.dark ? Colors.white : Colors.black)),title: Text("الموقع"), elevation: 0),
 
-            await availableMaps.first.showMarker(
-             // coords: Coords(37.759392, -122.5107336),
-              coords: Coords( double.parse(lat), double.parse(lng)),
-              title: "Ocean Beach",
-            );
-
-          }, icon: const Icon(Icons.map))
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: const Text("Google Map in Flutter"),
+      //   backgroundColor: Colors.deepPurpleAccent,
+      //   actions: [
+      //     IconButton(onPressed: () async {
+      //       final availableMaps = await MapLauncher.installedMaps;
+      //       print(availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
+      //
+      //       await availableMaps.first.showMarker(
+      //        // coords: Coords(37.759392, -122.5107336),
+      //         coords: Coords( double.parse(lat), double.parse(lng)),
+      //         title: "Ocean Beach",
+      //       );
+      //
+      //     }, icon: const Icon(Icons.map))
+      //   ],
+      // ),
       body: GoogleMap(
         zoomGesturesEnabled: true,
         initialCameraPosition: CameraPosition(

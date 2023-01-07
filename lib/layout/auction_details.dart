@@ -340,39 +340,39 @@ class Test2 extends StatelessWidget {
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                StatefulBuilder(builder: (context, setrstate) {
-                                                  is_add = false;
-                                                  if (cache.get_data("sqr") != null) {
-                                                    if (cache.get_data("sqr").toString().split("-")[0] == model?.id &&
-                                                        cache.get_data("sqr").toString().split("-")[1] == type) {
-                                                      setrstate(() {
-                                                        is_add = true;
-                                                      });
-                                                    }
-                                                  }
-                                                  return IconButton(
-                                                      iconSize: 20,
-                                                      onPressed: () {
-                                                        if (is_add) {
-                                                          cache.remove_data("sqr");
-                                                          setrstate(() {
-                                                            is_add = false;
-                                                          });
-                                                        } else {
-                                                          cache.save_data("sqr", "${model!.id!}-$type");
-                                                          StreamBloc().sqr_void();
-                                                          setrstate(() {
-                                                            is_add = true;
-                                                          });
-                                                          Navigator.pushAndRemoveUntil(
-                                                              context, MaterialPageRoute(builder: (context) => const Home()), (route) => false);
-                                                        }
-                                                      },
-                                                      icon: Icon(
-                                                        is_add ? Icons.delete : Icons.add,
-                                                        color: Colors.white,
-                                                      ));
-                                                }),
+                                                // StatefulBuilder(builder: (context, setrstate) {
+                                                //   is_add = false;
+                                                //   if (cache.get_data("sqr") != null) {
+                                                //     if (cache.get_data("sqr").toString().split("-")[0] == model?.id &&
+                                                //         cache.get_data("sqr").toString().split("-")[1] == type) {
+                                                //       setrstate(() {
+                                                //         is_add = true;
+                                                //       });
+                                                //     }
+                                                //   }
+                                                //   return IconButton(
+                                                //       iconSize: 20,
+                                                //       onPressed: () {
+                                                //         if (is_add) {
+                                                //           cache.remove_data("sqr");
+                                                //           setrstate(() {
+                                                //             is_add = false;
+                                                //           });
+                                                //         } else {
+                                                //           cache.save_data("sqr", "${model!.id!}-$type");
+                                                //           StreamBloc().sqr_void();
+                                                //           setrstate(() {
+                                                //             is_add = true;
+                                                //           });
+                                                //           Navigator.pushAndRemoveUntil(
+                                                //               context, MaterialPageRoute(builder: (context) => const Home()), (route) => false);
+                                                //         }
+                                                //       },
+                                                //       icon: Icon(
+                                                //         is_add ? Icons.delete : Icons.add,
+                                                //         color: Colors.white,
+                                                //       ));
+                                                // }),
                                                 IconButton(
                                                     onPressed: () {
                                                       Share.share(
@@ -422,9 +422,7 @@ class Test2 extends StatelessWidget {
                                                 width: 10,
                                               ),
                                               Timer_widget(
-                                                  model.time, context, Theme
-                                                  .of(context)
-                                                  .brightness == Brightness.dark ? Colors.black : Colors.white)
+                                                  model.time, context, Colors.white)
                                             ],
                                           ),
                                         )

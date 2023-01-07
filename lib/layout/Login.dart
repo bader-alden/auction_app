@@ -14,6 +14,8 @@ bool is_login = true;
 TextEditingController email_con = TextEditingController();
 TextEditingController name_con = TextEditingController();
 TextEditingController number_con = TextEditingController();
+TextEditingController adress_con = TextEditingController();
+TextEditingController id_num_con = TextEditingController();
 // if (state is error_login_state) {
 // tost(msg: "هذا الحساب غير موجود", color: Colors.red);
 // setstate(() {
@@ -56,7 +58,9 @@ Widget Login(BuildContext context, state) {
                     child: Container(
                       color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black,
                       child: Builder(builder: (acontext) {
+
                         if (cache.get_data("otp_id") != null) {
+
                           return Container(
                             width: double.infinity,
                             child: Padding(
@@ -76,14 +80,16 @@ Widget Login(BuildContext context, state) {
                                       PhoneAuthCredential credential =
                                           PhoneAuthProvider.credential(verificationId: cache.get_data("otp_id"), smsCode: pinputController.text);
                                       await FirebaseAuth.instance.signInWithCredential(credential).then((value) {
-                                        if (is_login) {
+                                        if (cache.get_data("is_login")) {
                                           FirebaseMessaging.instance.getToken().then((value) {
                                             context.read<AccountBloc>().add(login_event(cache.get_data("num"), value));
+                                             cache.remove_data("otp_id");
                                             // AccountBloc().add(login_event(number_con.text, value));
                                           });
                                         } else {
                                           FirebaseMessaging.instance.getToken().then((value) {
-                                            context.read<AccountBloc>().add(register_event(name_con.text, email_con.text, number_con.text, value));
+                                            cache.remove_data("otp_id");
+                                            context.read<AccountBloc>().add(register_event( value));
                                           });
                                         }
                                       }).onError((error, stackTrace) {
@@ -109,11 +115,11 @@ Widget Login(BuildContext context, state) {
                                                 child: Center(
                                                   child: CircularProgressIndicator(color: Colors.white),
                                                 ))
-                                                : Text(
+                                                : const Text(
                                                "تأكيد",
-                                              style: const TextStyle(fontSize: 20),
+                                              style: TextStyle(fontSize: 20),
                                             ))),),
-                                SizedBox(height: 5,),
+                                const SizedBox(height: 5,),
                                 TextButton(
                                     onPressed: () {
                                       cache.remove_data("otp_id");
@@ -150,14 +156,14 @@ Widget Login(BuildContext context, state) {
                                         borderRadius: BorderRadius.circular(10)),
                                     child: TextFormField(
                                       controller: number_con,
-                                      maxLength: 8,
+                                      maxLength: 13,
                                       textDirection: TextDirection.rtl,
                                       keyboardType: TextInputType.phone,
                                       decoration: const InputDecoration(
                                           hintText: "  الرقم",
                                           hintTextDirection: TextDirection.rtl,
                                           border: InputBorder.none,
-                                          prefix: Text("+966"),
+                                          prefix: Text(" +966"),
                                           counterText: "",
                                           contentPadding: EdgeInsets.zero),
                                     ),
@@ -207,6 +213,50 @@ Widget Login(BuildContext context, state) {
                                       ),
                                     ),
                                   ),
+                                if (!is_login)
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                if (!is_login)
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                          ),
+                                          borderRadius: BorderRadius.circular(10)),
+                                      child: TextFormField(
+                                        textDirection: TextDirection.rtl,
+                                        controller: adress_con,
+                                        decoration: const InputDecoration(
+                                            hintText: "  العنوان", hintTextDirection: TextDirection.rtl, border: InputBorder.none),
+                                      ),
+                                    ),
+                                  ),
+                                if (!is_login)
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                if (!is_login)
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                          ),
+                                          borderRadius: BorderRadius.circular(10)),
+                                      child: TextFormField(
+                                        textDirection: TextDirection.rtl,
+                                        controller: id_num_con,
+                                        decoration: const InputDecoration(
+                                            hintText: "  رقم الهوية", hintTextDirection: TextDirection.rtl, border: InputBorder.none),
+                                      ),
+                                    ),
+                                  ),
                                 const SizedBox(
                                   height: 20,
                                 ),
@@ -214,12 +264,26 @@ Widget Login(BuildContext context, state) {
                                   child: ElevatedButton(
                                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(main_red)),
                                     onPressed: () async {
+
                                       //main_bloc.get(context).login(email_con.text,pass_con.text);
+                                      if (!is_loading && number_con.text.length == 13 ) {
+                                        setstate(() {
+                                          is_loading = true;
+                                        });
                                       dio.get_data(url: "account/check_login", quary: {"mobile_id": number_con.text}).then((value) async {
                                         print(value?.data);
-                                        if (value?.data) {
+                                        if (value?.data && is_login || !is_login &&!value?.data) {
+                                          if(is_login){
+                                            cache.save_data("num", number_con.text);
+                                            cache.save_data("is_login", true);
+                                          }
+                                          else{
+                                            cache.save_data("reg", "${number_con.text}|${name_con.text}|${email_con.text}|${adress_con.text}|${id_num_con.text}");
+                                            cache.save_data("is_login", false);
+                                          }
                                           await FirebaseAuth.instance.verifyPhoneNumber(
-                                            phoneNumber: '+963956956020',
+                                            //phoneNumber: '+963956956020',
+                                            phoneNumber: number_con.text,
                                             verificationCompleted: (PhoneAuthCredential credential) {
                                               print("1");
                                               print(credential);
@@ -230,8 +294,6 @@ Widget Login(BuildContext context, state) {
                                             },
                                             codeSent: (String verificationId, int? resendToken) {
                                               cache.save_data("otp_id", verificationId);
-                                              cache.save_data("num", number_con.text);
-                                              setstate(() {});
                                               setstate((){
                                                 is_loading = false;
                                               });
@@ -242,31 +304,23 @@ Widget Login(BuildContext context, state) {
                                             codeAutoRetrievalTimeout: (String verificationId) {
                                               print("4");
                                               print(verificationId);
+                                              cache.save_data("otp_id", verificationId);
+                                              tost(msg: "تمت إعادة إرسال رمز التفعيل",color: Colors.grey);
                                             },
                                           );
                                         } else {
-                                          tost(msg: "الرقم غير موجود", color: Colors.red);
+                                          if(is_login){
+                                            tost(msg: "الرقم غير موجود", color: Colors.red);
+                                          }
+                                          else{
+                                            tost(msg: "الرقم مستخدم", color: Colors.red);
+                                          }
                                           setstate(() {
                                             is_loading = false;
                                           });
                                         }
                                       });
-                                      if (!is_loading) {
-                                        // if (is_login) {
 
-                                        // FirebaseMessaging.instance.getToken().then((value) {
-                                        //   context.read<AccountBloc>().add(login_event(number_con.text, value));
-                                        //  // AccountBloc().add(login_event(number_con.text, value));
-                                        // });
-
-                                        //  } else {
-                                        //   FirebaseMessaging.instance.getToken().then((value) {
-                                        //     context.read<AccountBloc>().add(register_event(name_con.text, email_con.text, number_con.text, value));
-                                        //   });
-                                        // }
-                                        setstate(() {
-                                          is_loading = true;
-                                        });
                                       }
                                     },
                                     child: Container(

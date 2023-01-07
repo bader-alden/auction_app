@@ -12,7 +12,8 @@ class option_details extends StatelessWidget {
     return  Directionality(
      textDirection: context.read<LocaleBloc>().lang ? TextDirection.ltr:TextDirection.rtl,
       child: Scaffold(
-        appBar: AppBar(leading: IconButton( onPressed: (){
+        appBar: AppBar(
+          leading: IconButton( onPressed: (){
           Navigator.pop(context);
         },icon: context
             .read<LocaleBloc>()

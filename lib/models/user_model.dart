@@ -1,8 +1,8 @@
 class user_models{
   String? name;
   String? email;
-  String? pass;
-  String?national_id ;
+  String? id;
+  String? id_number ;
   String? mobile_id;
   String? address;
   String? gsm_token;
@@ -11,9 +11,11 @@ class user_models{
    // email = emaila.toString();
   //  pass = passs.toString();
     name = json["name"].toString();
-  //  national_id  = json["Identification-num"].toString();
+    id = json["id"].toString();
+    email = json["email"].toString();
+    id_number  = json["id_number"].toString();
     mobile_id = json["mobile_id"].toString();
-   // address = json["address"].toString();
+    address = json["address"].toString();
     gsm_token = json["gsm_token"].toString();
     fav = json["fav"].toString().split("-");
   }

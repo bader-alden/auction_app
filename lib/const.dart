@@ -12,12 +12,9 @@ import 'bloc/locale/locale_bloc.dart';
 // Color main_red = const Color.fromARGB(255, 189, 93, 68);
 //Color sec_color = const Color.fromARGB(255, 245, 237, 220);
 // Color sec_color = const Color.fromARGB(255, 230, 214, 180);
-Map<String , IconData>main_list = {
-  "vehilces": Icons.car_crash,
-  "real_estates":Icons.home,
-};
-void tost({msg, color}) => Fluttertoast.showToast(
-    msg: msg,
+
+void tost({String? msg,Color? color}) => Fluttertoast.showToast(
+    msg: msg ??"null",
     toastLength: Toast.LENGTH_LONG,
     gravity: ToastGravity.BOTTOM,
     timeInSecForIosWeb: 1,
@@ -25,7 +22,7 @@ void tost({msg, color}) => Fluttertoast.showToast(
     textColor: Colors.white,
     fontSize: 16.0);
 
-Widget Timer_widget(time,BuildContext context,text_color){
+Widget Timer_widget(time,BuildContext context,Color text_color){
   return CountdownTimer(
    // endTime:  DateTime.now().millisecondsSinceEpoch + 1000 * 190000000,
      endTime: DateTime.parse(time!).microsecondsSinceEpoch ~/ 1000,
@@ -37,7 +34,7 @@ Widget Timer_widget(time,BuildContext context,text_color){
         return  Directionality(
           textDirection: TextDirection.ltr,
           child: AnimatedFlipCounter(
-            textStyle: const TextStyle(color: Colors.white),
+            textStyle:  TextStyle(color: text_color),
             duration: const Duration(seconds: 1),
             value: time.sec!.toInt(),
             prefix: context.read<LocaleBloc>().lang?"":"${context.read<LocaleBloc>().second} ",

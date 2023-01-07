@@ -90,7 +90,7 @@ Widget my_auction_item(context,index,fav_model model) {
                    CircleAvatar(radius:25 ,backgroundColor: Colors.red,child:Image(
                      height: 30,
                     width: 30,
-                    image: NetworkImage("https://tatbeky01.000webhostapp.com/aa/${model.type!}.png"),
+                    image: NetworkImage("https://tatbeky01.000webhostapp.com/aa/${model.type!.replaceAll(" ", "")}.png"),
                   ),),
                   const SizedBox(width: 10,),
                   Column(

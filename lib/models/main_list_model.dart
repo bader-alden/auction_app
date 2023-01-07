@@ -7,16 +7,26 @@ class main_list_model{
   String? count;
   String? time;
   bool? is_auction;
-  List<String>? all_kind;
+  List<all_kind_model>? all_kind=[];
   main_list_model.fromjson(Map<String,dynamic> json,counta,timea,is_auc){
      type=json['type'];
      text=json['text'];
-     all_kind=json['all_kind'].toString().split("-");
+     json['all_kind'].toString().split("*").forEach((element) {
+      all_kind?.add(all_kind_model.fromjson(element));
+     });
      eng_name=json['eng_name'];
      ar_name=json['ar_name'];
      detail=json['detail'];
      is_auction=is_auc == 1 ? true : false;
      count=counta.toString();
      time=timea.toString();
+  }
+}
+class all_kind_model{
+  String? kind;
+  String? img;
+  all_kind_model.fromjson(json){
+    kind=json.toString().split("|")[0];
+    img=json.toString().split("|")[1];
   }
 }

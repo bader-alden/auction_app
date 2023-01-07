@@ -1,11 +1,15 @@
 import 'package:auction_app/bloc/account/account_bloc.dart';
+import 'package:auction_app/layout/FAQ_page.dart';
 import 'package:auction_app/layout/Login.dart';
 import 'package:auction_app/layout/Setting.dart';
+import 'package:auction_app/layout/Terms_page.dart';
+import 'package:auction_app/layout/social_page.dart';
 import 'package:auction_app/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/locale/locale_bloc.dart';
 import '../const.dart';
+import 'Update_account.dart';
 
 var v =
     "{access_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTDNEpUTHQoQUJMHLrErGJyHg89uy71MyuHnaW4iLCJpYXQiOjE2Njk1NzcxNzEsImV4cCI6NjE2Njk1NzcxMTDNEpUTHQoQUJMHLrErGJyHg89uy71MyuHiN2ZqWllYR21rSGs0cnprdiIsInN1YiI6IjE2IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.Mgajzwo7nlrlTYa9HO7AuIW1w7GkytV5b7fKa1qQC5U, token_type: bearer, user: {id: 16, name: wwwwwwwwwwww, email: aaaaaaaas@gmail.comj, mobile_id: null, address: null, Identification-num: null, gsm_token: null, created_at: 2022-11-23T19:04:05.000000Z, updated_at: 2022-11-23T19:04:05.000000Z}}";
@@ -60,12 +64,12 @@ class main_acount extends StatelessWidget {
 
   Widget Account(BuildContext context ,user_models user) {
     return Scaffold(
-      appBar: AppBar(title: Text("Profile", style: TextStyle(color: Colors.grey.shade600)), elevation: 0, centerTitle: true),
+      appBar: AppBar(title: Text(context.read<LocaleBloc>().profile, style: TextStyle(color: Colors.grey.shade600)), elevation: 0, centerTitle: true),
       body: Directionality(
         textDirection: context.read<LocaleBloc>().lang ? TextDirection.ltr:TextDirection.rtl,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
+          child: ListView(
             children: [
               const SizedBox(
                 height: 20,
@@ -103,7 +107,9 @@ class main_acount extends StatelessWidget {
                     ),
                     const Spacer(),
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Update_account(user:user)));
+                        },
                         iconSize: 35,
                         icon: const Icon(
                           Icons.edit,
@@ -123,22 +129,50 @@ class main_acount extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   color: Theme.of(context).brightness ==Brightness.light?Colors.grey.shade200:Colors.grey.shade900,
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
+                  child: Column(
                     children: [
-                      account_list_item(context.read<LocaleBloc>().terms, const Icon(Icons.list_alt_sharp,color: Colors.white,)),
+                      account_list_item(context.read<LocaleBloc>().my_auction,
+                        const Image(
+                  image: AssetImage("assets/img/1.png"),
+                  height: 25,
+                  color: Colors.white,
+                ),),
                       Container(
                         height: 2,
                         color: Colors.grey.shade400,
                       ),
-                      account_list_item(context.read<LocaleBloc>().faq, const Icon(Icons.question_answer_outlined,color: Colors.white,)),
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Terms_page()));
+                        },
+                        child: account_list_item(context.read<LocaleBloc>().terms, const Icon(Icons.list_alt_sharp,color: Colors.white,)),
+                      ),
 
                       Container(
                         height: 2,
                         color: Colors.grey.shade400,
                       ),
-                      account_list_item(context.read<LocaleBloc>().help, const Icon(Icons.info_outline,color: Colors.white,)),
+                      InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>FAQ_page()));
+                    }, child: account_list_item(context.read<LocaleBloc>().faq, const Icon(Icons.question_answer_outlined,color: Colors.white,)),
+                    ),
+                      Container(
+                        height: 2,
+                        color: Colors.grey.shade400,
+                      ),
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Social_page()));
+                        },
+                          child: account_list_item(context.read<LocaleBloc>().social,
+                          const Image(
+                            image: AssetImage("assets/img/21.png"),
+                            height: 25,
+                            color: Colors.white,
+                          )
+                      ),
+),
                       Container(
                         height: 2,
                         color: Colors.grey.shade400,

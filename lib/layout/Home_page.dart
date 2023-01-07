@@ -39,7 +39,7 @@ Widget Home_page(BuildContext context, home_tab_con) {
               body: SafeArea(
             child: Column(
               children: [
-                if (cache.get_data("sqr") != null) Expanded(flex: 4, child: sqr_widget(context, home_tab_con)),
+              //  if (cache.get_data("sqr") != null) Expanded(flex: 4, child: sqr_widget(context, home_tab_con)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                   child: Container(
