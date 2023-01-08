@@ -35,10 +35,6 @@ class My_action extends HookWidget {
         centerTitle: true,
         title: const Text("مزاداتي"),
         elevation: 0,
-        actions: const [
-          Icon(Icons.filter_alt_outlined,size: 35,),
-          SizedBox(width: 10,)
-        ],
       ),
       body:
       Padding(
@@ -47,14 +43,6 @@ class My_action extends HookWidget {
           textDirection: context.read<LocaleBloc>().lang ? TextDirection.ltr : TextDirection.rtl,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: TextFormField(
-                  readOnly: true,
-                  decoration: const InputDecoration(hintText: "search auction"),
-                ),
-              ),
-              const SizedBox(height: 30,),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

@@ -19,7 +19,6 @@ var time = "....";
 List<list_auction_model>? list_model = [];
 var aa;
 List<list_auction_model>? a = [];
-
 class Test3 extends StatelessWidget {
   final type;
   List<all_kind_model>? kind;
@@ -30,8 +29,8 @@ class Test3 extends StatelessWidget {
   Widget build(BuildContext context) {
     String? filter_1;
     String? filter_2;
-    bool is_press_kind = true;
-    double alg = 0.12;
+    int kind_index = 0;
+
     return Material(
       child: Directionality(
         textDirection: context.read<LocaleBloc>().lang ? TextDirection.ltr : TextDirection.rtl,
@@ -88,7 +87,7 @@ class Test3 extends StatelessWidget {
                   }
                   list_model = [];
                   snapshot.data.forEach((element) {
-                    if (element.kind == kind?[is_press_kind ? 0 : 1]&&element.status.toString() !="2") {
+                    if (element.kind == kind?[kind_index].kind&&element.status.toString() !="2") {
                       if (filter_1 != null &&
                           double.parse(element.price) > double.parse(filter_1!.split("-")[0]) &&
                           double.parse(element.price) < double.parse(filter_1!.split("-")[1])) {
@@ -117,84 +116,132 @@ class Test3 extends StatelessWidget {
                         ? const Center(child: CircularProgressIndicator())
                         : Column(
                             children: [
-                              if (kind?.length != 1)
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: StatefulBuilder(builder: (context, sertstte) {
                                     return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          children: [
-                                            ...kind!.map(kind_widget).toList(),
-                                            InkWell(
-                                                borderRadius: BorderRadius.circular(100),
-                                                onTap: () {
-                                                  // StreamBloc().get_all(type, kind[0]);
-                                                  setstate(() {
-                                                    alg = 0.12;
-                                                    is_press_kind = true;
-                                                  });
-                                                },
-                                                child: CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundColor:
-                                                      is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
-                                                  child:  Image(
-                                                    image: NetworkImage(kind![0].img!),
-                                                    height: 30,
-                                                  ),
-                                                )),
-                                            const SizedBox(
-                                              width: 20,
-                                            ),
-                                            InkWell(
-                                                borderRadius: BorderRadius.circular(100),
-                                                onTap: () {
-                                                  // StreamBloc().get_all(type, kind[1]);
-                                                  setstate(() {
-                                                    alg = 0.55;
-                                                    is_press_kind = false;
-                                                  });
-                                                },
-                                                child: CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundColor:
-                                                      !is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
-                                                  child: const Image(
-                                                    image: AssetImage("assets/img/12.png"),
-                                                    height: 30,
-                                                  ),
-                                                )),
-                                          ],
+                                        SizedBox(
+                                          height: 85,
+                                          child: ListView.separated(
+                                            physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                              scrollDirection: Axis.horizontal,
+                                              itemBuilder: (context,index){
+                                              print(kind!.length);
+                                            return Column(
+                                              children: [
+                                                InkWell(
+                                                    borderRadius: BorderRadius.circular(100),
+                                                    onTap: () {
+                                                    //  StreamBloc().get_all(type, kind[1]);
+                                                      setstate(() {
+                                                        kind_index= index;
+                                                      });
+                                                    },
+                                                    child: CircleAvatar(
+                                                      radius: 30,
+                                                      backgroundColor: kind_index == index ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
+                                                      child:  Image(
+                                                        image: NetworkImage(kind![index].img!),
+                                                        height: 30,
+                                                      ),
+                                                    )),
+                                                SizedBox(height: 10,),
+                                                if(index == kind_index)
+                                                RotatedBox(
+                                                    quarterTurns: 90,
+                                                    child: Image(
+                                                      image: const AssetImage("assets/img/5.png"),
+                                                      height: 15,
+                                                      width: 15,
+                                                      color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                                      filterQuality: FilterQuality.high,
+                                                    ))
+                                              ],
+                                            );
+                                          }, separatorBuilder: (context,index){
+                                            return SizedBox(width: 20,);
+                                          }, itemCount: kind!.length),
                                         ),
+                                        Container(
+                                          width: double.infinity,
+                                          height: 2,
+                                          color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                        ),
+                                        // Row(
+                                        //   children: [
+                                        //     ...kind!.map(kind_widget).toList(),
+                                        //     InkWell(
+                                        //         borderRadius: BorderRadius.circular(100),
+                                        //         onTap: () {
+                                        //           // StreamBloc().get_all(type, kind[0]);
+                                        //           setstate(() {
+                                        //             alg = 0.12;
+                                        //             is_press_kind = true;
+                                        //           });
+                                        //         },
+                                        //         child: CircleAvatar(
+                                        //           radius: 30,
+                                        //           backgroundColor:
+                                        //               is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
+                                        //           child:  Image(
+                                        //             image: NetworkImage(kind![0].img!),
+                                        //             height: 30,
+                                        //           ),
+                                        //         )),
+                                        //     const SizedBox(
+                                        //       width: 20,
+                                        //     ),
+                                        //     InkWell(
+                                        //         borderRadius: BorderRadius.circular(100),
+                                        //         onTap: () {
+                                        //           // StreamBloc().get_all(type, kind[1]);
+                                        //           setstate(() {
+                                        //             alg = 0.55;
+                                        //             is_press_kind = false;
+                                        //           });
+                                        //         },
+                                        //         child: CircleAvatar(
+                                        //           radius: 30,
+                                        //           backgroundColor:
+                                        //               !is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
+                                        //           child: const Image(
+                                        //             image: AssetImage("assets/img/12.png"),
+                                        //             height: 30,
+                                        //           ),
+                                        //         )),
+                                        //   ],
+                                        // ),
                                         const SizedBox(
                                           height: 10,
                                         ),
-                                        Stack(
-                                          alignment: context.read<LocaleBloc>().lang
-                                              ? AlignmentGeometry.lerp(
-                                                  Alignment.bottomLeft, Alignment.bottomCenter, 400 / MediaQuery.of(context).size.width * alg)!
-                                              : AlignmentGeometry.lerp(
-                                                  Alignment.bottomRight, Alignment.bottomCenter, 400 / MediaQuery.of(context).size.width * alg)!,
-                                          children: [
-                                            Container(
-                                              width: double.infinity,
-                                              height: 2,
-                                              color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                                            ),
-                                            RotatedBox(
-                                                quarterTurns: 90,
-                                                child: Image(
-                                                  image: const AssetImage("assets/img/5.png"),
-                                                  height: 15,
-                                                  width: 15,
-                                                  color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                                                  filterQuality: FilterQuality.high,
-                                                ))
-                                          ],
-                                        ),
+                                        // Stack(
+                                        //   alignment: context.read<LocaleBloc>().lang
+                                        //       ? AlignmentGeometry.lerp(
+                                        //           Alignment.bottomLeft, Alignment.bottomCenter, 400 / MediaQuery.of(context).size.width * alg)!
+                                        //       : AlignmentGeometry.lerp(
+                                        //           Alignment.bottomRight, Alignment.bottomCenter, 400 / MediaQuery.of(context).size.width * alg)!,
+                                        //   children: [
+                                        //     Container(
+                                        //       width: double.infinity,
+                                        //       height: 2,
+                                        //       color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                        //     ),
+                                        //     RotatedBox(
+                                        //         quarterTurns: 90,
+                                        //         child: Image(
+                                        //           image: const AssetImage("assets/img/5.png"),
+                                        //           height: 15,
+                                        //           width: 15,
+                                        //           color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                        //           filterQuality: FilterQuality.high,
+                                        //         ))
+                                        //   ],
+                                        // ),
                                         const SizedBox(
-                                          height: 10,
+                                          height: 0,
                                         ),
                                       ],
                                     );
@@ -393,24 +440,8 @@ class Test3 extends StatelessWidget {
       ),
     );
   }
-  Widget kind_widget (item) =>
-      InkWell(
-          borderRadius: BorderRadius.circular(100),
-          onTap: () {
-            // StreamBloc().get_all(type, kind[1]);
-            // setstate(() {
-            //   alg = 0.55;
-            //   is_press_kind = false;
-            // });
-          },
-          child: CircleAvatar(
-            radius: 30,
-           // backgroundColor: !is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
-            child:  Image(
-              image: NetworkImage(item.img),
-              height: 30,
-            ),
-          ));
+
+
   Widget list_auction_widget(List<list_auction_model> snap, ss) {
     return Builder(builder: (context) {
       return ListView.separated(

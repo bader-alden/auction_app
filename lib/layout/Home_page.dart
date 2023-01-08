@@ -63,7 +63,7 @@ Widget Home_page(BuildContext context, home_tab_con) {
                       builder: (context, state) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
-                          child: context.read<HomePageListBloc>().state.list.isEmpty
+                          child: context.read<HomePageListBloc>().state.list!.isEmpty
                               ? GridView.builder(
                                   itemBuilder: (context, index) {
                                     return home_list_shimmer(context);
@@ -74,7 +74,7 @@ Widget Home_page(BuildContext context, home_tab_con) {
                                   physics: const NeverScrollableScrollPhysics())
                           :GridView.builder(
                               shrinkWrap: true,
-                              itemCount:context.read<HomePageListBloc>().state.list.length ,
+                              itemCount:context.read<HomePageListBloc>().state.list?.length ,
                               padding: EdgeInsets.all(0),
                               gridDelegate:SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 1.3), itemBuilder: (context,index){
                           return  home_page_item(index, context, context.read<HomePageListBloc>().state.list![index]);

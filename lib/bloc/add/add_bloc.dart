@@ -18,7 +18,7 @@ class AddBloc extends Bloc<AddEvent, AddState> {
 
 List<add_model> add_list = [];
   void check_add(){
-    dio.get_data(url: "/account/add",quary: {"id":cache.get_data("id")}).then((value) {
+    dio.get_data(url: "/account/auctions",quary: {"id":cache.get_data("id")}).then((value) {
       print(value?.data);
       if(value?.data !="" &&value?.data.isNotEmpty){
         value?.data.toString().split(",").forEach((element) {
@@ -31,13 +31,6 @@ List<add_model> add_list = [];
       }
     });
   }
-
-
-
-
-
-
-
 
   void add_void(my_id, name, des, price, min_price, num_day, city, type){
 dio.post_data(

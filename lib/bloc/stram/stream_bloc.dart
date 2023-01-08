@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/models/list_auction_model.dart';
+import 'package:auction_app/models/main_list_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:socket_io_client/socket_io_client.dart'as IO;

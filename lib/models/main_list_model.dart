@@ -8,6 +8,8 @@ class main_list_model{
   String? time;
   bool? is_auction;
   List<all_kind_model>? all_kind=[];
+  List<String>? text_slot=[];
+  List<String>? file_slot=[];
   main_list_model.fromjson(Map<String,dynamic> json,counta,timea,is_auc){
      type=json['type'];
      text=json['text'];
@@ -20,6 +22,8 @@ class main_list_model{
      is_auction=is_auc == 1 ? true : false;
      count=counta.toString();
      time=timea.toString();
+     text_slot = json["text_slot"].toString().split("|");
+     file_slot = json["file_slot"].toString().split("|");
   }
 }
 class all_kind_model{
