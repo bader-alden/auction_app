@@ -13,17 +13,11 @@ class Favoraite extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-  create: (context) => FavBloc()..fav_evint_void(),
+  create: (context) => FavBloc()..add(fav_evint()),
   child: BlocConsumer<FavBloc, FavState>(
   listener: (context, state) {},
   builder: (context, state) {
-    if(is_change ==true){
-      is_change = false;
-      FavBloc.get(context).fav_list.clear();
-        FavBloc.get(context).fav_evint_void();
-    }
-
-    if(FavBloc.get(context).is_fav == false ){
+    if(FavBloc.get(context).is_fav == false  ){
     return  Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -32,36 +26,48 @@ class Favoraite extends HookWidget {
         body: const Center(child: Text("لم تتم إضافة أية مزادات الى المفضلة"),),
       );
     }else {
-      return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("المفضلة"),
-        elevation: 0,),
-      body: FavBloc.get(context).fav_list.isEmpty || state is errorfavstate
-      ? const Center(child: CircularProgressIndicator())
-            :Directionality(
-        textDirection: context.read<LocaleBloc>().lang ? TextDirection.ltr : TextDirection.rtl,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView.separated(
-                      shrinkWrap: true,
-                      itemBuilder: (context,index){
-                        return my_auction_item(context,index,FavBloc.get(context).fav_list[index]);
-                      }, separatorBuilder: (context,index){
-                    return const SizedBox(height: 20,);
-                  }, itemCount: FavBloc.get(context).fav_list.length),
-                ),
-              )
-            ],
+      if(state is init_state || state is fav_evint ||FavBloc.get(context).fav_list.isEmpty ){
+       return const Center(child: CircularProgressIndicator());
+     }else {
+
+    return StatefulBuilder(
+      builder: (context,setstate) {
+        // if(is_change ==true) {
+        //   is_change = false;
+        //   print("herrree" * 50);
+        //   FavBloc.get(context).add(fav_evint());
+        //   setstate((){});
+        //   // FavBloc.get(context).fav_list.clear();
+        //   //   FavBloc.get(context).fav_evint_void();
+        //   //context.read<FavBloc>().fav_list.clear();
+        //   //context.read<FavBloc>().add(fav_evint());
+        // }
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text("المفضلة"),
+            elevation: 0,),
+          body: Directionality(
+            textDirection: context.read<LocaleBloc>().lang ? TextDirection.ltr : TextDirection.rtl,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child:  Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.separated(
+                  physics: BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context,index){
+                      return my_auction_item(context,index,FavBloc.get(context).fav_list[index],setstate);
+                    }, separatorBuilder: (context,index){
+                  return const SizedBox(height: 20,);
+                }, itemCount: FavBloc.get(context).fav_list.length),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      }
     );
+      }
     }
   },
 ),
@@ -69,7 +75,7 @@ class Favoraite extends HookWidget {
   }
 }
 
-Widget my_auction_item(context,index,fav_model model) {
+Widget my_auction_item(context,index,fav_model model,setstate) {
   return Material(
     elevation: 10,
     borderRadius: BorderRadius.circular(20),
@@ -106,13 +112,25 @@ Widget my_auction_item(context,index,fav_model model) {
                 ],
               ),
             ),
-            Container(color: Theme.of(context).brightness==Brightness.light ?const Color.fromARGB(255, 247, 247, 247):const Color.fromARGB(255,76,83,81),width: double.infinity,child: Padding(
+            Container(color: Theme.of(context).brightness==Brightness.light ?const Color.fromARGB(255, 247, 247, 247):const Color.fromARGB(255, 35, 35, 35) ,width: double.infinity,child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: ElevatedButton(
                 style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Test2(from: "fav",type: model.type,id: model.id,)));
-                  },
+                onPressed: () async {
+                   final result = await  Navigator.push(context, MaterialPageRoute(builder: (context)=>Test2(from: "fav",type: model.type,id: model.id)));
+                 print(result);
+                 print(result);
+                 print(result);
+                  if(await result !=null){
+                      print("herrree" * 50);
+                      FavBloc.get(context).add(fav_evint());
+                      setstate((){});
+                      // FavBloc.get(context).fav_list.clear();
+                      //   FavBloc.get(context).fav_evint_void();
+                      //context.read<FavBloc>().fav_list.clear();
+                      //context.read<FavBloc>().add(fav_evint());
+                  }
+                   },
                 child: const Text("الإنتقال إالى المزاد"),
               )
             ),),

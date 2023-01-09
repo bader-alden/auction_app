@@ -73,8 +73,8 @@ dependencies:
   pinput:
   social_media_flutter:
   url_launcher:
-
-
+  flutter_osm_plugin:
+  image_picker:
 
 dev_dependencies:
   flutter_test:

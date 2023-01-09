@@ -13,6 +13,5 @@ class add_to_fav extends FavEvent{
   final id;
 
   add_to_fav(this.type, this.id);
-}class fav_evint extends FavEvent{
-
 }
+class fav_evint extends FavEvent{}

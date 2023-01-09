@@ -28,10 +28,11 @@ var text_con = TextEditingController();
 
 //Map(lat: "37.759392",lng: "-122.5107336")
 class Test2 extends StatelessWidget {
-  const Test2({Key? key, this.id, this.type, this.from}) : super(key: key);
+  const Test2({Key? key, this.id, this.type, this.from, this.setstates}) : super(key: key);
   final id;
   final type;
   final from;
+  final setstates;
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +58,8 @@ class Test2 extends StatelessWidget {
             ..get_one_void(id, type)
             ..get_fav(id, type),
         ),
-        BlocProvider(  create: (context) => FavBloc()..check(type, id),
-        ),
+       BlocProvider(  create: (context) => FavBloc()..check(type, id),
+       ),
         BlocProvider(
           create: (context) => LocaleBloc(),
         ),
@@ -86,7 +87,18 @@ class Test2 extends StatelessWidget {
                 print(model!.is_auction);
                 if(model.status=="2"){
                   return  Scaffold(
-                    appBar: AppBar(),
+                    appBar: AppBar( leading: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);},
+                        icon: context
+                            .read<LocaleBloc>()
+                            .lang
+                            ? Icon(Icons.arrow_forward_ios, color: Theme
+                            .of(context)
+                            .brightness == Brightness.dark ? Colors.white : Colors.black)
+                            : Icon(Icons.arrow_back_ios, color: Theme
+                            .of(context)
+                            .brightness == Brightness.dark ? Colors.white : Colors.black)),),
                       body: Center(
                         child: Text("العنصر المطلوب غير متاح"),
                       ));
@@ -103,13 +115,19 @@ class Test2 extends StatelessWidget {
                           .test2_id}${model.id!}"),
                       leading: IconButton(
                           onPressed: () {
-                            Navigator.pop(context);
-                            if (from_go&& cache.get_data("sqr") ==null) {
-                              Phoenix.rebirth(context);
-                            }
+
                             if(from_fav){
                               print("sta");
-                              is_change=true;
+                              Navigator.pop(context,"yse");
+                              // FavBloc.get(context).close();
+                              // context.read<FavBloc>().close();
+                              // FavBloc().add(fav_evint());
+                              // context.read<FavBloc>().add(fav_evint());
+                              // FavBloc.get(context).add(fav_evint());
+                             // context.read<FavBloc>().fav_list.clear();
+                             // context.read<FavBloc>().fav_evint_void();
+                            }else{
+                              Navigator.pop(context);
                             }
                           },
                           icon: context
@@ -124,11 +142,18 @@ class Test2 extends StatelessWidget {
                     ),
                     body: WillPopScope(
                       onWillPop: () async {
-                        if (from_go) {
-                          Phoenix.rebirth(context);
-                        }
                         if(from_fav){
-                          is_change=true;
+                          print("sta");
+                          Navigator.pop(context,"yse");
+                          // FavBloc.get(context).close();
+                          // context.read<FavBloc>().close();
+                          // FavBloc().add(fav_evint());
+                          // context.read<FavBloc>().add(fav_evint());
+                          // FavBloc.get(context).add(fav_evint());
+                          // context.read<FavBloc>().fav_list.clear();
+                          // context.read<FavBloc>().fav_evint_void();
+                        }else{
+                          Navigator.pop(context);
                         }
                         return true;
                       },

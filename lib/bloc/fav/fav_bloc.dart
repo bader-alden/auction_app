@@ -11,7 +11,7 @@ part 'fav_event.dart';
 part 'fav_state.dart';
 class FavBloc extends  Bloc<FavEvent,FavState> {
   FavBloc() : super(init_state()){
-   // on<fav_evint>(fav_evint_void);
+    on<fav_evint>(fav_evint_void);
   }
   static FavBloc get(context) => BlocProvider.of(context);
   List<String>? fav=[];
@@ -70,7 +70,8 @@ class FavBloc extends  Bloc<FavEvent,FavState> {
 int cout =0;
 
 List<fav_model> fav_list =[];
-  Future<FutureOr<void>> fav_evint_void() async {
+  fav_evint_void(fav_evint evint , Emitter<FavState> state) async {
+    emit(errorfavstate());
     if(cache.get_data("id")!=null){
       await dio.get_data(url: "/account/fav", quary: {
         "id": cache.get_data("id"),
@@ -79,6 +80,7 @@ List<fav_model> fav_list =[];
         if(value ?.data != []&&value?.data[0]['fav'] !=""&&value?.data[0]['fav'] !=" "){
           List<String>? lfav = value?.data[0]['fav'].toString().split(",");
           lfav?.removeWhere((element) => element=="");
+          fav_list =[];
           lfav?.forEach((element) async {
             if(element!= ""){
               await dio.get_data(url: "/account/get_data", quary: {
@@ -104,4 +106,8 @@ List<fav_model> fav_list =[];
       emit(errorfavstate());
     }
   }
+
+
 }
+
+

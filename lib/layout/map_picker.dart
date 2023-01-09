@@ -1,34 +1,39 @@
-// import 'package:flutter/material.dart';
-// import 'package:google_map_location_picker_flutter/google_map_location_picker_flutter.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-//
-// class map_picker extends StatelessWidget {
-//   const map_picker({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return TextButton(onPressed: () async {
-//       AddressResult result = await  showGoogleMapLocationPicker(
-//           pinWidget: Icon(Icons.location_pin,color: Colors.red,size: 55,),
-//       pinColor: Colors.blue,
-//       context: context,
-//       addressPlaceHolder: "حرك الخريطة",
-//       addressTitle: "عنوان التوصيل",
-//           appBarTitle: "حدد موقع التوصيل",
-//           confirmButtonColor: Colors.blue,
-//           confirmButtonText: "تأكيد الموقع",
-//           confirmButtonTextColor: Colors.black,
-//           language:"ar" ,
-//           searchHint: "ابحث عن موقع", initialLocation: LatLng(26,39)
-//         , apiKey: 'AIzaSyCqchf2DwHinNmTS1QMcJQVftUVpEYyM0Y'
-//         , country: '',
-//
-//         //  outOfBoundsMessage: "الخدمة غير متوفرة حاليا في هذه المنطقة"
-//       );
-//       if(result!=null){
-//         print(result.address.toString()*500);
-//       }
-//     }, child: Text("child"));
-//   }
-//
-// }
+import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+MapController controller = MapController(
+  initMapWithUserPosition: false,
+  initPosition: GeoPoint(latitude: 47.4358055, longitude: 8.4737324),
+  areaLimit: BoundingBox(
+    east: 10.4922941,
+    north: 47.8084648,
+    south: 45.817995,
+    west:  5.9559113,
+  ),
+);class map_picker extends StatelessWidget {
+  const map_picker({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    /// To Start assisted Selection
+
+    /// To get location desired
+    //controller.getCurrentPositionAdvancedPositionPicker().then((value) => print(value));
+    /// To get location desired and close picker
+
+    /// To cancel assisted Selection
+   // controller.geopoints.then((value) => print(value));
+   return StatefulBuilder(
+     builder: (context,setstate) {
+       controller.advancedPositionPicker().then((value) {});
+       // controller.selectAdvancedPositionPicker().then((value) {
+       //   print(value);
+       //
+       // });
+       return OSMFlutter(controller:controller,isPicker: true,);
+     }
+   );
+  }
+
+}
