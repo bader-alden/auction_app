@@ -1,8 +1,10 @@
+import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/layout/next.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../bloc/add/add_bloc.dart';
 import '../bloc/home_page/home_page_list_bloc.dart';
@@ -34,7 +36,7 @@ var text_slot_0_add_con = TextEditingController();
 var text_slot_1_add_con = TextEditingController();
 var text_slot_2_add_con = TextEditingController();
 var city = "جدة";
-String? location;
+String? location=" ";
 List a = [];
 List b = [];
 bool init_add = false;
@@ -136,6 +138,9 @@ class add_auction extends StatelessWidget {
                             controller: num_day_add_con,
                           ),
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           children: [
                             const Spacer(),
@@ -166,9 +171,9 @@ class add_auction extends StatelessWidget {
                           ],
                         ),
                         SizedBox(
-                          height: 15,
+                          height: 20,
                         ),
-                        if (slot?.text_slot != null && slot!.text_slot!.isNotEmpty) Center(child: Text("معلومات إضافية")),
+                        if (slot?.text_slot != null && slot!.text_slot!.isNotEmpty) Center(child: Text("معلومات إضافية",style: TextStyle(fontSize: 25),)),
                         if (slot?.text_slot != null && slot!.text_slot!.isNotEmpty)
                           for (int i = 0; i < slot!.text_slot!.length; i++)
                             Builder(
@@ -195,6 +200,7 @@ class add_auction extends StatelessWidget {
                                             width: 20,
                                           ),
                                           ElevatedButton(
+                                            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(con.text != "" ?Colors.green:Colors.red)),
                                               onPressed: () {
                                                 showDialog(
                                                   barrierDismissible: false,
@@ -203,9 +209,10 @@ class add_auction extends StatelessWidget {
                                                       return add_rout_home(context, i,setstate);
                                                     });
                                               },
-                                              child: Text("إضافة")),
-                                          if(con.text != "")
-                                            Icon(Icons.check),
+                                              child:
+                                              con.text != ""
+                                              ?Icon(Icons.check,color: Colors.white,)
+                                                  :Text( "إضافة")),
                                           Spacer(),
                                           Text(slot!.text_slot![i]),
                                           SizedBox(
@@ -245,7 +252,9 @@ class add_auction extends StatelessWidget {
                                       SizedBox(
                                         width: 20,
                                       ),
-                                      ElevatedButton(onPressed: () {}, child: Text("إضافة")),
+                                      ElevatedButton(onPressed: () async {
+                                        final XFile? image =await  ImagePicker().pickImage(source: ImageSource.gallery);
+                                      }, child: Text("إضافة")),
                                       Spacer(),
                                       Text(slot!.file_slot![i]),
                                       SizedBox(
@@ -288,7 +297,7 @@ class add_auction extends StatelessWidget {
                         ElevatedButton(
                             onPressed: () {
                               AddBloc.get(context).add_void(cache.get_data("id"), name_add_con.text, des_add_con.text, price_add_con.text,
-                                  min_price_add_con.text, num_day_add_con.text, city, b[a.indexOf(type)]);
+                                  min_price_add_con.text, num_day_add_con.text, city, b[a.indexOf(type)],location,text_slot_0_add_con.text,text_slot_1_add_con.text,text_slot_2_add_con.text);
                             },
                             child: const Text("إضافة"))
                       ],
@@ -315,60 +324,65 @@ Widget add_rout_home(context, index,setstate) {
   }else{
     con = text_slot_2_add_con;
   }
-  return AlertDialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    actionsPadding: EdgeInsets.all(20),
-    content: Container(
-      width: double.maxFinite,
-      child: ListView(
-        physics: BouncingScrollPhysics(),
-        shrinkWrap: true,
-        children: [
-          Center(
-              child: Text(
-            slot!.text_slot![index],
-            style: TextStyle(fontSize: 30, fontFamily: "adobe", color: Colors.white),
-          )),
-          SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 0),
-            child: Container(
-              padding: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey.shade400,
-              ),
-              height: 250,
-              child: Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: TextFormField(
-                  controller: con,
-                  scrollPadding: EdgeInsets.all(0),
-                  style: TextStyle(fontSize: 16),
-                  maxLines: null,
-                  textDirection: TextDirection.rtl,
-                  decoration: InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
+  return WillPopScope(
+    onWillPop: ()async{
+      setstate((){});
+      return true;
+    },
+    child: AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      actionsPadding: EdgeInsets.all(20),
+      content: Container(
+        width: double.maxFinite,
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          shrinkWrap: true,
+          children: [
+            Center(
+                child: Text(
+              slot!.text_slot![index],
+              style: TextStyle(fontSize: 30, fontFamily: "adobe", color: Colors.white),
+            )),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 0),
+              child: Container(
+                padding: EdgeInsets.zero,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey.shade400,
+                ),
+                height: 250,
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: TextFormField(
+                    controller: con,
+                    scrollPadding: EdgeInsets.all(0),
+                    style: TextStyle(fontSize: 16),
+                    maxLines: null,
+                    textDirection: TextDirection.rtl,
+                    decoration: InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(color: Color.fromARGB(255, 17, 10, 64), borderRadius: BorderRadius.circular(10)),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      setstate((){});
+            SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(color: Color.fromARGB(255, 17, 10, 64), borderRadius: BorderRadius.circular(10)),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        setstate((){});
 // if (title_con.text != "" && body_con.text != "") {
 //   is_edit
 //       ? app_bloc.get(acontext).updatesecdata(title_con.text, body_con.text, app_bloc.get(acontext).secdetails[old_title])
@@ -379,18 +393,18 @@ Widget add_rout_home(context, index,setstate) {
 // } else {
 //   tost(msg: "يرجى ملئ الفراغات", color: Colors.red);
 // }
-                    },
-                    child: Center(
-                        child: Text(
-                      "موافق",
-                      style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: "adobe"),
-                    )),
+                      },
+                      child: Center(
+                          child: Text(
+                        "موافق",
+                        style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: "adobe"),
+                      )),
+                    ),
                   ),
                 ),
-              ),
-              // SizedBox(
-              //   width: 30,
-              // ),
+                // SizedBox(
+                //   width: 30,
+                // ),
 //               Expanded(
 //                 child: Container(
 //                   height: 50,
@@ -409,9 +423,10 @@ Widget add_rout_home(context, index,setstate) {
 //                   )),
 //                 ),
 //               ),
-            ],
-          )
-        ],
+              ],
+            )
+          ],
+        ),
       ),
     ),
   );

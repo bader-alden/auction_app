@@ -32,7 +32,7 @@ List<add_model> add_list = [];
     });
   }
 
-  void add_void(my_id, name, des, price, min_price, num_day, city, type){
+  void add_void(my_id, name, des, price, min_price, num_day, city, type,location,text_slot_1,text_slot_2,text_slot_3){
 dio.post_data(
   url: "/post_auction",
   quary: {
@@ -48,14 +48,14 @@ dio.post_data(
   "is_auction":1 ,
   "status":0 ,
   "num_add":0 ,
-    "kind":"all",
-  "location":"a" ,
+  "kind":"all",
+  "location":location ,
   "file_slot_3":"a" ,
   "file_slot_2":"a" ,
   "file_slot_1":"a" ,
-  "text_slot_1":"a" ,
-  "text_slot_2":"a" ,
-  "text_slot_3":"a" ,
+  "text_slot_1":text_slot_1 == "" ?" ":text_slot_1 ,
+  "text_slot_2":text_slot_2 == "" ?" ":text_slot_2 ,
+  "text_slot_3":text_slot_3 == "" ?" ":text_slot_3 ,
   "photo":"a" ,
   "photos":"a" ,
 
