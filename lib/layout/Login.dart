@@ -3,6 +3,7 @@ import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
 import 'package:auction_app/dio.dart';
+import 'package:auction_app/layout/Terms_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -100,8 +101,8 @@ Widget Login(BuildContext context, state) {
                                           is_loading = false;
                                           pinputController.clear();
                                         });
-
                                       });
+
                                     }
                                   },
                                     child: Container(
@@ -156,8 +157,8 @@ Widget Login(BuildContext context, state) {
                                         borderRadius: BorderRadius.circular(10)),
                                     child: TextFormField(
                                       controller: number_con,
-                                      maxLength: 13,
-                                      textDirection: TextDirection.rtl,
+                                      maxLength: 9,
+                                      textDirection: TextDirection.ltr,
                                       keyboardType: TextInputType.phone,
                                       decoration: const InputDecoration(
                                           hintText: "  الرقم",
@@ -206,6 +207,7 @@ Widget Login(BuildContext context, state) {
                                           ),
                                           borderRadius: BorderRadius.circular(10)),
                                       child: TextFormField(
+                                        keyboardType: TextInputType.emailAddress,
                                         textDirection: TextDirection.rtl,
                                         controller: email_con,
                                         decoration: const InputDecoration(
@@ -250,6 +252,7 @@ Widget Login(BuildContext context, state) {
                                           ),
                                           borderRadius: BorderRadius.circular(10)),
                                       child: TextFormField(
+                                        keyboardType: TextInputType.number,
                                         textDirection: TextDirection.rtl,
                                         controller: id_num_con,
                                         decoration: const InputDecoration(
@@ -257,8 +260,20 @@ Widget Login(BuildContext context, state) {
                                       ),
                                     ),
                                   ),
-                                const SizedBox(
-                                  height: 20,
+                                if(is_login)
+                                  SizedBox(height: 20,),
+                                  if(!is_login)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) =>Terms_page()));
+                                        },
+                                        child: Text("سياسة الخصوصية")),
+                                   // Text(is_login ? "لا تملك حساب؟ " : "الانتقال الى"),
+                                    Text("إنشاء حساب يعني الموافقة على")
+                                  ],
                                 ),
                                 Center(
                                   child: ElevatedButton(
@@ -266,7 +281,7 @@ Widget Login(BuildContext context, state) {
                                     onPressed: () async {
 
                                       //main_bloc.get(context).login(email_con.text,pass_con.text);
-                                      if (!is_loading && number_con.text.length == 13 ) {
+                                      if (!is_loading  ) {
                                         setstate(() {
                                           is_loading = true;
                                         });
@@ -274,19 +289,41 @@ Widget Login(BuildContext context, state) {
                                         print(value?.data);
                                         if (value?.data && is_login || !is_login &&!value?.data) {
                                           if(is_login){
-                                            cache.save_data("num", number_con.text);
+                                            cache.save_data("num", "+966"+number_con.text);
                                             cache.save_data("is_login", true);
                                           }
                                           else{
-                                            cache.save_data("reg", "${number_con.text}|${name_con.text}|${email_con.text}|${adress_con.text}|${id_num_con.text}");
+                                            cache.save_data("reg", "${"+966"+number_con.text}|${name_con.text}|${email_con.text}|${adress_con.text}|${id_num_con.text}");
                                             cache.save_data("is_login", false);
                                           }
                                           await FirebaseAuth.instance.verifyPhoneNumber(
                                             //phoneNumber: '+963956956020',
                                             phoneNumber: number_con.text,
-                                            verificationCompleted: (PhoneAuthCredential credential) {
+                                            verificationCompleted: (PhoneAuthCredential credential) async {
                                               print("1");
                                               print(credential);
+                                              await FirebaseAuth.instance.signInWithCredential(credential).then((value) {
+                                                if (cache.get_data("is_login")) {
+                                                  FirebaseMessaging.instance.getToken().then((value) {
+                                                    context.read<AccountBloc>().add(login_event(cache.get_data("num"), value));
+                                                    cache.remove_data("otp_id");
+                                                    // AccountBloc().add(login_event(number_con.text, value));
+                                                  });
+                                                } else {
+                                                  FirebaseMessaging.instance.getToken().then((value) {
+                                                    cache.remove_data("otp_id");
+                                                    context.read<AccountBloc>().add(register_event( value));
+                                                  });
+                                                }
+                                              }).onError((error, stackTrace) {
+                                                print(error.toString());
+                                                print(stackTrace.toString());
+                                                tost(msg: "الرمز خاطئ", color: Colors.red);
+                                                setstate((){
+                                                  is_loading = false;
+                                                  pinputController.clear();
+                                                });
+                                              });
                                             },
                                             verificationFailed: (FirebaseAuthException e) {
                                               print(e.message);
@@ -363,6 +400,8 @@ Widget Login(BuildContext context, state) {
                       }),
                     ),
                   ),
+                  if(!is_login)
+                    SizedBox(height: 80,)
                 ],
               ),
             ),

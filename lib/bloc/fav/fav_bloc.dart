@@ -73,12 +73,12 @@ List<fav_model> fav_list =[];
   fav_evint_void(fav_evint evint , Emitter<FavState> state) async {
     emit(errorfavstate());
     if(cache.get_data("id")!=null){
-      await dio.get_data(url: "/account/fav", quary: {
+      await dio.get_data(url: "/account/${evint.type}", quary: {
         "id": cache.get_data("id"),
       }).then((value) {
         print(value);
-        if(value ?.data != []&&value?.data[0]['fav'] !=""&&value?.data[0]['fav'] !=" "){
-          List<String>? lfav = value?.data[0]['fav'].toString().split(",");
+        if(value ?.data != []&&value?.data[0][evint.type] !=""&&value?.data[0][evint.type] !=" "){
+          List<String>? lfav = value?.data[0][evint.type].toString().split(",");
           lfav?.removeWhere((element) => element=="");
           fav_list =[];
           lfav?.forEach((element) async {
@@ -87,7 +87,7 @@ List<fav_model> fav_list =[];
                 "id":element.split("|")[0] ,
                 "type": element.split("|")[1],
               }).then((value) {
-                fav_list.add(fav_model.fromjson(value?.data[0]["name"],value?.data[0]["created_at"],element.split("|")[1],element.split("|")[0]));
+                fav_list.add(fav_model.fromjson(value?.data[0]["name"],value?.data[0]["created_at"],element.split("|")[1],element.split("|")[0],value?.data[0]["status"]));
                 if(lfav.length == fav_list.length){
                   emit(fav_state());
                 }

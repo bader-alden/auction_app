@@ -3,6 +3,7 @@ import 'package:auction_app/layout/FAQ_page.dart';
 import 'package:auction_app/layout/Login.dart';
 import 'package:auction_app/layout/Setting.dart';
 import 'package:auction_app/layout/Terms_page.dart';
+import 'package:auction_app/layout/my_auction.dart';
 import 'package:auction_app/layout/social_page.dart';
 import 'package:auction_app/models/user_model.dart';
 import 'package:flutter/material.dart';
@@ -125,83 +126,88 @@ class main_acount extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  color: Theme.of(context).brightness ==Brightness.light?Colors.grey.shade200:Colors.grey.shade900,
-                  child: Column(
-                    children: [
-                      account_list_item(context.read<LocaleBloc>().my_auction,
-                        const Image(
-                  image: AssetImage("assets/img/1.png"),
-                  height: 25,
-                  color: Colors.white,
-                ),),
-                      Container(
-                        height: 2,
-                        color: Colors.grey.shade400,
-                      ),
-                      InkWell(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Terms_page()));
-                        },
-                        child: account_list_item(context.read<LocaleBloc>().terms, const Icon(Icons.list_alt_sharp,color: Colors.white,)),
-                      ),
-
-                      Container(
-                        height: 2,
-                        color: Colors.grey.shade400,
-                      ),
-                      InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>FAQ_page()));
-                    }, child: account_list_item(context.read<LocaleBloc>().faq, const Icon(Icons.question_answer_outlined,color: Colors.white,)),
-                    ),
-                      Container(
-                        height: 2,
-                        color: Colors.grey.shade400,
-                      ),
-                      InkWell(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Social_page()));
-                        },
-                          child: account_list_item(context.read<LocaleBloc>().social,
+              InkWell(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>My_action()));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    color: Theme.of(context).brightness ==Brightness.light?Colors.grey.shade200:Colors.grey.shade900,
+                    child: Column(
+                      children: [
+                        account_list_item(context.read<LocaleBloc>().my_auction,
                           const Image(
-                            image: AssetImage("assets/img/21.png"),
-                            height: 25,
-                            color: Colors.white,
-                          )
-                      ),
-),
-                      Container(
-                        height: 2,
-                        color: Colors.grey.shade400,
-                      ),
-                      // context.read<AccountBloc>()..add(logout_event());
-                      InkWell(onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>const Setting()));
-                      },
-                      child:  account_list_item(
-                          context.read<LocaleBloc>().setting,
-                         const Icon(Icons.settings,color: Colors.white,),
-                        )),
-                      Container(
-                        height: 2,
-                        color: Colors.grey.shade400,
-                      ),
-                      InkWell(onTap: (){
-                        context.read<AccountBloc>().add(logout_event());
-                      },
-                        child:  account_list_item(
-                            context.read<LocaleBloc>().log_out,
-                            const Image(
-                              image: AssetImage("assets/img/15.png"),
-                              height: 20,
-                              color: Colors.white,
-                            )),
-                      )
+                    image: AssetImage("assets/img/1.png"),
+                    height: 25,
+                    color: Colors.white,
+                  ),),
+                        Container(
+                          height: 2,
+                          color: Colors.grey.shade400,
+                        ),
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Terms_page()));
+                          },
+                          child: account_list_item(context.read<LocaleBloc>().terms, const Icon(Icons.list_alt_sharp,color: Colors.white,)),
+                        ),
 
-                    ],
+                        Container(
+                          height: 2,
+                          color: Colors.grey.shade400,
+                        ),
+                        InkWell(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>FAQ_page()));
+                      }, child: account_list_item(context.read<LocaleBloc>().faq, const Icon(Icons.question_answer_outlined,color: Colors.white,)),
+                      ),
+                        Container(
+                          height: 2,
+                          color: Colors.grey.shade400,
+                        ),
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Social_page()));
+                          },
+                            child: account_list_item(context.read<LocaleBloc>().social,
+                            const Image(
+                              image: AssetImage("assets/img/21.png"),
+                              height: 25,
+                              color: Colors.white,
+                            )
+                        ),
+),
+                        Container(
+                          height: 2,
+                          color: Colors.grey.shade400,
+                        ),
+                        // context.read<AccountBloc>()..add(logout_event());
+                        InkWell(onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const Setting()));
+                        },
+                        child:  account_list_item(
+                            context.read<LocaleBloc>().setting,
+                           const Icon(Icons.settings,color: Colors.white,),
+                          )),
+                        Container(
+                          height: 2,
+                          color: Colors.grey.shade400,
+                        ),
+                        InkWell(onTap: (){
+                          context.read<AccountBloc>().add(logout_event());
+                        },
+                          child:  account_list_item(
+                              context.read<LocaleBloc>().log_out,
+                              const Image(
+                                image: AssetImage("assets/img/15.png"),
+                                height: 20,
+                                color: Colors.white,
+                              )),
+                        )
+
+                      ],
+                    ),
                   ),
                 ),
               )

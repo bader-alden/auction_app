@@ -13,7 +13,7 @@ class Favoraite extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-  create: (context) => FavBloc()..add(fav_evint()),
+  create: (context) => FavBloc()..add(fav_evint("fav")),
   child: BlocConsumer<FavBloc, FavState>(
   listener: (context, state) {},
   builder: (context, state) {
@@ -114,7 +114,7 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
             ),
             Container(color: Theme.of(context).brightness==Brightness.light ?const Color.fromARGB(255, 247, 247, 247):const Color.fromARGB(255, 35, 35, 35) ,width: double.infinity,child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: ElevatedButton(
+              child:model.status == "2" ? Center(child: Text("أنتهى وقت المزاد")): ElevatedButton(
                 style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
                 onPressed: () async {
                    final result = await  Navigator.push(context, MaterialPageRoute(builder: (context)=>Test2(from: "fav",type: model.type,id: model.id)));
@@ -123,7 +123,7 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
                  print(result);
                   if(await result !=null){
                       print("herrree" * 50);
-                      FavBloc.get(context).add(fav_evint());
+                      FavBloc.get(context).add(fav_evint("fav"));
                       setstate((){});
                       // FavBloc.get(context).fav_list.clear();
                       //   FavBloc.get(context).fav_evint_void();

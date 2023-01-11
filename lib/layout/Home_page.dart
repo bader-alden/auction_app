@@ -1,6 +1,7 @@
 
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:auction_app/bloc/home_page/home_page_list_bloc.dart';
+import 'package:auction_app/layout/Setting.dart';
 import 'package:auction_app/layout/auction_details.dart';
 import 'package:auction_app/layout/auction_list.dart';
 import 'package:container_tab_indicator/container_tab_indicator.dart';
@@ -21,14 +22,6 @@ ScrollController scon = ScrollController();
 ScrollController _scrollController = ScrollController();
 list_auction_model? model;
 List<main_list_model>? main_list = [];
-
-List<String> image_list = [
-  "assets/img/7.png",
-  "assets/img/9.png",
-  "assets/img/6.png",
-  "assets/img/11.png",
-  "assets/img/8.png",
-];
 Widget Home_page(BuildContext context, home_tab_con) {
   return BlocProvider(
       create: (context) => HomePageListBloc()..get_main_list(),
@@ -44,13 +37,19 @@ Widget Home_page(BuildContext context, home_tab_con) {
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                   child: Container(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Icon(Icons.filter_alt_outlined),
-                          Text(context.read<LocaleBloc>().home_page_middle, style: const TextStyle(fontSize: 25)),
-                          const Icon(Icons.search)
+                          IconButton(onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Setting()));
+                          },icon: const Icon(Icons.settings)),
+                          //SizedBox(width: 5,)
+                         // Text(context.read<LocaleBloc>().home_page_middle, style: const TextStyle(fontSize: 30)),
+                          Spacer(),
+                          Text("اوكشن السعودية", style: const TextStyle(fontSize: 30)),
+                          Spacer(),
+                          SizedBox(width: 30,)
                         ],
                       ),
                     ),

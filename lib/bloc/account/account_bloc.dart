@@ -45,7 +45,6 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       print(value?.data);
       if (value?.data.isNotEmpty && value?.data != "notfound") {
         cache.save_data("id",value?.data[0]['id'] );
-        cache.save_data("token",value?.data[0]['token'] );
         user = user_models.fromjson(value?.data[0]);
         print(user?.name);
         cache.remove_data("otp_id");

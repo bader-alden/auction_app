@@ -5,3 +5,4 @@ abstract class AddState {}
 
 class AddInitial extends AddState {}
 class  next extends AddState {}
+class  empty_state extends AddState {}

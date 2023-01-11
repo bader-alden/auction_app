@@ -1,5 +1,6 @@
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
+import 'package:auction_app/const.dart';
 import 'package:auction_app/layout/next.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../bloc/add/add_bloc.dart';
 import '../bloc/home_page/home_page_list_bloc.dart';
+import '../bloc/locale/locale_bloc.dart';
 import '../models/main_list_model.dart';
 import 'map_picker.dart';
 
@@ -26,28 +28,34 @@ List city_list = ["جدة", "الرياض"];
 //   , "vehicle_plates"
 //   , "mobile_numbe"
 // ];
-var name_add_con = TextEditingController();
-var des_add_con = TextEditingController();
-var photo_add_con = TextEditingController();
-var price_add_con = TextEditingController();
-var min_price_add_con = TextEditingController();
-var num_day_add_con = TextEditingController();
-var text_slot_0_add_con = TextEditingController();
-var text_slot_1_add_con = TextEditingController();
-var text_slot_2_add_con = TextEditingController();
-var city = "جدة";
-String? location=" ";
-List a = [];
-List b = [];
-bool init_add = false;
-String? type;
-main_list_model? slot;
 
 class add_auction extends StatelessWidget {
   const add_auction({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    var name_add_con = TextEditingController();
+    var des_add_con = TextEditingController();
+    var photo_add_con = TextEditingController();
+    var price_add_con = TextEditingController();
+    var min_price_add_con = TextEditingController();
+    var num_day_add_con = TextEditingController();
+    var text_slot_0_add_con = TextEditingController();
+    var text_slot_1_add_con = TextEditingController();
+    var text_slot_2_add_con = TextEditingController();
+    var city = "جدة";
+    String? location;
+    List a = [];
+    List b = [];
+    List all_kind = [];
+    bool init_add = false;
+    String? type;
+    String? kind;
+    main_list_model? slot;
+    String name_text_1="";
+    String name_text_2="";
+    String name_text_3 = "";
     init_add = false;
+bool is_loading=false;
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -66,6 +74,18 @@ class add_auction extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text("إضافة المزاد"),
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);},
+                icon: context
+                    .read<LocaleBloc>()
+                    .lang
+                    ? Icon(Icons.arrow_forward_ios, color: Theme
+                    .of(context)
+                    .brightness == Brightness.dark ? Colors.white : Colors.black)
+                    : Icon(Icons.arrow_back_ios, color: Theme
+                    .of(context)
+                    .brightness == Brightness.dark ? Colors.white : Colors.black)),
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -76,70 +96,84 @@ class add_auction extends StatelessWidget {
                   return Center(child: CircularProgressIndicator());
                 } else {
                   return StatefulBuilder(builder: (contex, setstate) {
-                    print(a);
-                    print(a.length);
                     if (!init_add && context.read<HomePageListBloc>().state.list!.length != a.length) {
                       a.clear();
                       b.clear();
                       init_add = true;
                       context.read<HomePageListBloc>().state.list?.forEach((element) {
-                        print(element.ar_name);
                         a.add(element.ar_name);
                         b.add(element.type);
                       });
                       type = a[0]!;
                       slot = context.read<HomePageListBloc>().state.list![0];
+                      slot?.all_kind?.forEach((element) {
+                        all_kind.add(element.kind);
+                      });
+                      kind=all_kind[0];
+                      print(all_kind);
+                      print(all_kind);
+                      print(all_kind);
+                      print(slot?.all_kind);
                     }
 
                     return ListView(
+                      physics: BouncingScrollPhysics(),
                       //crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(
                           padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.white)),
+                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
                           child: TextFormField(
-                            decoration: const InputDecoration(hintText: "name", border: InputBorder.none),
+                            textDirection: TextDirection.rtl,
+                            decoration: const InputDecoration(hintText: "الاسم", border: InputBorder.none,hintTextDirection: TextDirection.rtl),
                             controller: name_add_con,
                           ),
                         ),
                         SizedBox(height: 10),
                         Container(
+                          height: 150,
                           padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.white)),
+                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
                           child: TextFormField(
-                            decoration: const InputDecoration(hintText: "des", border: InputBorder.none),
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            textDirection: TextDirection.rtl,
+                            decoration: const InputDecoration(hintText: "الوصف", border: InputBorder.none,hintTextDirection: TextDirection.rtl),
                             controller: des_add_con,
                           ),
                         ),
                         SizedBox(height: 10),
                         Container(
                           padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.white)),
+                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
                           child: TextFormField(
-                            decoration: const InputDecoration(hintText: "price", border: InputBorder.none),
+                            textDirection: TextDirection.rtl,
+                            decoration: const InputDecoration(hintText: "السعر الأولي", border: InputBorder.none,hintTextDirection: TextDirection.rtl),
                             controller: price_add_con,
                           ),
                         ),
                         SizedBox(height: 10),
                         Container(
                           padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.white)),
+                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
                           child: TextFormField(
-                            decoration: const InputDecoration(hintText: "min_price", border: InputBorder.none),
+                            textDirection: TextDirection.rtl,
+                            decoration: const InputDecoration(hintText: "أقل مزايدة", border: InputBorder.none,hintTextDirection: TextDirection.rtl),
                             controller: min_price_add_con,
                           ),
                         ),
                         SizedBox(height: 10),
                         Container(
                           padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.white)),
+                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
                           child: TextFormField(
-                            decoration: const InputDecoration(hintText: "num_day", border: InputBorder.none),
+                            textDirection: TextDirection.rtl,
+                            decoration: const InputDecoration(hintText: "عدد الأيام عرض المزاد", border: InputBorder.none,hintTextDirection: TextDirection.rtl),
                             controller: num_day_add_con,
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
                         Row(
                           children: [
@@ -161,11 +195,23 @@ class add_auction extends StatelessWidget {
                                   setstate(() {
                                     type = value!;
                                     slot = context.read<HomePageListBloc>().state.list?.firstWhere((element) => element.ar_name == value);
+                                    all_kind.clear();
+                                    slot?.all_kind?.forEach((element) {
+                                      print(element);
+                                      all_kind.add(element.kind);
+                                    });
+                                    kind=all_kind[0];
                                   });
-                                  print(slot?.file_slot);
-                                  print(slot?.file_slot?[0] == "");
-                                  print(slot?.file_slot?.isEmpty);
-                                  print(slot?.file_slot?.length);
+                                }),
+                            const Spacer(),
+                            DropdownButton(
+                                items: all_kind.map(drop_item).toList(),
+                                value: kind ?? "",
+                                hint: Text(" "),
+                                onChanged: (value) {
+                                  setstate(() {
+                                    kind = value!;
+                                  });
                                 }),
                             const Spacer(),
                           ],
@@ -173,17 +219,20 @@ class add_auction extends StatelessWidget {
                         SizedBox(
                           height: 20,
                         ),
-                        if (slot?.text_slot != null && slot!.text_slot!.isNotEmpty) Center(child: Text("معلومات إضافية",style: TextStyle(fontSize: 25),)),
-                        if (slot?.text_slot != null && slot!.text_slot!.isNotEmpty)
+                        if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty) Center(child: Text("معلومات إضافية",style: TextStyle(fontSize: 25),)),
+                        if (slot?.text_slot?[0] != ""  && slot!.text_slot!.isNotEmpty)
                           for (int i = 0; i < slot!.text_slot!.length; i++)
                             Builder(
                               builder: (context) {
                                 TextEditingController con ;
                                 if(i == 0){
+                                  name_text_1=slot!.text_slot![0];
                                   con = text_slot_0_add_con;
                                 }else if(i == 1){
+                                  name_text_2=slot!.text_slot![1];
                                   con = text_slot_1_add_con;
                                 }else{
+                                  name_text_3=slot!.text_slot![2];
                                   con = text_slot_2_add_con;
                                 }
                                 return Padding(
@@ -206,7 +255,7 @@ class add_auction extends StatelessWidget {
                                                   barrierDismissible: false,
                                                     context: context,
                                                     builder: (context) {
-                                                      return add_rout_home(context, i,setstate);
+                                                      return add_rout_home(context, i,text_slot_0_add_con,text_slot_1_add_con,text_slot_2_add_con,slot,setstate);
                                                     });
                                               },
                                               child:
@@ -236,7 +285,7 @@ class add_auction extends StatelessWidget {
                                 );
                               }
                             ),
-                        if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "") Center(child: Text("ملفات إضافية")),
+                        if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "") Center(child: Text("ملفات إضافية",style: TextStyle(fontSize: 25),)),
                         if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "")
                           for (int i = 0; i < slot!.file_slot!.length; i++)
                             Padding(
@@ -252,6 +301,7 @@ class add_auction extends StatelessWidget {
                                       SizedBox(
                                         width: 20,
                                       ),
+                                      if("a"=="b")
                                       ElevatedButton(onPressed: () async {
                                         final XFile? image =await  ImagePicker().pickImage(source: ImageSource.gallery);
                                       }, child: Text("إضافة")),
@@ -276,30 +326,84 @@ class add_auction extends StatelessWidget {
                                 ],
                               ),
                             ),
+                        // if (slot?.with_location ?? false)
+                        //   ElevatedButton(
+                        //       onPressed: () async {
+                        //         var _ = await showSimplePickerLocation(
+                        //           context: context,
+                        //           isDismissible: true,
+                        //           title: "أختر الموقع",
+                        //           textConfirmPicker: "إختيار",
+                        //           initCurrentUserPosition: true,
+                        //           textCancelPicker: "إلغاء",
+                        //           initZoom: 19,
+                        //         );
+                        //         location = "${_!.latitude.toString()} , ${_.longitude}";
+                        //         if(location !=null){
+                        //           setstate((){});
+                        //         }
+                        //         //print(await location?.latitude);
+                        //         print(location);
+                        //         //Navigator.push(context, MaterialPageRoute(builder: (context)=>map_picker()));
+                        //       },
+                        //       child: Text("map")),
+                        if (slot?.with_location ?? false) Center(child: Text("الموقع",style: TextStyle(fontSize: 25),)),
                         if (slot?.with_location ?? false)
-                          ElevatedButton(
-                              onPressed: () async {
-                                var _ = await showSimplePickerLocation(
-                                  context: context,
-                                  isDismissible: true,
-                                  title: "أختر الموقع",
-                                  textConfirmPicker: "إختيار",
-                                  initCurrentUserPosition: true,
-                                  textCancelPicker: "إلغاء",
-                                  initZoom: 19,
-                                );
-                                location = "${_!.latitude.toString()} , ${_.longitude}";
+                        InkWell(
+                          onTap: () async {
+                             showSimplePickerLocation(
+                              context: context,
+                              isDismissible: true,
+                              title: "أختر الموقع",
+                              textConfirmPicker: "إختيار",
+                              initCurrentUserPosition: true,
+                              textCancelPicker: "إلغاء",
+                              initZoom: 19,
+                            ).then((value) {
+                              if(value!=null){
+                                location = "${value.latitude.toString()} , ${value.longitude}";
+                                  setstate((){});
                                 //print(await location?.latitude);
                                 print(location);
                                 //Navigator.push(context, MaterialPageRoute(builder: (context)=>map_picker()));
-                              },
-                              child: Text("map")),
+                              }
+                             });
+                          },
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image(image: NetworkImage("https://media.istockphoto.com/id/1306807452/vector/map-city-vector-illustration.jpg?b=1&s=612x612&w=0&k=20&c=RBfRJ1UZ4D-2F1HVkeZ0SHVmPWqj3eS9batfcKiQzW4="),),
+                              Container(color: Colors.grey.withOpacity(0.3),width:double.infinity,height: 200,),
+                              Column(
+                                children: [
+                                  if(location==null)
+                                  Text("إنقر لأضافة موقع",style: TextStyle(fontSize: 25)),
+                                  Icon(Icons.location_on_outlined,size: 50,color: location==null ? Colors.red: Colors.green,)
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 20,),
                         ElevatedButton(
                             onPressed: () {
-                              AddBloc.get(context).add_void(cache.get_data("id"), name_add_con.text, des_add_con.text, price_add_con.text,
-                                  min_price_add_con.text, num_day_add_con.text, city, b[a.indexOf(type)],location,text_slot_0_add_con.text,text_slot_1_add_con.text,text_slot_2_add_con.text);
+                              if(!slot!.with_location!){
+                                location =" ";
+                              }
+                              if(name_add_con.text.isNotEmpty &&des_add_con.text.isNotEmpty&&price_add_con.text.isNotEmpty&& min_price_add_con.text.isNotEmpty&&num_day_add_con.text.isNotEmpty && num_day_add_con.text.isNotEmpty
+                              &&city.isNotEmpty &&location !=null ) {
+                                setstate((){
+                                  is_loading= true;
+                                });
+                                AddBloc.get(context).add_void(cache.get_data("id"), name_add_con.text, des_add_con.text, price_add_con.text,
+                                  min_price_add_con.text, num_day_add_con.text, city, b[a.indexOf(type)],location,text_slot_0_add_con.text,text_slot_1_add_con.text,text_slot_2_add_con.text,kind,name_text_1,name_text_2,name_text_3);
+
+                              }else{
+                                tost(msg: "يرجى ملئ جميع البيانات",color: Colors.red);
+                              }
                             },
-                            child: const Text("إضافة"))
+                            child: is_loading?Center(child: CircularProgressIndicator(color: Colors.white,),): Text("إضافة"),
+                        style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_red)),)
                       ],
                     );
                   });
@@ -315,7 +419,7 @@ class add_auction extends StatelessWidget {
   DropdownMenuItem drop_item(item) => DropdownMenuItem(value: item, child: Center(child: Text(item)));
 }
 
-Widget add_rout_home(context, index,setstate) {
+Widget add_rout_home(context, index,text_slot_0_add_con,text_slot_1_add_con,text_slot_2_add_con,slot,setstate) {
   TextEditingController con ;
   if(index == 0){
     con = text_slot_0_add_con;
@@ -341,7 +445,7 @@ Widget add_rout_home(context, index,setstate) {
             Center(
                 child: Text(
               slot!.text_slot![index],
-              style: TextStyle(fontSize: 30, fontFamily: "adobe", color: Colors.white),
+              style: TextStyle(fontSize: 30, fontFamily: "adobe"),
             )),
             SizedBox(
               height: 20,
@@ -397,7 +501,7 @@ Widget add_rout_home(context, index,setstate) {
                       child: Center(
                           child: Text(
                         "موافق",
-                        style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: "adobe"),
+                        style: TextStyle(color: Colors.white, fontSize: 20),
                       )),
                     ),
                   ),

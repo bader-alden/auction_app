@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auction_app/bloc/locale/locale_bloc.dart';
 import 'package:auction_app/bloc/theme/theme_bloc.dart';
 import 'package:auction_app/cache.dart';
+import 'package:auction_app/const.dart';
 import 'package:auction_app/dio.dart';
 import 'package:auction_app/layout/auction_details.dart';
 import 'package:device_preview/device_preview.dart';
@@ -101,7 +102,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message,flutterLo
             channel.id,
             channel.name,
             channelDescription: channel.description,
-            icon: android.smallIcon,
+            icon: 'app_icon',
             // other properties...
           ),
         ));
@@ -111,7 +112,7 @@ main()async{
   await WidgetsFlutterBinding.ensureInitialized();
   dio.init();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')));
+  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon')));
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
@@ -122,7 +123,6 @@ main()async{
   );
   final fcmToken = await FirebaseMessaging.instance.getToken();
   FirebaseMessaging.onBackgroundMessage((message) => _firebaseMessagingBackgroundHandler(message,flutterLocalNotificationsPlugin));
-
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
@@ -136,7 +136,7 @@ main()async{
               channel.id,
               channel.name,
               channelDescription: channel.description,
-              icon: android.smallIcon,
+              icon: 'app_icon',
               // other properties...
             ),
           ));

@@ -12,7 +12,6 @@ class main_list_model{
   List<String>? text_slot=[];
   List<String>? file_slot=[];
   main_list_model.fromjson(Map<String,dynamic> json,counta,timea,is_auc){
-    print(json["file_solt"]);
      type=json['type'];
      text=json['text'];
      json['all_kind'].toString().split("*").forEach((element) {

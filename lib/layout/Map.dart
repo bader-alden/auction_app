@@ -5,18 +5,21 @@ import 'package:map_launcher/map_launcher.dart' hide MapType;
 
 
 class Map_screen extends StatefulWidget{
-  const Map_screen({super.key, this.lat, this.lng});
+  const Map_screen({super.key, this.lat, this.lng, this.title});
 
   @override
-  _Map_screenState createState() => _Map_screenState(lat,lng);
+  _Map_screenState createState() => _Map_screenState(lat,lng,title);
   final lat ;
   final lng ;
+  final title;
 }
 
 class _Map_screenState extends State<Map_screen> {
 final lat ;
 final lng ;
-_Map_screenState(this.lat, this.lng);
+final title;
+
+_Map_screenState(this.lat, this.lng, this.title);
 
   GoogleMapController? mapController;
   Set<Marker> markers = {};
@@ -42,7 +45,19 @@ _Map_screenState(this.lat, this.lng);
         Navigator.pop(context);
       },icon:  Icon(Icons.arrow_back_ios, color: Theme
           .of(context)
-          .brightness == Brightness.dark ? Colors.white : Colors.black)),title: Text("الموقع"), elevation: 0),
+          .brightness == Brightness.dark ? Colors.white : Colors.black)),title: Text(title+"موقع "), elevation: 0,actions: [
+        IconButton(onPressed: () async {
+          final availableMaps = await MapLauncher.installedMaps;
+          print(availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
+
+          await availableMaps.first.showMarker(
+            // coords: Coords(37.759392, -122.5107336),
+            coords: Coords( double.parse(lat), double.parse(lng)),
+            title: title,
+          );
+
+        }, icon: const Icon(Icons.map))
+      ],),
 
       // appBar: AppBar(
       //   title: const Text("Google Map in Flutter"),
@@ -65,7 +80,7 @@ _Map_screenState(this.lat, this.lng);
         zoomGesturesEnabled: true,
         initialCameraPosition: CameraPosition(
           target: LatLng( double.parse(lat), double.parse(lng)),
-          zoom: 10.0,
+          zoom: 19.0,
         ),
         markers: markers,
         mapType: MapType.normal,

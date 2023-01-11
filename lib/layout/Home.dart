@@ -3,6 +3,7 @@ import 'package:auction_app/bloc/Main/Main_state.dart';
 import 'package:auction_app/bloc/locale/locale_bloc.dart';
 import 'package:auction_app/layout/Account.dart';
 import 'package:auction_app/layout/Home_page.dart';
+import 'package:auction_app/layout/auction.dart';
 import 'package:auction_app/layout/my_auction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,7 +48,7 @@ class Home extends HookWidget {
               return Scaffold(
                 body: PageView(
                   reverse: !context.read<LocaleBloc>().lang,
-                  children: [Home_page(context, home_tab_con), const My_action(), const Favoraite(), const main_acount()],
+                  children: [Home_page(context, home_tab_con), const Auctions(), const Favoraite(), const main_acount()],
                   physics: const BouncingScrollPhysics(),
                   controller: con,
                   onPageChanged: (index) {

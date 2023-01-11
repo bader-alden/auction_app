@@ -1,9 +1,10 @@
 import 'package:animated_flip_counter/animated_flip_counter.dart';
+import 'package:auction_app/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
-
+import 'package:auction_app/cache.dart';
 import '../bloc/locale/locale_bloc.dart';
 import '../bloc/stram/stream_bloc.dart';
 import '../bloc/theme/theme_bloc.dart';
@@ -11,9 +12,10 @@ import '../const.dart';
 import '../models/list_auction_model.dart';
 
 class confirm_pay extends StatelessWidget {
-  const confirm_pay({Key? key, this.model, this.type}) : super(key: key);
+  const confirm_pay({Key? key, this.model, this.type, this.is_first}) : super(key: key);
   final list_auction_model? model;
   final type;
+  final is_first;
   @override
   Widget build(BuildContext context) {
     int my_price = int.parse(model!.num_price!);
@@ -193,6 +195,12 @@ class confirm_pay extends StatelessWidget {
                                                     is_click = true;
                                                   });
                                                   StreamBloc().update(model!, type, my_price.toString());
+                                                  if(is_first) {
+                                                    dio.post_data(url:"/account/auctions",quary:{
+                                                    "auctions" : ",${model?.id}|$type",
+                                                    "id":cache.get_data("id")
+                                                  } );
+                                                  }
                                                   Future.delayed(const Duration(seconds: 2)).then((value) {
                                                     Navigator.pop(context);
                                                   });

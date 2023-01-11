@@ -1,3 +1,4 @@
+import 'package:auction_app/main.dart';
 import 'package:flutter/material.dart';
 
 class Next extends StatelessWidget {
@@ -14,8 +15,8 @@ class Next extends StatelessWidget {
             const Text("صفحة الدفع "),
             const Text("سيتم مراجة الطلب و تأكديه"),
             ElevatedButton(onPressed: (){
-              Navigator.pop(context);
-            }, child: const Text("إضافة"))
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>App()), (route) => false);
+            }, child: const Text("موافق"))
           ],
         ),
       ),

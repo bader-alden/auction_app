@@ -71,6 +71,7 @@ class Test2 extends StatelessWidget {
                 .get_one_stream_controller
                 .stream,
             builder: (context, snapshot) {
+              print(snapshot.data);
               if (snapshot.data.toString() == "NOTFOUND") {
                 return const Scaffold(
                     body: Center(
@@ -84,8 +85,16 @@ class Test2 extends StatelessWidget {
               } else {
                 list_auction_model? model;
                 snapshot.data.runtimeType == list_auction_model ? model = snapshot.data : model = list_auction_model.fromjson(snapshot.data);
-                print(model!.is_auction);
-                if(model.status=="2"){
+                print(model);
+                print(model);
+                print(model);
+                // if(model.user_id.toString() == cache.get_data("id").toString()){
+                //   tost(msg: "yes",color: Colors.red);
+                // }
+                if(model!.status=="2"){
+                  print(model);
+                  print(model);
+                  print(model);
                   return  Scaffold(
                     appBar: AppBar( leading: IconButton(
                         onPressed: () {
@@ -485,6 +494,10 @@ class Test2 extends StatelessWidget {
                             child: InkWell(
                                 borderRadius: BorderRadius.circular(20),
                                 onTap: () {
+                                  var paid = model?.sub!.firstWhere((element) => element.contains("-${cache.get_data("id") ?? "]'/[;."}|"), orElse: () => "not|0");
+                                  print(paid?.split("|")[1]);
+                                  print(paid);
+                                  print(paid);
                                   if (cache.get_data("id") != null) {
                                     Navigator.push(
                                         context,
@@ -493,6 +506,7 @@ class Test2 extends StatelessWidget {
                                                 confirm_pay(
                                                   model: model,
                                                   type: type,
+                                                  is_first: paid?.split("|")[1] == "0"
                                                 )));
                                   } else {
                                     tost(msg: "يلزم تسجيل الدخول", color: Colors.red);
@@ -774,6 +788,7 @@ class Test2 extends StatelessWidget {
                               Map_screen(
                                 lat: model.location![0],
                                 lng: model.location![1],
+                                title: model.name,
                               )));
                 },
                 child: Container(

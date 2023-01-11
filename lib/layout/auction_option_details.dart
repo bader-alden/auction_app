@@ -24,19 +24,20 @@ class option_details extends StatelessWidget {
             : Icon(Icons.arrow_back_ios, color: Theme
             .of(context)
             .brightness == Brightness.dark ? Colors.white : Colors.black)),title: Text(model.name!),),
-        body: ListView.separated(
-            itemBuilder: (context,index){
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(child: Text(model.details![index])),
-          );
-        }, separatorBuilder: (context,index){
-          return Container(
-            height: 2,
-            width: double.infinity,
-            color: Colors.grey,
-          );
-        }, itemCount: model.details!.length),
+       body: Text(model.details.toString()),
+        // body: ListView.separated(
+        //     itemBuilder: (context,index){
+        //   return Padding(
+        //     padding: const EdgeInsets.all(8.0),
+        //     child: Center(child: Text(model.details![index])),
+        //   );
+        // }, separatorBuilder: (context,index){
+        //   return Container(
+        //     height: 2,
+        //     width: double.infinity,
+        //     color: Colors.grey,
+        //   );
+        // }, itemCount: model.details!.length),
       ),
     );
   }

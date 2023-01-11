@@ -13,6 +13,7 @@ class list_auction_model{
   String? log;
   String? des;
   String? city;
+  String? user_id;
   bool? is_auction;
   String? status;
   List<String>? location = [];
@@ -37,6 +38,7 @@ class list_auction_model{
      log = json['log'].toString();
      des = json['des'].toString();
      city = json['city'].toString();
+     user_id = json['user_id'].toString();
      status = json['status'].toString();
      is_auction = json['is_auction'] == 1 ? true : false;
      text_1 = json['text_slot_1'] == null || json['text_slot_1'] == " " || json['text_slot_1'] == ""? null : auction_details_list_model.fromjson(json['text_slot_1']);
@@ -50,11 +52,11 @@ class list_auction_model{
 }
 class auction_details_list_model{
 
-  List<String>? details;
+  String? details;
   String? name;
   auction_details_list_model.fromjson(String json){
       name = json.split("-")[0];
-      details = json.split("-")[1].split("،");
+      details = json.split("-")[1];
   }
 
 }

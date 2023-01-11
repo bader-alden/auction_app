@@ -18,21 +18,51 @@ class AddBloc extends Bloc<AddEvent, AddState> {
 
 List<add_model> add_list = [];
   void check_add(){
-    dio.get_data(url: "/account/auctions",quary: {"id":cache.get_data("id")}).then((value) {
-      print(value?.data);
-      if(value?.data !="" &&value?.data.isNotEmpty){
-        value?.data.toString().split(",").forEach((element) {
-          print(element);
-          add_list.add(add_model.fromjson(element));
-          if(value.data.toString().split(",").length == value.data.toString().split(",").indexOf(element)){
+    int num =0;
+    dio.get_data(url: "/account/my_auction",quary: {"id":cache.get_data("id")}).then((value) {
+      print(value?.data[0]["my_auction"]);
+      if(value?.data[0]["my_auction"] !=" " &&value?.data.isNotEmpty){
+        value?.data[0]["my_auction"].toString().split(",").forEach((element) async {
+          //print(element);
+          if(element!= ""){
+            num++;
+          }
+          if(element!="" &&element.split("|")[0].toString()=="1" ){
+            await dio.get_data(url: "/account/get_data", quary: {
+              "id":element.split("|")[1] ,
+              "type": element.split("|")[2],
+            }).then((value) {
+             if(value?.data[0]!=""){
+               add_list.add(add_model.fromjson(element,value?.data[0]));
+             }
+            });
+          }
+          if(element!="" &&element.split("|")[0].toString()=="0" ){
+            await dio.get_data(url: "/account/get_data_wait", quary: {
+              "id":element.split("|")[1],
+              "type": element.split("|")[2],
+            }).then((value) {
+              if(value?.data[0]!=""){
+                add_list.add(add_model.fromjson(element,value?.data[0]));
+              }
+            });
+          }
+          print(value.data.toString().split(",").length);
+          print(num);
+        print("=="*50);
+          if(add_list.length == num){
+            print(add_list);
             emit(next());
           }
         });
+      }else{
+        print("ok"*20);
+        emit(empty_state());
       }
     });
   }
 
-  void add_void(my_id, name, des, price, min_price, num_day, city, type,location,text_slot_1,text_slot_2,text_slot_3){
+  void add_void(my_id, name, des, price, min_price, num_day, city, type,location,text_slot_1,text_slot_2,text_slot_3,kind,name_text_1,name_text_2,name_text_3){
 dio.post_data(
   url: "/post_auction",
   quary: {
@@ -48,16 +78,16 @@ dio.post_data(
   "is_auction":1 ,
   "status":0 ,
   "num_add":0 ,
-  "kind":"all",
+  "kind":kind,
   "location":location ,
-  "file_slot_3":"a" ,
-  "file_slot_2":"a" ,
-  "file_slot_1":"a" ,
-  "text_slot_1":text_slot_1 == "" ?" ":text_slot_1 ,
-  "text_slot_2":text_slot_2 == "" ?" ":text_slot_2 ,
-  "text_slot_3":text_slot_3 == "" ?" ":text_slot_3 ,
-  "photo":"a" ,
-  "photos":"a" ,
+  "file_slot_3":" " ,
+  "file_slot_2":" " ,
+  "file_slot_1":" " ,
+  "text_slot_1":text_slot_1 == "" ?" ":name_text_1+"-"+text_slot_1 ,
+  "text_slot_2":text_slot_2 == "" ?" ":name_text_2+"-"+text_slot_2 ,
+  "text_slot_3":text_slot_3 == "" ?" ":name_text_3+"-"+text_slot_3 ,
+  "photo":"https://www.ipcc.ch/site/assets/uploads/sites/3/2019/10/img-placeholder.png" ,
+  "photos":"" ,
 
   }
 ).then((value) {
