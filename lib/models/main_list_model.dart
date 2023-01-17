@@ -26,8 +26,10 @@ class main_list_model{
 class all_kind_model{
   String? kind;
   String? img;
+  String? time;
   all_kind_model.fromjson(json){
     kind=json.toString().split("|")[0];
     img=json.toString().split("|")[1];
+    time=json.toString().split("|")[2];
   }
 }

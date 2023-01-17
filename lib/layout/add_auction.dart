@@ -1,3 +1,4 @@
+import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
@@ -47,6 +48,7 @@ class add_auction extends StatelessWidget {
     List a = [];
     List b = [];
     List all_kind = [];
+    List all_kind_time = [];
     bool init_add = false;
     String? type;
     String? kind;
@@ -54,6 +56,7 @@ class add_auction extends StatelessWidget {
     String name_text_1="";
     String name_text_2="";
     String name_text_3 = "";
+    int my_price=100;
     init_add = false;
 bool is_loading=false;
     return MultiBlocProvider(
@@ -108,28 +111,95 @@ bool is_loading=false;
                       slot = context.read<HomePageListBloc>().state.list![0];
                       slot?.all_kind?.forEach((element) {
                         all_kind.add(element.kind);
+                        all_kind_time.add(element.time);
                       });
                       kind=all_kind[0];
-                      print(all_kind);
-                      print(all_kind);
-                      print(all_kind);
-                      print(slot?.all_kind);
+                      num_day_add_con.text=all_kind_time[0];
                     }
 
                     return ListView(
                       physics: BouncingScrollPhysics(),
                       //crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
+                        SizedBox(height: 15),
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(width: 20,),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(10)),
+                                  child: DropdownButton(
+                                    underline: Text(""),
+                                    borderRadius: BorderRadius.circular(20),
+                                      items: a.map(drop_item).toList(),
+                                      value: type ?? "",
+                                      hint: Text("faa"),
+                                      onChanged: (value) {
+                                        setstate(() {
+                                          type = value!;
+                                          slot = context.read<HomePageListBloc>().state.list?.firstWhere((element) => element.ar_name == value);
+                                          all_kind.clear();
+                                          all_kind_time.clear();
+                                          slot?.all_kind?.forEach((element) {
+                                            print(element.time);
+                                            all_kind.add(element.kind);
+                                            all_kind_time.add(element.time);
+                                          });
+                                          kind=all_kind[0];
+                                          num_day_add_con.text=all_kind_time[0];
+                                        });
+                                      }),
+                                ),
+                                Spacer(),
+                                Text(":النوع",style: TextStyle(fontSize: 20),),
+                              ],
+                            ),
+                            SizedBox(height: 10,),
+                            Row(
+                              children: [
+                                SizedBox(width: 20,),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(10)),
+                                  child: DropdownButton(
+                                      underline: Text(""),
+                                      borderRadius: BorderRadius.circular(20),
+                                      items: all_kind.map(drop_item).toList(),
+                                      value: kind ?? "",
+                                      hint: Text(" "),
+                                      onChanged: (value) {
+                                        setstate(() {
+                                          kind = value!;
+                                          num_day_add_con.text=all_kind_time[all_kind.indexOf(kind)];
+                                          print(all_kind);
+                                          print(kind);
+                                        });
+                                      }),
+                                ),
+                                Spacer(),
+                                Text(":الصنف",style: TextStyle(fontSize: 20),),
+                              ],
+                            ),
+
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text("الاسم:",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 20),),
                         Container(
                           padding: EdgeInsets.all(4),
                           decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
                           child: TextFormField(
                             textDirection: TextDirection.rtl,
-                            decoration: const InputDecoration(hintText: "الاسم", border: InputBorder.none,hintTextDirection: TextDirection.rtl),
+                            decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
                             controller: name_add_con,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 15),
+                        Text("الوصف:",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 20),),
                         Container(
                           height: 150,
                           padding: EdgeInsets.all(4),
@@ -138,46 +208,101 @@ bool is_loading=false;
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
                             textDirection: TextDirection.rtl,
-                            decoration: const InputDecoration(hintText: "الوصف", border: InputBorder.none,hintTextDirection: TextDirection.rtl),
+                            decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
                             controller: des_add_con,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 15),
+                        Text("السعر المبدئي:",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 20),),
                         Container(
                           padding: EdgeInsets.all(4),
                           decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
                           child: TextFormField(
                             textDirection: TextDirection.rtl,
-                            decoration: const InputDecoration(hintText: "السعر الأولي", border: InputBorder.none,hintTextDirection: TextDirection.rtl),
-                            controller: price_add_con,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
-                          child: TextFormField(
-                            textDirection: TextDirection.rtl,
-                            decoration: const InputDecoration(hintText: "أقل مزايدة", border: InputBorder.none,hintTextDirection: TextDirection.rtl),
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
                             controller: min_price_add_con,
                           ),
                         ),
-                        SizedBox(height: 10),
+
+                        SizedBox(height: 15),
+                        Text("أقل مزايدة:",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 20),),
                         Container(
-                          padding: EdgeInsets.all(4),
+                          padding: EdgeInsets.all(15),
                           decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
-                          child: TextFormField(
-                            textDirection: TextDirection.rtl,
-                            decoration: const InputDecoration(hintText: "عدد الأيام عرض المزاد", border: InputBorder.none,hintTextDirection: TextDirection.rtl),
-                            controller: num_day_add_con,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              InkWell(
+                                  onTap: () {
+                                    if (my_price - 100 >= 100) {
+                                      setstate(() {
+                                        my_price = my_price - 100;
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 35,
+                                    width: 35,
+                                    // color: Colors.red,
+                                    child: Center(
+                                      child: const Text(
+                                        "-",
+                                        style: TextStyle(fontSize: 40,height: 0.9),
+                                      ),
+                                    ),
+                                  )),
+                              AnimatedFlipCounter(
+                                duration: const Duration(milliseconds: 500),
+                                value: my_price,
+                                textStyle: TextStyle(
+                                    fontSize: 30,
+                                    color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              InkWell(
+                                  onTap: () {
+                                    setstate(() {
+                                      my_price = my_price + 100;
+                                    });
+                                  },
+                                  child: const Text(
+                                    "+",
+                                    style: TextStyle(fontSize: 40),
+                                  )),
+                            ],
                           ),
+
+                          // child: TextFormField(
+                          //   textDirection: TextDirection.rtl,
+                          //   decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
+                          //   controller: price_add_con,
+                          // ),
+                        ),
+                        SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              width: 50,
+                              padding: EdgeInsets.all(4),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+                              child: TextFormField(
+                                textDirection: TextDirection.rtl,
+                                decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
+                                controller: num_day_add_con,
+                                readOnly: true,
+                              ),
+                            ),
+                            Text("عدد أيام عرض المزاد:",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 20),),
+                          ],
                         ),
                         SizedBox(
                           height: 20,
                         ),
                         Row(
                           children: [
-                            const Spacer(),
+                            SizedBox(width: 20,),
                             DropdownButton(
                                 items: city_list.map(drop_item).toList(),
                                 value: city,
@@ -186,34 +311,8 @@ bool is_loading=false;
                                     city = value;
                                   });
                                 }),
-                            const Spacer(),
-                            DropdownButton(
-                                items: a.map(drop_item).toList(),
-                                value: type ?? "",
-                                hint: Text("faa"),
-                                onChanged: (value) {
-                                  setstate(() {
-                                    type = value!;
-                                    slot = context.read<HomePageListBloc>().state.list?.firstWhere((element) => element.ar_name == value);
-                                    all_kind.clear();
-                                    slot?.all_kind?.forEach((element) {
-                                      print(element);
-                                      all_kind.add(element.kind);
-                                    });
-                                    kind=all_kind[0];
-                                  });
-                                }),
-                            const Spacer(),
-                            DropdownButton(
-                                items: all_kind.map(drop_item).toList(),
-                                value: kind ?? "",
-                                hint: Text(" "),
-                                onChanged: (value) {
-                                  setstate(() {
-                                    kind = value!;
-                                  });
-                                }),
-                            const Spacer(),
+                            Spacer(),
+                            Text(":المدينة التي يوجد بها المنتج",style: TextStyle(fontSize: 20),),
                           ],
                         ),
                         SizedBox(
