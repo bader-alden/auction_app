@@ -64,7 +64,7 @@ class Home extends HookWidget {
                       main_bloc.get(context).change_nav_index(index);
                       con.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
                     },
-                    backgroundColor:  Theme.of(context).brightness ==Brightness.light?Colors.white:Colors.black,
+                    backgroundColor:  Theme.of(context).brightness ==Brightness.light?main_white:main_black,
                     selectedItemColor: main_red,
                     elevation: 0,
                     unselectedItemColor: Colors.grey,

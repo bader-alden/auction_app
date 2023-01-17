@@ -4,9 +4,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/locale/locale_bloc.dart';
 List faq_list=[];
-class FAQ_page extends StatelessWidget {
+class FAQ_page extends StatefulWidget {
   const FAQ_page({Key? key}) : super(key: key);
 
+  @override
+  State<FAQ_page> createState() => _FAQ_pageState();
+}
+
+class _FAQ_pageState extends State<FAQ_page> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    dio.get_data(url: "/faq").then((value) {
+      setState((){
+        faq_list = value?.data ;
+      });
+    });
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    faq_list.clear();
+  }
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -25,17 +46,14 @@ class FAQ_page extends StatelessWidget {
               .brightness == Brightness.dark ? Colors.white : Colors.black)),title: Text(context.read<LocaleBloc>().faq), elevation: 0),
 
           body: StatefulBuilder(builder: (context,setstate){
-            dio.get_data(url: "/faq").then((value) {
-              setstate((){
-                faq_list = value?.data ;
-              });
-            });
-            if(faq_list == []){
-              return CircularProgressIndicator();
+
+            if(faq_list.isEmpty){
+              return Center(child: CircularProgressIndicator());
             }
             else{
               return ListView.separated(
                 shrinkWrap: true,
+                  physics: BouncingScrollPhysics(),
                   itemBuilder: (context,index){
                     return Padding(
                       padding: const EdgeInsets.all(8.0),

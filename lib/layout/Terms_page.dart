@@ -7,9 +7,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/locale/locale_bloc.dart';
 String? terms;
-class Terms_page extends StatelessWidget {
+class Terms_page extends StatefulWidget {
   const Terms_page({Key? key}) : super(key: key);
 
+  @override
+  State<Terms_page> createState() => _Terms_pageState();
+}
+
+class _Terms_pageState extends State<Terms_page> {
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    dio.get_data(url: "/terms_and_conditions").then((value) {
+      setState((){
+        terms=value?.data[0]["terms"];
+      });
+    });
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    terms=null;
+  }
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -28,20 +49,18 @@ appBar: AppBar(leading: IconButton( onPressed: (){
       .brightness == Brightness.dark ? Colors.white : Colors.black)),title: Text(context.read<LocaleBloc>().terms), elevation: 0),
 
         body: StatefulBuilder(builder: (context,setstate){
-          dio.get_data(url: "/terms_and_conditions").then((value) {
-            setstate((){
-              terms=value?.data[0]["terms"];
-            });
-          });
           if(terms == null){
             return Center(child: CircularProgressIndicator());
           }
           else{
-            return Container(
-             width: double.infinity,
-                padding: const EdgeInsets.all(15.0),
-                child: Text(terms!,textDirection: TextDirection.rtl,style: TextStyle(fontSize: 23)),
+            return SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Container(
+               width: double.infinity,
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(terms!,textDirection: TextDirection.rtl,style: TextStyle(fontSize: 23)),
 
+              ),
             );
           }
         })

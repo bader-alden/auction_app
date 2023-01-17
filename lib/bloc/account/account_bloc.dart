@@ -43,6 +43,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       "gsm_token2": event.token.toString().split(":")[1],
     }).then((value) {
       print(value?.data);
+      print(value?.data);
       if (value?.data.isNotEmpty && value?.data != "notfound") {
         cache.save_data("id",value?.data[0]['id'] );
         user = user_models.fromjson(value?.data[0]);

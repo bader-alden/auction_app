@@ -44,7 +44,11 @@ class main_acount extends StatelessWidget {
               return  const CircularProgressIndicator();
             }
             if(state is app_check){
-              return Container(child: const Center(child: CircularProgressIndicator(color: Colors.red,)));
+              return  Center(child: Image(
+                image: Theme.of(context).brightness==Brightness.dark
+                    ?AssetImage("assets/img/dark_loading.gif")
+                    :AssetImage("assets/img/loading.gif")
+                ,height: 125,width: 125,));
             }
             if(state is is_not_login_state){
               return Login(context, state);
@@ -71,6 +75,7 @@ class main_acount extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: ListView(
+            physics: BouncingScrollPhysics(),
             children: [
               const SizedBox(
                 height: 20,
@@ -205,7 +210,6 @@ class main_acount extends StatelessWidget {
                                 color: Colors.white,
                               )),
                         )
-
                       ],
                     ),
                   ),

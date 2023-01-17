@@ -16,7 +16,7 @@ import '../const.dart';
 import '../models/main_list_model.dart';
 import 'Shimmer.dart';
 import 'package:auction_app/cache.dart';
-
+var scafold = GlobalKey<ScaffoldState>();
 GlobalKey container_key = GlobalKey();
 ScrollController scon = ScrollController();
 ScrollController _scrollController = ScrollController();
@@ -29,6 +29,8 @@ Widget Home_page(BuildContext context, home_tab_con) {
         return Directionality(
           textDirection: context.read<LocaleBloc>().lang ? TextDirection.ltr : TextDirection.rtl,
           child: Scaffold(
+            key: scafold,
+            drawer: drawer_widget(context,scafold),
               body: SafeArea(
             child: Column(
               children: [
@@ -42,12 +44,14 @@ Widget Home_page(BuildContext context, home_tab_con) {
                         //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Setting()));
-                          },icon: const Icon(Icons.settings)),
+                            //Navigator.push(context, MaterialPageRoute(builder: (context)=>Setting()));
+                            scafold.currentState?.openDrawer();
+                          },icon: const Icon(Icons.menu,size: 25,)),
                           //SizedBox(width: 5,)
                          // Text(context.read<LocaleBloc>().home_page_middle, style: const TextStyle(fontSize: 30)),
                           Spacer(),
-                          Text("اوكشن السعودية", style: const TextStyle(fontSize: 30)),
+                          Image(image: AssetImage("assets/img/18.png"),height: 60),
+                          //Text("اوكشن السعودية", style: const TextStyle(fontSize: 30)),
                           Spacer(),
                           SizedBox(width: 30,)
                         ],
@@ -407,7 +411,7 @@ Widget home_page_item(int index, BuildContext context, main_list_model model) {
         SizedBox(height: 10,),
         //const Spacer(),
         Container(
-          child: model.is_auction! ? Timer_widget(model.time, context,Theme.of(context).brightness == Brightness.dark ? Colors.white:Colors.black) : Text(model.time!),
+          child:  Timer_widget(model.time, context,Theme.of(context).brightness == Brightness.dark ? Colors.white:Colors.black),
         ),
         const SizedBox(
           width: 10,

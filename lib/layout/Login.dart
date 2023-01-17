@@ -49,8 +49,9 @@ Widget Login(BuildContext context, state) {
                   const SizedBox(
                     height: 50,
                   ),
-                  const Text("اوكشن", style: TextStyle(color: Colors.red, fontSize: 50, fontWeight: FontWeight.bold)),
-                  const Text("السعودية", style: TextStyle(color: Colors.red, fontSize: 50, fontWeight: FontWeight.bold)),
+                  // const Text("اوكشن", style: TextStyle(color: Colors.red, fontSize: 50, fontWeight: FontWeight.bold)),
+                  // const Text("السعودية", style: TextStyle(color: Colors.red, fontSize: 50, fontWeight: FontWeight.bold)),
+                  Image(image: AssetImage("assets/img/18.png"),height: 150),
                   const SizedBox(
                     height: 50,
                   ),
@@ -83,6 +84,8 @@ Widget Login(BuildContext context, state) {
                                       await FirebaseAuth.instance.signInWithCredential(credential).then((value) {
                                         if (cache.get_data("is_login")) {
                                           FirebaseMessaging.instance.getToken().then((value) {
+                                            print(cache.get_data("num"));
+                                            print(cache.get_data("num"));
                                             context.read<AccountBloc>().add(login_event(cache.get_data("num"), value));
                                              cache.remove_data("otp_id");
                                             // AccountBloc().add(login_event(number_con.text, value));
@@ -285,7 +288,7 @@ Widget Login(BuildContext context, state) {
                                         setstate(() {
                                           is_loading = true;
                                         });
-                                      dio.get_data(url: "account/check_login", quary: {"mobile_id": number_con.text}).then((value) async {
+                                      dio.get_data(url: "account/check_login", quary: {"mobile_id": "+966"+number_con.text}).then((value) async {
                                         print(value?.data);
                                         if (value?.data && is_login || !is_login &&!value?.data) {
                                           if(is_login){
@@ -298,7 +301,7 @@ Widget Login(BuildContext context, state) {
                                           }
                                           await FirebaseAuth.instance.verifyPhoneNumber(
                                             //phoneNumber: '+963956956020',
-                                            phoneNumber: number_con.text,
+                                            phoneNumber: "+966"+number_con.text,
                                             verificationCompleted: (PhoneAuthCredential credential) async {
                                               print("1");
                                               print(credential);

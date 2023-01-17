@@ -17,7 +17,8 @@ class HomePageListBloc extends Bloc<HomePageListEvent, HomePageListState> {
    await dio.get_data(url: "main").then((value) {
       value?.data.forEach((element) async {
         await  dio.get_data(url:"main_data",quary:{"type":element['type'] } ).then((value) {
-          main_list?.add( main_list_model.fromjson(element,value?.data['results'][0]["num"],value?.data['ress'][0]["created_at"],value?.data['ress'][0]["is_auction"]));
+          print(value?.data);
+          main_list?.add( main_list_model.fromjson(element,value?.data['results'][0]["num"],value?.data['b']));
         });
         if( main_list?.length == value.data.length ){
           print("end");

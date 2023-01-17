@@ -63,7 +63,11 @@ class Test3 extends StatelessWidget {
                 stream: context.read<StreamBloc>().get_stream_controller.stream,
                 builder: (BuildContext context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return  Center(child: Image(
+                      image: Theme.of(context).brightness==Brightness.dark
+                          ?AssetImage("assets/img/dark_loading.gif")
+                          :AssetImage("assets/img/loading.gif")
+                      ,height: 125,width: 125,));
                   }
                   if (snapshot.data.toString() == "NOTFOUND") {
                     return const Scaffold(

@@ -25,15 +25,19 @@ List<add_model> add_list = [];
         value?.data[0]["my_auction"].toString().split(",").forEach((element) async {
           //print(element);
           if(element!= ""){
-            num++;
+
           }
           if(element!="" &&element.split("|")[0].toString()=="1" ){
             await dio.get_data(url: "/account/get_data", quary: {
               "id":element.split("|")[1] ,
               "type": element.split("|")[2],
             }).then((value) {
-             if(value?.data[0]!=""){
+              print(value?.data!=null);
+              print(value?.data.isEmpty);
+              print(value?.data);
+             if(value?.data.isNotEmpty){
                add_list.add(add_model.fromjson(element,value?.data[0]));
+               num++;
              }
             });
           }
@@ -47,8 +51,6 @@ List<add_model> add_list = [];
               }
             });
           }
-          print(value.data.toString().split(",").length);
-          print(num);
         print("=="*50);
           if(add_list.length == num){
             print(add_list);

@@ -78,23 +78,20 @@ class Test2 extends StatelessWidget {
                       child: Text("العنصر المطلوب غير متاح"),
                     ));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Scaffold(
-                    body: Center(
-                      child: CircularProgressIndicator(),
-                    ));
+                return  Scaffold(
+                  body: Center(child: Image(
+                    image: Theme.of(context).brightness==Brightness.dark
+                        ?AssetImage("assets/img/dark_loading.gif")
+                        :AssetImage("assets/img/loading.gif")
+                    ,height: 125,width: 125,)),
+                );
               } else {
                 list_auction_model? model;
                 snapshot.data.runtimeType == list_auction_model ? model = snapshot.data : model = list_auction_model.fromjson(snapshot.data);
-                print(model);
-                print(model);
-                print(model);
                 // if(model.user_id.toString() == cache.get_data("id").toString()){
                 //   tost(msg: "yes",color: Colors.red);
                 // }
                 if(model!.status=="2"){
-                  print(model);
-                  print(model);
-                  print(model);
                   return  Scaffold(
                     appBar: AppBar( leading: IconButton(
                         onPressed: () {

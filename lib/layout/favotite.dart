@@ -27,7 +27,11 @@ class Favoraite extends HookWidget {
       );
     }else {
       if(state is init_state || state is fav_evint ||FavBloc.get(context).fav_list.isEmpty ){
-       return const Center(child: CircularProgressIndicator());
+        return  Center(child: Image(
+          image: Theme.of(context).brightness==Brightness.dark
+              ?AssetImage("assets/img/dark_loading.gif")
+              :AssetImage("assets/img/loading.gif")
+          ,height: 125,width: 125,));
      }else {
 
     return StatefulBuilder(
