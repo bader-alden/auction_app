@@ -14,6 +14,7 @@ class list_auction_model{
   String? des;
   String? city;
   String? user_id;
+  String? main_data;
   bool? is_auction;
   String? status;
   List<String>? location = [];
@@ -31,6 +32,7 @@ class list_auction_model{
      num_add = json['num_add'].toString();
      num_price = json['min_price'].toString();
      price = json['price'].toString();
+     main_data = json['main_data'].toString();
      time = json['created_at'].toString();
      photo = json['photo'].toString();
      photos = json['photos'].toString().split("|");

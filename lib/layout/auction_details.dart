@@ -16,6 +16,7 @@ import 'package:share/share.dart';
 import '../bloc/locale/locale_bloc.dart';
 import '../bloc/stram/stream_bloc.dart';
 
+import 'auction_option_details2.dart';
 import 'favotite.dart';
 
 var long_text =
@@ -767,42 +768,55 @@ class Test2 extends StatelessWidget {
       padding: const EdgeInsets.all(40),
       physics: const NeverScrollableScrollPhysics(),
       children: [
+        InkWell(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>option_details2(row: model.main_data,)));
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            height: 75,
+            color: Colors.grey.withOpacity(0.2),
+            child: Row(
+              children: [Text("المعلومات الأساسية"), const Spacer(), const Icon(Icons.arrow_forward_ios)],
+            ),
+          ),
+        ),
+        Container(
+          height: 2,
+          color: Colors.grey,
+        ),
         if (model.text_1 != null) option_list_details(context, model.text_1!, null),
         if (model.text_2 != null) option_list_details(context, model.text_2!, null),
         if (model.text_3 != null) option_list_details(context, model.text_3!, null),
         if (model.file_1 != null) option_list_details(context, null, model.file_1!),
         if (model.file_2 != null) option_list_details(context, null, model.file_2!),
         if (model.file_3 != null) option_list_details(context, null, model.file_3!),
-        if (model.location != null)
-          Column(
-            children: [
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              Map_screen(
-                                lat: model.location![0],
-                                lng: model.location![1],
-                                title: model.name,
-                              )));
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  height: 75,
-                  color: Colors.grey.withOpacity(0.2),
-                  child: Row(
-                    children: [const Text("الموقع"), const Spacer(), const Icon(Icons.arrow_forward_ios)],
-                  ),
-                ),
-              ),
-              Container(
-                height: 2,
-                color: Colors.grey,
-              )
-            ],
-          )
+        // if (model.location != null)
+        //   Column(
+        //     children: [
+        //       InkWell(
+        //         onTap: () {
+        //           Navigator.push(
+        //               context,
+        //               MaterialPageRoute(
+        //                   builder: (context) =>
+        //                       Map_screen(
+        //                         lat: model.location![0],
+        //                         lng: model.location![1],
+        //                         title: model.name,
+        //                       )));
+        //         },
+        //         child: Container(
+        //           padding: const EdgeInsets.all(20),
+        //           height: 75,
+        //           color: Colors.grey.withOpacity(0.2),
+        //           child: Row(
+        //             children: [const Text("الموقع"), const Spacer(), const Icon(Icons.arrow_forward_ios)],
+        //           ),
+        //         ),
+        //       ),
+        //   ],
+        //  )
       ],
     );
   }

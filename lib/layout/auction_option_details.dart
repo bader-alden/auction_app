@@ -10,7 +10,7 @@ class option_details extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Directionality(
-     textDirection: context.read<LocaleBloc>().lang ? TextDirection.ltr:TextDirection.rtl,
+     textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton( onPressed: (){
@@ -24,7 +24,11 @@ class option_details extends StatelessWidget {
             : Icon(Icons.arrow_back_ios, color: Theme
             .of(context)
             .brightness == Brightness.dark ? Colors.white : Colors.black)),title: Text(model.name!),),
-       body: Text(model.details.toString()),
+       body: ListView(
+         children: [
+           Container(width: double.infinity,child: Text(model.details.toString(),textDirection: TextDirection.rtl,style: TextStyle(fontSize: 22),)),
+         ],
+       ),
         // body: ListView.separated(
         //     itemBuilder: (context,index){
         //   return Padding(

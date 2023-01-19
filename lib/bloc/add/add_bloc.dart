@@ -64,7 +64,7 @@ List<add_model> add_list = [];
     });
   }
 
-  void add_void(my_id, name, des, price, min_price, num_day, city, type,location,text_slot_1,text_slot_2,text_slot_3,kind,name_text_1,name_text_2,name_text_3){
+  void add_void(my_id, name, des, price, min_price, num_day, city, type,location,text_slot_1,text_slot_2,text_slot_3,kind,name_text_1,name_text_2,name_text_3,main_data){
 dio.post_data(
   url: "/post_auction",
   quary: {
@@ -90,6 +90,7 @@ dio.post_data(
   "text_slot_3":text_slot_3 == "" ?" ":name_text_3+"-"+text_slot_3 ,
   "photo":"https://www.ipcc.ch/site/assets/uploads/sites/3/2019/10/img-placeholder.png" ,
   "photos":"" ,
+  "main_data":main_data ,
 
   }
 ).then((value) {

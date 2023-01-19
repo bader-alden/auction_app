@@ -5,6 +5,7 @@ class main_list_model{
   String? text;
   String? count;
   String? time;
+  String? terms;
   bool? with_location;
   List<all_kind_model>? all_kind=[];
   List<String>? text_slot=[];
@@ -16,6 +17,7 @@ class main_list_model{
      });
      eng_name=json['eng_name'];
      ar_name=json['ar_name'];
+     terms=json['terms'];
      with_location=json['with_location'] == 1 ? true : false;
      count=counta.toString();
      time=timea.toString();
@@ -27,9 +29,11 @@ class all_kind_model{
   String? kind;
   String? img;
   String? time;
+  String? main_data;
   all_kind_model.fromjson(json){
     kind=json.toString().split("|")[0];
     img=json.toString().split("|")[1];
     time=json.toString().split("|")[2];
+    main_data=json.toString().split("|")[3];
   }
 }

@@ -2,6 +2,8 @@ import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
+import 'package:auction_app/layout/Home_page.dart';
+import 'package:auction_app/layout/add_auction_main_data.dart';
 import 'package:auction_app/layout/next.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +14,7 @@ import '../bloc/add/add_bloc.dart';
 import '../bloc/home_page/home_page_list_bloc.dart';
 import '../bloc/locale/locale_bloc.dart';
 import '../models/main_list_model.dart';
+import 'Terms_page.dart';
 import 'map_picker.dart';
 
 List city_list = ["جدة", "الرياض"];
@@ -29,7 +32,7 @@ List city_list = ["جدة", "الرياض"];
 //   , "vehicle_plates"
 //   , "mobile_numbe"
 // ];
-
+bool is_terms_check = false;
 class add_auction extends StatelessWidget {
   const add_auction({Key? key}) : super(key: key);
   @override
@@ -49,6 +52,7 @@ class add_auction extends StatelessWidget {
     List b = [];
     List all_kind = [];
     List all_kind_time = [];
+    List all_kind_main_data = [];
     bool init_add = false;
     String? type;
     String? kind;
@@ -56,9 +60,12 @@ class add_auction extends StatelessWidget {
     String name_text_1="";
     String name_text_2="";
     String name_text_3 = "";
+    String main_data_empty = "";
+    String main_data = "";
     int my_price=100;
     init_add = false;
-bool is_loading=false;
+
+    bool is_loading=false;
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -103,6 +110,7 @@ bool is_loading=false;
                       a.clear();
                       b.clear();
                       init_add = true;
+                      is_terms_check = false;
                       context.read<HomePageListBloc>().state.list?.forEach((element) {
                         a.add(element.ar_name);
                         b.add(element.type);
@@ -112,9 +120,11 @@ bool is_loading=false;
                       slot?.all_kind?.forEach((element) {
                         all_kind.add(element.kind);
                         all_kind_time.add(element.time);
+                        all_kind_main_data.add(element.main_data);
                       });
                       kind=all_kind[0];
                       num_day_add_con.text=all_kind_time[0];
+                      main_data_empty=all_kind_main_data[0];
                     }
 
                     return ListView(
@@ -142,13 +152,18 @@ bool is_loading=false;
                                           slot = context.read<HomePageListBloc>().state.list?.firstWhere((element) => element.ar_name == value);
                                           all_kind.clear();
                                           all_kind_time.clear();
+                                          all_kind_main_data.clear();
+                                          main_data="";
                                           slot?.all_kind?.forEach((element) {
-                                            print(element.time);
+                                            print(element.main_data);
                                             all_kind.add(element.kind);
                                             all_kind_time.add(element.time);
+                                            all_kind_main_data.add(element.main_data);
                                           });
                                           kind=all_kind[0];
                                           num_day_add_con.text=all_kind_time[0];
+                                          main_data_empty=all_kind_main_data[0];
+
                                         });
                                       }),
                                 ),
@@ -172,7 +187,9 @@ bool is_loading=false;
                                       onChanged: (value) {
                                         setstate(() {
                                           kind = value!;
+                                          main_data="";
                                           num_day_add_con.text=all_kind_time[all_kind.indexOf(kind)];
+                                          main_data_empty=all_kind_main_data[all_kind.indexOf(kind)];
                                           print(all_kind);
                                           print(kind);
                                         });
@@ -221,7 +238,7 @@ bool is_loading=false;
                             textDirection: TextDirection.rtl,
                             keyboardType: TextInputType.number,
                             decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
-                            controller: min_price_add_con,
+                            controller: price_add_con,
                           ),
                         ),
 
@@ -314,6 +331,22 @@ bool is_loading=false;
                             Spacer(),
                             Text(":المدينة التي يوجد بها المنتج",style: TextStyle(fontSize: 20),),
                           ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Center(child: Text("معلومات الأساسية",style: TextStyle(fontSize: 25),)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: ElevatedButton(onPressed: () async {
+                           final main_data_pop = await Navigator.push(context, MaterialPageRoute(builder: (context)=>add_auction_main_data(row: main_data_empty,old:main_data)));
+                           if(main_data_pop!=null){
+                             setstate((){
+                               main_data=main_data_pop;
+                             });
+                           }
+                          },style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_data!="" ? Colors.green:main_red)),
+                           child: main_data!="" ?Icon(Icons.check,color: Colors.white,):Text("تعبئة")),
                         ),
                         SizedBox(
                           height: 20,
@@ -425,27 +458,7 @@ bool is_loading=false;
                                 ],
                               ),
                             ),
-                        // if (slot?.with_location ?? false)
-                        //   ElevatedButton(
-                        //       onPressed: () async {
-                        //         var _ = await showSimplePickerLocation(
-                        //           context: context,
-                        //           isDismissible: true,
-                        //           title: "أختر الموقع",
-                        //           textConfirmPicker: "إختيار",
-                        //           initCurrentUserPosition: true,
-                        //           textCancelPicker: "إلغاء",
-                        //           initZoom: 19,
-                        //         );
-                        //         location = "${_!.latitude.toString()} , ${_.longitude}";
-                        //         if(location !=null){
-                        //           setstate((){});
-                        //         }
-                        //         //print(await location?.latitude);
-                        //         print(location);
-                        //         //Navigator.push(context, MaterialPageRoute(builder: (context)=>map_picker()));
-                        //       },
-                        //       child: Text("map")),
+
                         if (slot?.with_location ?? false) Center(child: Text("الموقع",style: TextStyle(fontSize: 25),)),
                         if (slot?.with_location ?? false)
                         InkWell(
@@ -482,6 +495,21 @@ bool is_loading=false;
                               ),
                             ],
                           ),
+                        ), SizedBox(height: 20,),
+                       
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>Terms_page(with_init: false,inh_terms:slot?.terms,)));
+                            }, child: Text(" أحكام و شروط "+type.toString(),style: TextStyle(fontSize: 16),)),
+                            Text("الموافقة على ",style: TextStyle(fontSize: 16),),
+                            SizedBox(width: 5,),
+                            InkWell(onTap: (){setstate((){is_terms_check=!is_terms_check;});},child: Container(
+                                decoration: BoxDecoration(border: Border.all(color: Colors.white),borderRadius: BorderRadius.circular(5)),
+                                width:30,height: 30,child:is_terms_check ?Icon(Icons.check):null)),
+                            SizedBox(width: 5,),
+                          ],
                         ),
                         SizedBox(height: 20,),
                         ElevatedButton(
@@ -489,20 +517,37 @@ bool is_loading=false;
                               if(!slot!.with_location!){
                                 location =" ";
                               }
-                              if(name_add_con.text.isNotEmpty &&des_add_con.text.isNotEmpty&&price_add_con.text.isNotEmpty&& min_price_add_con.text.isNotEmpty&&num_day_add_con.text.isNotEmpty && num_day_add_con.text.isNotEmpty
-                              &&city.isNotEmpty &&location !=null ) {
+                              if(name_add_con.text.isNotEmpty &&des_add_con.text.isNotEmpty&&price_add_con.text.isNotEmpty&&num_day_add_con.text.isNotEmpty && num_day_add_con.text.isNotEmpty
+                              &&city.isNotEmpty &&location !=null  && is_terms_check &&main_data!="") {
                                 setstate((){
                                   is_loading= true;
                                 });
-                                AddBloc.get(context).add_void(cache.get_data("id"), name_add_con.text, des_add_con.text, price_add_con.text,
-                                  min_price_add_con.text, num_day_add_con.text, city, b[a.indexOf(type)],location,text_slot_0_add_con.text,text_slot_1_add_con.text,text_slot_2_add_con.text,kind,name_text_1,name_text_2,name_text_3);
+                                AddBloc.get(context).add_void(cache.get_data("id"),
+                                    name_add_con.text,
+                                    des_add_con.text,
+                                    price_add_con.text,
+                                    my_price,
+                                    num_day_add_con.text,
+                                    city,
+                                    b[a.indexOf(type)],
+                                    location,
+                                    text_slot_0_add_con.text,
+                                    text_slot_1_add_con.text,
+                                    text_slot_2_add_con.text,
+                                    kind,name_text_1,
+                                    name_text_2,
+                                    name_text_3,
+                                    main_data
+                                );
 
                               }else{
                                 tost(msg: "يرجى ملئ جميع البيانات",color: Colors.red);
                               }
                             },
                             child: is_loading?Center(child: CircularProgressIndicator(color: Colors.white,),): Text("إضافة"),
-                        style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_red)),)
+                        style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_red)),),
+                        SizedBox(height: 20,),
+                       
                       ],
                     );
                   });

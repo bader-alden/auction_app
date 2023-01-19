@@ -8,22 +8,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/locale/locale_bloc.dart';
 String? terms;
 class Terms_page extends StatefulWidget {
-  const Terms_page({Key? key}) : super(key: key);
-
+  const Terms_page({Key? key, this.with_init, this.inh_terms}) : super(key: key);
+final with_init;
+final inh_terms;
   @override
-  State<Terms_page> createState() => _Terms_pageState();
+  State<Terms_page> createState() => _Terms_pageState(with_init,inh_terms);
 }
 
 class _Terms_pageState extends State<Terms_page> {
+  final with_init;
+  final inh_terms;
+
+  _Terms_pageState(this.with_init, this.inh_terms);
 @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    dio.get_data(url: "/terms_and_conditions").then((value) {
+    if(with_init) {
+      dio.get_data(url: "/terms_and_conditions").then((value) {
       setState((){
         terms=value?.data[0]["terms"];
       });
     });
+    }else{
+      terms=inh_terms;
+    }
   }
   @override
   void dispose() {

@@ -153,7 +153,7 @@ class main_acount extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Terms_page()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Terms_page(with_init: true,)));
                           },
                           child: account_list_item(context.read<LocaleBloc>().terms, const Icon(Icons.list_alt_sharp,color: Colors.white,)),
                         ),

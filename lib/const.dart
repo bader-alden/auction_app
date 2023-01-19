@@ -189,7 +189,7 @@ Widget drawer_widget(BuildContext context,GlobalKey<ScaffoldState> scaffold){
         SizedBox(height: 30,),
         InkWell(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>Terms_page()));
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>Terms_page(with_init: true,)));
             scaffold.currentState?.closeDrawer();
           },
           child: Padding(
