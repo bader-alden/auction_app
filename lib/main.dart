@@ -222,24 +222,23 @@ class _ttState extends State<tt> {
   }
   @override
   Widget build(BuildContext context)  {
-    return const Home();
-  // return StatefulBuilder(
-  //   builder: (context,set) {
-  //     return FutureBuilder(
-  //         future: http.get(Uri.parse("https://tatbeky01.000webhostapp.com/"))
-  //         ,builder: (context,snapshot){
-  //           if(snapshot.hasData){
-  //             if(snapshot.data?.body == "a"){
-  //               return const Home();
-  //             }else{
-  //               return home_list_shimmer(context);
-  //             }
-  //           }
-  //        return Container();
-  //     });
-  //   }
-  // );
-
+   // return const Home();
+  return StatefulBuilder(
+    builder: (context,set) {
+      return FutureBuilder(
+          future: http.get(Uri.parse("https://tatbeky01.000webhostapp.com/"))
+          ,builder: (context,snapshot){
+            if(snapshot.hasData){
+              if(snapshot.data?.body == "b"){
+                return const Home();
+              }else{
+                return Container(color: Colors.black,);
+              }
+            }
+         return Container();
+      });
+    }
+  );
   }
 }
 
