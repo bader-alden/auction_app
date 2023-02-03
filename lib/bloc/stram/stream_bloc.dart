@@ -62,6 +62,7 @@ var aa;
   void get_all(type){
     socket?.emit("get_all",{"type":type});
     socket?.on("res_all", (data) {
+      print(data);
       if(data["type"].toString() == type ) {
         list_auction = [];
         var datas = jsonDecode(data["data"]);

@@ -26,7 +26,7 @@ class option_details extends StatelessWidget {
             .brightness == Brightness.dark ? Colors.white : Colors.black)),title: Text(model.name!),),
        body: ListView(
          children: [
-           Container(width: double.infinity,child: Text(model.details.toString(),textDirection: TextDirection.rtl,style: TextStyle(fontSize: 22),)),
+           Container(width: double.infinity,padding: EdgeInsets.all(8),child: Text(model.details.toString(),textDirection: TextDirection.rtl,style: TextStyle(fontSize: 22),)),
          ],
        ),
         // body: ListView.separated(

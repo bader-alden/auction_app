@@ -295,6 +295,7 @@ class Test3 extends StatelessWidget {
                                                       },
                                                     ),
                                                   ),
+                                                  SizedBox(height: 30,),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: [

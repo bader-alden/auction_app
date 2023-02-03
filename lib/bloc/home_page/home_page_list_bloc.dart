@@ -15,6 +15,9 @@ class HomePageListBloc extends Bloc<HomePageListEvent, HomePageListState> {
   Future<void> get_main_list() async {
     main_list = [];
    await dio.get_data(url: "main").then((value) {
+     print("test");
+     print("test");
+     print("test");
       value?.data.forEach((element) async {
         await  dio.get_data(url:"main_data",quary:{"type":element['type'] } ).then((value) {
           print(value?.data);

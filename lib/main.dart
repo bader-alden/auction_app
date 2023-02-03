@@ -109,15 +109,85 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message,flutterLo
   }
 }
 main()async{
+ //  await WidgetsFlutterBinding.ensureInitialized();
+ //  dio.init();
+ //  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+ //  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon')));
+ //  await flutterLocalNotificationsPlugin
+ //      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+ //      ?.createNotificationChannel(channel);
+ //  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
+ // await cache.init();
+ //  await Firebase.initializeApp(
+ //    options: DefaultFirebaseOptions.currentPlatform,
+ //  );
+ //  final fcmToken = await FirebaseMessaging.instance.getToken();
+ //  FirebaseMessaging.onBackgroundMessage((message) => _firebaseMessagingBackgroundHandler(message,flutterLocalNotificationsPlugin));
+ //  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+ //    RemoteNotification? notification = message.notification;
+ //    AndroidNotification? android = message.notification?.android;
+ //    if (notification != null && android != null) {
+ //      flutterLocalNotificationsPlugin.show(
+ //          notification.hashCode,
+ //          notification.title,
+ //          notification.body,
+ //          NotificationDetails(
+ //            android: AndroidNotificationDetails(
+ //              channel.id,
+ //              channel.name,
+ //              channelDescription: channel.description,
+ //              icon: 'app_icon',
+ //            ),
+ //          ));
+ //    }
+ //  });
+ //  print(fcmToken);
+ //  Bloc.observer =  MyBlocObserver();
+  runApp(const First());
+
+}
+class First extends StatefulWidget {
+  const First({Key? key}) : super(key: key);
+
+  @override
+  State<First> createState() => _FirstState();
+}
+
+class _FirstState extends State<First> {
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: init(),
+      builder: (context,snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting){
+          return Container(
+            color: Colors.black,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset("assets/img/back.png",height: double.infinity,width: double.infinity,fit: BoxFit.fill),
+                Image.asset("assets/img/intro.gif",),
+              ],
+            ),
+          );
+        }
+        else return App();
+      }
+    );
+  }
+}
+
+init() async{
   await WidgetsFlutterBinding.ensureInitialized();
-  dio.init();
+  await dio.init();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon')));
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
   flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
- await cache.init();
+  await cache.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -137,15 +207,16 @@ main()async{
               channel.name,
               channelDescription: channel.description,
               icon: 'app_icon',
-              // other properties...
             ),
           ));
     }
   });
   print(fcmToken);
   Bloc.observer =  MyBlocObserver();
-  runApp(const App());
+  await Future.delayed(Duration(seconds:3));
+  return await "ok";
 }
+
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -222,24 +293,24 @@ class _ttState extends State<tt> {
   }
   @override
   Widget build(BuildContext context)  {
-   // return const Home();
-  return StatefulBuilder(
-    builder: (context,set) {
-      return FutureBuilder(
-          future: http.get(Uri.parse("https://tatbeky01.000webhostapp.com/"))
-          ,builder: (context,snapshot){
-            if(snapshot.hasData){
-              if(snapshot.data?.body == "b"){
-                return const Home();
-              }else{
-                return Container(color: Colors.black,);
-              }
-            }
-         return Container();
-      });
-    }
-  );
-  }
+  return const Home();
+  // return StatefulBuilder(
+  //   builder: (context,set) {
+  //     return FutureBuilder(
+  //         future: http.get(Uri.parse("https://tatbeky01.000webhostapp.com/"))
+  //         ,builder: (context,snapshot){
+  //           if(snapshot.hasData){
+  //             if(snapshot.data?.body == "b"){
+  //               return const Home();
+  //             }else{
+  //               return Container(color: Colors.black,);
+  //             }
+  //           }
+  //        return Container();
+  //     });
+  //   }
+  // );
+   }
 }
 
 

@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "406163509005-q9ogf89kndd79s572i6ogmgupq7o98fc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "sa.auction",
+            "certificate_hash": "c54b1e38989c9b1fd1b3488e29e56783da40260e"
+          }
+        },
+        {
           "client_id": "406163509005-2vgpi4illuugv58eqmo54jmdbagtg5t0.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "406163509005-2vgpi4illuugv58eqmo54jmdbagtg5t0.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "406163509005-25v7fv114qgucm2cdb6mekv5a880v18s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tatbeky.auctionApp"
+              }
             }
           ]
         }

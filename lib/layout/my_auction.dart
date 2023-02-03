@@ -119,7 +119,7 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                     child: Image(
                       height: 30,
                       width: 30,
-                      image: NetworkImage("https://tatbeky01.000webhostapp.com/aa/${model.type!.replaceAll(" ", "")}.png"),
+                      image: NetworkImage("https://faceted-dull-evening.glitch.me/file/${model.type!.replaceAll(" ", "")}.png"),
                     ),
                   ),
                   const SizedBox(

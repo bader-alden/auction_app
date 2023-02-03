@@ -478,7 +478,8 @@ class Test2 extends StatelessWidget {
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  end_test_2(model, context),
+                                  // end_test_2(model, context),
+                                  end_details(model,context),
                                   const SizedBox(
                                     width: 10,
                                   ),
@@ -615,7 +616,7 @@ class Test2 extends StatelessWidget {
                 height: 20,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
                       child: Row(
@@ -634,12 +635,13 @@ class Test2 extends StatelessWidget {
                           const SizedBox(
                             width: 10,
                           ),
-                          Text(
-                            context
-                                .read<LocaleBloc>()
-                                .w + " : ${model.time!.substring(0, 10)}",
-                            style: const TextStyle(fontSize: 12),
-                          ),
+                          Text("aaaaaaaaaaaa")
+                          // Text(
+                          //   context
+                          //       .read<LocaleBloc>()
+                          //       .w + " : ${model.time!.substring(0, 10)}",
+                          //   style: const TextStyle(fontSize: 12),
+                          // ),
                         ],
                       )),
                   Expanded(
@@ -760,6 +762,210 @@ class Test2 extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget end_details(list_auction_model model, BuildContext context) {
+    var paid = model.sub!.firstWhere((element) => element.contains("-${cache.get_data("id") ?? "]'/[;."}|"), orElse: () => "not|0");
+    var rank = model.sub?.indexOf(paid);
+  return   Padding(
+padding: EdgeInsets.only(right: 30),
+    child: GridView(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 3,crossAxisSpacing: 1),
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundColor: main_red,
+            radius: 15,
+            child: const Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Image(
+                image: AssetImage("assets/img/1.png"),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(
+            context
+                .read<LocaleBloc>()
+                .a + " : ${model.num_add!}",
+            style: const TextStyle(fontSize: 12),
+          ),
+        ],
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              backgroundColor: main_red,
+              radius: 15,
+              child: const Padding(
+                padding: EdgeInsets.all(6.0),
+                child: Image(
+                  image: AssetImage("assets/img/4.png"),
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              "${context
+                  .read<LocaleBloc>()
+                  .q} : ${rank! + 1 == 0 ? context
+                  .read<LocaleBloc>()
+                  .not : rank + 1}",
+              style: TextStyle(
+                  fontSize: 12,
+                  color: rank + 1 == 1
+                      ? Colors.amber.shade900
+                      : Theme
+                      .of(context)
+                      .brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white),
+            ),
+          ],
+        ),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundColor: main_red,
+            radius: 15,
+            child: const Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Image(
+                image: AssetImage("assets/img/2.png"),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(
+            context
+                .read<LocaleBloc>()
+                .w + " : ${model.time!.substring(0, 10)}",
+            style: const TextStyle(fontSize: 12),
+          ),
+        ],
+      ),
+      Stack(
+        alignment: Alignment.centerRight,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const CircleAvatar(
+                  backgroundColor: Colors.redAccent,
+                  radius: 15,
+                  child: Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: Image(
+                      image: AssetImage("assets/img/0.png"),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "${context
+                      .read<LocaleBloc>()
+                      .z} : ${model.price!}",
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Container(
+              height: 37,
+              decoration: BoxDecoration(border: Border.all(color: main_red), borderRadius: BorderRadius.circular(10)),
+            ),
+          )
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundColor: main_red,
+            radius: 15,
+            child: const Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Image(
+                image: AssetImage("assets/img/3.png"),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(
+            context
+                .read<LocaleBloc>()
+                .x + " : ${paid.split("|")[1] == "0" ? context
+                .read<LocaleBloc>()
+                .not : paid.split("|")[1]}",
+            style: const TextStyle(fontSize: 12),
+          ),
+        ],
+      ),
+      Stack(
+        alignment: Alignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const CircleAvatar(
+                  backgroundColor: Colors.redAccent,
+                  radius: 15,
+                  child: Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: Image(
+                      image: AssetImage("assets/img/0.png"),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  context
+                      .read<LocaleBloc>()
+                      .s + " : ${model.num_price!}",
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Container(
+              height: 37,
+              decoration: BoxDecoration(border: Border.all(color: main_red), borderRadius: BorderRadius.circular(10)),
+            ),
+          )
+        ],
+      ),
+
+    ],),
+  );
+
   }
 
   Widget option_list(list_auction_model model, BuildContext context) {

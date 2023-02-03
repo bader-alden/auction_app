@@ -5,6 +5,7 @@ import 'package:auction_app/layout/FAQ_page.dart';
 import 'package:auction_app/layout/Home.dart';
 import 'package:auction_app/layout/Setting.dart';
 import 'package:auction_app/layout/Terms_page.dart';
+import 'package:auction_app/layout/repo.dart';
 import 'package:auction_app/layout/social_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -247,6 +248,7 @@ Widget drawer_widget(BuildContext context,GlobalKey<ScaffoldState> scaffold){
         SizedBox(height: 30,),
         InkWell(
           onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>Repo()));
             scaffold.currentState?.closeDrawer();
           },
           child: Padding(

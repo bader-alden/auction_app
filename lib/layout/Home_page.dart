@@ -376,7 +376,7 @@ Widget home_page_item(int index, BuildContext context, main_list_model model) {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Image(
-                      image: NetworkImage("https://tatbeky01.000webhostapp.com/aa/${model.type!}.png"),
+                      image: NetworkImage("https://faceted-dull-evening.glitch.me/file/${model.type!}.png"),
                     ),
                   )),
             ),

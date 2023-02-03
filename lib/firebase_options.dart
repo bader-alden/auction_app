@@ -63,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '406163509005',
     projectId: 'saudi-auction-a819c',
     storageBucket: 'saudi-auction-a819c.appspot.com',
+    androidClientId: '406163509005-q9ogf89kndd79s572i6ogmgupq7o98fc.apps.googleusercontent.com',
     iosClientId: '406163509005-25v7fv114qgucm2cdb6mekv5a880v18s.apps.googleusercontent.com',
     iosBundleId: 'com.tatbeky.auctionApp',
   );

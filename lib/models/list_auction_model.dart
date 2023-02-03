@@ -15,7 +15,6 @@ class list_auction_model{
   String? city;
   String? user_id;
   String? main_data;
-  bool? is_auction;
   String? status;
   List<String>? location = [];
   auction_details_list_model? text_1;
@@ -42,7 +41,6 @@ class list_auction_model{
      city = json['city'].toString();
      user_id = json['user_id'].toString();
      status = json['status'].toString();
-     is_auction = json['is_auction'] == 1 ? true : false;
      text_1 = json['text_slot_1'] == null || json['text_slot_1'] == " " || json['text_slot_1'] == ""? null : auction_details_list_model.fromjson(json['text_slot_1']);
      text_2 = json['text_slot_2'] == null || json['text_slot_2'] == " "|| json['text_slot_2'] == "" ? null : auction_details_list_model.fromjson(json['text_slot_2']);
      text_3 = json['text_slot_3'] == null || json['text_slot_3'] == " "|| json['text_slot_3'] == "" ? null : auction_details_list_model.fromjson(json['text_slot_3']);
