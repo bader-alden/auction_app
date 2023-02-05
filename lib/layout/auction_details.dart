@@ -92,24 +92,24 @@ class Test2 extends StatelessWidget {
                 // if(model.user_id.toString() == cache.get_data("id").toString()){
                 //   tost(msg: "yes",color: Colors.red);
                 // }
-                if(model!.status=="2"){
-                  return  Scaffold(
-                    appBar: AppBar( leading: IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);},
-                        icon: context
-                            .read<LocaleBloc>()
-                            .lang
-                            ? Icon(Icons.arrow_forward_ios, color: Theme
-                            .of(context)
-                            .brightness == Brightness.dark ? Colors.white : Colors.black)
-                            : Icon(Icons.arrow_back_ios, color: Theme
-                            .of(context)
-                            .brightness == Brightness.dark ? Colors.white : Colors.black)),),
-                      body: Center(
-                        child: Text("العنصر المطلوب غير متاح"),
-                      ));
-                }
+                // if(model!.status=="2"){
+                //   return  Scaffold(
+                //     appBar: AppBar( leading: IconButton(
+                //         onPressed: () {
+                //           Navigator.pop(context);},
+                //         icon: context
+                //             .read<LocaleBloc>()
+                //             .lang
+                //             ? Icon(Icons.arrow_forward_ios, color: Theme
+                //             .of(context)
+                //             .brightness == Brightness.dark ? Colors.white : Colors.black)
+                //             : Icon(Icons.arrow_back_ios, color: Theme
+                //             .of(context)
+                //             .brightness == Brightness.dark ? Colors.white : Colors.black)),),
+                //       body: Center(
+                //         child: Text("العنصر المطلوب غير متاح"),
+                //       ));
+                // }
                 return Directionality(
                   textDirection: context
                       .read<LocaleBloc>()
@@ -119,7 +119,7 @@ class Test2 extends StatelessWidget {
                       elevation: 0,
                       title: Text("${context
                           .read<LocaleBloc>()
-                          .test2_id}${model.id!}"),
+                          .test2_id}${model?.id!}"),
                       leading: IconButton(
                           onPressed: () {
 
@@ -454,7 +454,7 @@ class Test2 extends StatelessWidget {
                                                 width: 10,
                                               ),
                                               Timer_widget(
-                                                  model.time, context, Colors.white)
+                                                  model?.time, context, Colors.white)
                                             ],
                                           ),
                                         )
@@ -468,7 +468,7 @@ class Test2 extends StatelessWidget {
                                       padding: const EdgeInsets.symmetric(vertical: 8),
                                       child: Center(
                                           child: Text(
-                                            model.name!,
+                                            model!.name!,
                                             style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                                           ))),
                                   const SizedBox(
@@ -488,6 +488,7 @@ class Test2 extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if(model.status!="2")
                           Padding(
                             padding: const EdgeInsets.all(20.0),
                             child: InkWell(

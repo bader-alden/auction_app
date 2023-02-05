@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
@@ -13,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import '../bloc/add/add_bloc.dart';
 import '../bloc/home_page/home_page_list_bloc.dart';
 import '../bloc/locale/locale_bloc.dart';
+import '../main.dart';
 import '../models/main_list_model.dart';
 import 'Terms_page.dart';
 import 'map_picker.dart';
@@ -33,6 +36,7 @@ List city_list = ["جدة", "الرياض"];
 //   , "mobile_numbe"
 // ];
 bool is_terms_check = false;
+
 class add_auction extends StatelessWidget {
   const add_auction({Key? key}) : super(key: key);
   @override
@@ -57,15 +61,16 @@ class add_auction extends StatelessWidget {
     String? type;
     String? kind;
     main_list_model? slot;
-    String name_text_1="";
-    String name_text_2="";
+    String name_text_1 = "";
+    String name_text_2 = "";
     String name_text_3 = "";
     String main_data_empty = "";
     String main_data = "";
-    int my_price=100;
+    PickedFile? main_image;
+    int my_price = 100;
     init_add = false;
 
-    bool is_loading=false;
+    bool is_loading = false;
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -78,7 +83,24 @@ class add_auction extends StatelessWidget {
       child: BlocConsumer<AddBloc, AddState>(listener: (context, state) {
         if (state is next) {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const Next()));
+          showDialog<void>(
+            context: context,
+            barrierDismissible: false, // false = user must tap button, true = tap outside dialog
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                content: Text('ستتم مراجعة مزادك خلال مدة اقصاها يومان'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('موافق'),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => App()), (route) => false);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
         }
       }, builder: (context, state) {
         return Scaffold(
@@ -86,16 +108,11 @@ class add_auction extends StatelessWidget {
             title: const Text("إضافة المزاد"),
             leading: IconButton(
                 onPressed: () {
-                  Navigator.pop(context);},
-                icon: context
-                    .read<LocaleBloc>()
-                    .lang
-                    ? Icon(Icons.arrow_forward_ios, color: Theme
-                    .of(context)
-                    .brightness == Brightness.dark ? Colors.white : Colors.black)
-                    : Icon(Icons.arrow_back_ios, color: Theme
-                    .of(context)
-                    .brightness == Brightness.dark ? Colors.white : Colors.black)),
+                  Navigator.pop(context);
+                },
+                icon: context.read<LocaleBloc>().lang
+                    ? Icon(Icons.arrow_forward_ios, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)
+                    : Icon(Icons.arrow_back_ios, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -122,9 +139,9 @@ class add_auction extends StatelessWidget {
                         all_kind_time.add(element.time);
                         all_kind_main_data.add(element.main_data);
                       });
-                      kind=all_kind[0];
-                      num_day_add_con.text=all_kind_time[0];
-                      main_data_empty=all_kind_main_data[0];
+                      kind = all_kind[0];
+                      num_day_add_con.text = all_kind_time[0];
+                      main_data_empty = all_kind_main_data[0];
                     }
 
                     return ListView(
@@ -136,13 +153,17 @@ class add_auction extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                SizedBox(width: 20,),
+                                SizedBox(
+                                  width: 20,
+                                ),
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 8),
-                                  decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(10)),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                                      borderRadius: BorderRadius.circular(10)),
                                   child: DropdownButton(
-                                    underline: Text(""),
-                                    borderRadius: BorderRadius.circular(20),
+                                      underline: Text(""),
+                                      borderRadius: BorderRadius.circular(20),
                                       items: a.map(drop_item).toList(),
                                       value: type ?? "",
                                       hint: Text("faa"),
@@ -153,31 +174,39 @@ class add_auction extends StatelessWidget {
                                           all_kind.clear();
                                           all_kind_time.clear();
                                           all_kind_main_data.clear();
-                                          main_data="";
+                                          main_data = "";
                                           slot?.all_kind?.forEach((element) {
                                             print(element.main_data);
                                             all_kind.add(element.kind);
                                             all_kind_time.add(element.time);
                                             all_kind_main_data.add(element.main_data);
                                           });
-                                          kind=all_kind[0];
-                                          num_day_add_con.text=all_kind_time[0];
-                                          main_data_empty=all_kind_main_data[0];
-
+                                          kind = all_kind[0];
+                                          num_day_add_con.text = all_kind_time[0];
+                                          main_data_empty = all_kind_main_data[0];
                                         });
                                       }),
                                 ),
                                 Spacer(),
-                                Text(":النوع",style: TextStyle(fontSize: 20),),
+                                Text(
+                                  ":النوع",
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               ],
                             ),
-                            SizedBox(height: 10,),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Row(
                               children: [
-                                SizedBox(width: 20,),
+                                SizedBox(
+                                  width: 20,
+                                ),
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 8),
-                                  decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(10)),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                                      borderRadius: BorderRadius.circular(10)),
                                   child: DropdownButton(
                                       underline: Text(""),
                                       borderRadius: BorderRadius.circular(20),
@@ -187,66 +216,91 @@ class add_auction extends StatelessWidget {
                                       onChanged: (value) {
                                         setstate(() {
                                           kind = value!;
-                                          main_data="";
-                                          num_day_add_con.text=all_kind_time[all_kind.indexOf(kind)];
-                                          main_data_empty=all_kind_main_data[all_kind.indexOf(kind)];
+                                          main_data = "";
+                                          num_day_add_con.text = all_kind_time[all_kind.indexOf(kind)];
+                                          main_data_empty = all_kind_main_data[all_kind.indexOf(kind)];
                                           print(all_kind);
                                           print(kind);
                                         });
                                       }),
                                 ),
                                 Spacer(),
-                                Text(":الصنف",style: TextStyle(fontSize: 20),),
+                                Text(
+                                  ":الصنف",
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               ],
                             ),
-
                           ],
                         ),
                         SizedBox(
                           height: 15,
                         ),
-                        Text("الاسم:",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 20),),
+                        Text(
+                          "الاسم:",
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(fontSize: 20),
+                        ),
                         Container(
                           padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(8)),
                           child: TextFormField(
                             textDirection: TextDirection.rtl,
-                            decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
+                            decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
                             controller: name_add_con,
                           ),
                         ),
                         SizedBox(height: 15),
-                        Text("الوصف:",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 20),),
+                        Text(
+                          "الوصف:",
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(fontSize: 20),
+                        ),
                         Container(
                           height: 150,
                           padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(8)),
                           child: TextFormField(
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
                             textDirection: TextDirection.rtl,
-                            decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
+                            decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
                             controller: des_add_con,
                           ),
                         ),
                         SizedBox(height: 15),
-                        Text("السعر المبدئي:",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 20),),
+                        Text(
+                          "السعر المبدئي:",
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(fontSize: 20),
+                        ),
                         Container(
                           padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(8)),
                           child: TextFormField(
                             textDirection: TextDirection.rtl,
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
+                            decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
                             controller: price_add_con,
                           ),
                         ),
-
                         SizedBox(height: 15),
-                        Text("أقل مزايدة:",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 20),),
+                        Text(
+                          "أقل مزايدة:",
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(fontSize: 20),
+                        ),
                         Container(
                           padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ?Colors.grey.shade900:Colors.grey.shade300,borderRadius: BorderRadius.circular(8)),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(8)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -265,7 +319,7 @@ class add_auction extends StatelessWidget {
                                     child: Center(
                                       child: const Text(
                                         "-",
-                                        style: TextStyle(fontSize: 40,height: 0.9),
+                                        style: TextStyle(fontSize: 40, height: 0.9),
                                       ),
                                     ),
                                   )),
@@ -300,26 +354,61 @@ class add_auction extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            Text(
+                              "ريال سعودي",
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              slot?.price ?? "",
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "تكاليف عرض المزاد:",
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
                             Container(
                               width: 50,
                               padding: EdgeInsets.all(4),
                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
                               child: TextFormField(
                                 textDirection: TextDirection.rtl,
-                                decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
+                                decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
                                 controller: num_day_add_con,
                                 readOnly: true,
                               ),
                             ),
-                            Text("عدد أيام عرض المزاد:",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 20),),
+                            Text(
+                              "عدد أيام عرض المزاد:",
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(fontSize: 20),
+                            ),
                           ],
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         Row(
                           children: [
-                            SizedBox(width: 20,),
+                            SizedBox(
+                              width: 20,
+                            ),
                             DropdownButton(
                                 items: city_list.map(drop_item).toList(),
                                 value: city,
@@ -329,95 +418,121 @@ class add_auction extends StatelessWidget {
                                   });
                                 }),
                             Spacer(),
-                            Text(":المدينة التي يوجد بها المنتج",style: TextStyle(fontSize: 20),),
+                            Text(
+                              ":المدينة التي يوجد بها المنتج",
+                              style: TextStyle(fontSize: 20),
+                            ),
                           ],
                         ),
                         SizedBox(
                           height: 20,
                         ),
-                        Center(child: Text("معلومات الأساسية",style: TextStyle(fontSize: 25),)),
+                        Center(
+                            child: Text(
+                          "معلومات الأساسية",
+                          style: TextStyle(fontSize: 25),
+                        )),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: ElevatedButton(onPressed: () async {
-                           final main_data_pop = await Navigator.push(context, MaterialPageRoute(builder: (context)=>add_auction_main_data(row: main_data_empty,old:main_data)));
-                           if(main_data_pop!=null){
-                             setstate((){
-                               main_data=main_data_pop;
-                             });
-                           }
-                          },style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_data!="" ? Colors.green:main_red)),
-                           child: main_data!="" ?Icon(Icons.check,color: Colors.white,):Text("تعبئة")),
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                final main_data_pop = await Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => add_auction_main_data(row: main_data_empty, old: main_data)));
+                                if (main_data_pop != null) {
+                                  setstate(() {
+                                    main_data = main_data_pop;
+                                  });
+                                }
+                              },
+                              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_data != "" ? Colors.green : main_red)),
+                              child: main_data != ""
+                                  ? Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                    )
+                                  : Text("تعبئة")),
                         ),
                         SizedBox(
                           height: 20,
                         ),
-                        if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty) Center(child: Text("معلومات إضافية",style: TextStyle(fontSize: 25),)),
-                        if (slot?.text_slot?[0] != ""  && slot!.text_slot!.isNotEmpty)
+                        if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty)
+                          Center(
+                              child: Text(
+                            "معلومات إضافية",
+                            style: TextStyle(fontSize: 25),
+                          )),
+                        if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty)
                           for (int i = 0; i < slot!.text_slot!.length; i++)
-                            Builder(
-                              builder: (context) {
-                                TextEditingController con ;
-                                if(i == 0){
-                                  name_text_1=slot!.text_slot![0];
-                                  con = text_slot_0_add_con;
-                                }else if(i == 1){
-                                  name_text_2=slot!.text_slot![1];
-                                  con = text_slot_1_add_con;
-                                }else{
-                                  name_text_3=slot!.text_slot![2];
-                                  con = text_slot_2_add_con;
-                                }
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          ElevatedButton(
-                                            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(con.text != "" ?Colors.green:Colors.red)),
-                                              onPressed: () {
-                                                showDialog(
-                                                  barrierDismissible: false,
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return add_rout_home(context, i,text_slot_0_add_con,text_slot_1_add_con,text_slot_2_add_con,slot,setstate);
-                                                    });
-                                              },
-                                              child:
-                                              con.text != ""
-                                              ?Icon(Icons.check,color: Colors.white,)
-                                                  :Text( "إضافة")),
-                                          Spacer(),
-                                          Text(slot!.text_slot![i]),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        width: double.infinity,
-                                        height: 1,
-                                        color: Colors.grey.shade700,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      )
-                                    ],
-                                  ),
-                                );
+                            Builder(builder: (context) {
+                              TextEditingController con;
+                              if (i == 0) {
+                                name_text_1 = slot!.text_slot![0];
+                                con = text_slot_0_add_con;
+                              } else if (i == 1) {
+                                name_text_2 = slot!.text_slot![1];
+                                con = text_slot_1_add_con;
+                              } else {
+                                name_text_3 = slot!.text_slot![2];
+                                con = text_slot_2_add_con;
                               }
-                            ),
-                        if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "") Center(child: Text("ملفات إضافية",style: TextStyle(fontSize: 25),)),
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        ElevatedButton(
+                                            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(con.text != "" ? Colors.green : Colors.red)),
+                                            onPressed: () {
+                                              showDialog(
+                                                  barrierDismissible: false,
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return add_rout_home(
+                                                        context, i, text_slot_0_add_con, text_slot_1_add_con, text_slot_2_add_con, slot, setstate);
+                                                  });
+                                            },
+                                            child: con.text != ""
+                                                ? Icon(
+                                                    Icons.check,
+                                                    color: Colors.white,
+                                                  )
+                                                : Text("إضافة")),
+                                        Spacer(),
+                                        Text(slot!.text_slot![i]),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 1,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
+                                ),
+                              );
+                            }),
+                        if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "")
+                          Center(
+                              child: Text(
+                            "ملفات إضافية",
+                            style: TextStyle(fontSize: 25),
+                          )),
                         if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "")
                           for (int i = 0; i < slot!.file_slot!.length; i++)
                             Padding(
@@ -433,10 +548,12 @@ class add_auction extends StatelessWidget {
                                       SizedBox(
                                         width: 20,
                                       ),
-                                      if("a"=="b")
-                                      ElevatedButton(onPressed: () async {
-                                        final XFile? image =await  ImagePicker().pickImage(source: ImageSource.gallery);
-                                      }, child: Text("إضافة")),
+                                      if ("a" == "b")
+                                        ElevatedButton(
+                                            onPressed: () async {
+                                              final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+                                            },
+                                            child: Text("إضافة")),
                                       Spacer(),
                                       Text(slot!.file_slot![i]),
                                       SizedBox(
@@ -458,96 +575,196 @@ class add_auction extends StatelessWidget {
                                 ],
                               ),
                             ),
-
-                        if (slot?.with_location ?? false) Center(child: Text("الموقع",style: TextStyle(fontSize: 25),)),
-                        if (slot?.with_location ?? false)
-                        InkWell(
-                          onTap: () async {
-                             showSimplePickerLocation(
-                              context: context,
-                              isDismissible: true,
-                              title: "أختر الموقع",
-                              textConfirmPicker: "إختيار",
-                              initCurrentUserPosition: true,
-                              textCancelPicker: "إلغاء",
-                              initZoom: 19,
-                            ).then((value) {
-                              if(value!=null){
-                                location = "${value.latitude.toString()} , ${value.longitude}";
-                                  setstate((){});
-                                //print(await location?.latitude);
-                                print(location);
-                                //Navigator.push(context, MaterialPageRoute(builder: (context)=>map_picker()));
-                              }
-                             });
-                          },
-                          child: Stack(
-                            alignment: Alignment.center,
+                        SizedBox(
+                          height: 150,
+                          child: ListView(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
                             children: [
-                              Image(image: NetworkImage("https://media.istockphoto.com/id/1306807452/vector/map-city-vector-illustration.jpg?b=1&s=612x612&w=0&k=20&c=RBfRJ1UZ4D-2F1HVkeZ0SHVmPWqj3eS9batfcKiQzW4="),),
-                              Container(color: Colors.grey.withOpacity(0.3),width:double.infinity,height: 200,),
-                              Column(
-                                children: [
-                                  if(location==null)
-                                  Text("إنقر لأضافة موقع",style: TextStyle(fontSize: 25)),
-                                  Icon(Icons.location_on_outlined,size: 50,color: location==null ? Colors.red: Colors.green,)
-                                ],
-                              ),
+                              InkWell(
+                                onTap: () async {
+                                  main_image = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+                                  setstate(() {});
+                                },
+                                child: main_image == null
+                                    ? Image.file(File(main_image!.path))
+                                    : Stack(
+                                        alignment: Alignment.bottomLeft,
+                                        children: [
+                                          Container(
+                                            color: Colors.grey.shade200,
+                                            height: 150,
+                                            width: 200,
+                                          ),
+                                          Container(
+                                              width: 200,
+                                              child: Center(
+                                                  child: CircleAvatar(
+                                                      radius: 30,
+                                                      backgroundColor: Colors.grey,
+                                                      child: Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                      )))),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Icon(Icons.star, color: Colors.yellow.shade800),
+                                          )
+                                        ],
+                                      ),
+                              )
                             ],
                           ),
-                        ), SizedBox(height: 20,),
-                       
+                        ),
+                        if (slot?.with_location ?? false)
+                          Center(
+                              child: Text(
+                            "الموقع",
+                            style: TextStyle(fontSize: 25),
+                          )),
+                        if (slot?.with_location ?? false)
+                          InkWell(
+                            onTap: () async {
+                              showSimplePickerLocation(
+                                context: context,
+                                isDismissible: true,
+                                title: "أختر الموقع",
+                                textConfirmPicker: "إختيار",
+                                initCurrentUserPosition: true,
+                                textCancelPicker: "إلغاء",
+                                initZoom: 19,
+                              ).then((value) {
+                                if (value != null) {
+                                  location = "${value.latitude.toString()} , ${value.longitude}";
+                                  setstate(() {});
+                                  //print(await location?.latitude);
+                                  print(location);
+                                  //Navigator.push(context, MaterialPageRoute(builder: (context)=>map_picker()));
+                                }
+                              });
+                            },
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Image(
+                                  image: NetworkImage(
+                                      "https://media.istockphoto.com/id/1306807452/vector/map-city-vector-illustration.jpg?b=1&s=612x612&w=0&k=20&c=RBfRJ1UZ4D-2F1HVkeZ0SHVmPWqj3eS9batfcKiQzW4="),
+                                ),
+                                Container(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  width: double.infinity,
+                                  height: 200,
+                                ),
+                                Column(
+                                  children: [
+                                    if (location == null) Text("إنقر لأضافة موقع", style: TextStyle(fontSize: 25)),
+                                    Icon(
+                                      Icons.location_on_outlined,
+                                      size: 50,
+                                      color: location == null ? Colors.red : Colors.green,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        SizedBox(
+                          height: 20,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            TextButton(onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>Terms_page(with_init: false,inh_terms:slot?.terms,)));
-                            }, child: Text(" أحكام و شروط "+type.toString(),style: TextStyle(fontSize: 16),)),
-                            Text("الموافقة على ",style: TextStyle(fontSize: 16),),
-                            SizedBox(width: 5,),
-                            InkWell(onTap: (){setstate((){is_terms_check=!is_terms_check;});},child: Container(
-                                decoration: BoxDecoration(border: Border.all(color: Colors.white),borderRadius: BorderRadius.circular(5)),
-                                width:30,height: 30,child:is_terms_check ?Icon(Icons.check):null)),
-                            SizedBox(width: 5,),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Terms_page(
+                                                with_init: false,
+                                                inh_terms: slot?.terms,
+                                              )));
+                                },
+                                child: Text(
+                                  " أحكام و شروط " + type.toString(),
+                                  style: TextStyle(fontSize: 16),
+                                )),
+                            Text(
+                              "الموافقة على ",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            InkWell(
+                                onTap: () {
+                                  setstate(() {
+                                    is_terms_check = !is_terms_check;
+                                  });
+                                },
+                                child: Container(
+                                    decoration: BoxDecoration(border: Border.all(color: Colors.white), borderRadius: BorderRadius.circular(5)),
+                                    width: 30,
+                                    height: 30,
+                                    child: is_terms_check ? Icon(Icons.check) : null)),
+                            SizedBox(
+                              width: 5,
+                            ),
                           ],
                         ),
-                        SizedBox(height: 20,),
+                        SizedBox(
+                          height: 20,
+                        ),
                         ElevatedButton(
-                            onPressed: () {
-                              if(!slot!.with_location!){
-                                location =" ";
-                              }
-                              if(name_add_con.text.isNotEmpty &&des_add_con.text.isNotEmpty&&price_add_con.text.isNotEmpty&&num_day_add_con.text.isNotEmpty && num_day_add_con.text.isNotEmpty
-                              &&city.isNotEmpty &&location !=null  && is_terms_check &&main_data!="") {
-                                setstate((){
-                                  is_loading= true;
-                                });
-                                AddBloc.get(context).add_void(cache.get_data("id"),
-                                    name_add_con.text,
-                                    des_add_con.text,
-                                    price_add_con.text,
-                                    my_price,
-                                    num_day_add_con.text,
-                                    city,
-                                    b[a.indexOf(type)],
-                                    location,
-                                    text_slot_0_add_con.text,
-                                    text_slot_1_add_con.text,
-                                    text_slot_2_add_con.text,
-                                    kind,name_text_1,
-                                    name_text_2,
-                                    name_text_3,
-                                    main_data
-                                );
-
-                              }else{
-                                tost(msg: "يرجى ملئ جميع البيانات",color: Colors.red);
-                              }
-                            },
-                            child: is_loading?Center(child: CircularProgressIndicator(color: Colors.white,),): Text("إضافة"),
-                        style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_red)),),
-                        SizedBox(height: 20,),
-                       
+                          onPressed: () {
+                            if (!slot!.with_location!) {
+                              location = " ";
+                            }
+                            if (name_add_con.text.isNotEmpty &&
+                                des_add_con.text.isNotEmpty &&
+                                price_add_con.text.isNotEmpty &&
+                                num_day_add_con.text.isNotEmpty &&
+                                num_day_add_con.text.isNotEmpty &&
+                                city.isNotEmpty &&
+                                location != null &&
+                                is_terms_check &&
+                                main_data != "") {
+                              setstate(() {
+                                is_loading = true;
+                              });
+                              AddBloc.get(context).add_void(
+                                  cache.get_data("id"),
+                                  name_add_con.text,
+                                  des_add_con.text,
+                                  price_add_con.text,
+                                  my_price,
+                                  num_day_add_con.text,
+                                  city,
+                                  b[a.indexOf(type)],
+                                  location,
+                                  text_slot_0_add_con.text,
+                                  text_slot_1_add_con.text,
+                                  text_slot_2_add_con.text,
+                                  kind,
+                                  name_text_1,
+                                  name_text_2,
+                                  name_text_3,
+                                  main_data);
+                            } else {
+                              tost(msg: "يرجى ملئ جميع البيانات", color: Colors.red);
+                            }
+                          },
+                          child: is_loading
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text("إضافة"),
+                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_red)),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
                       ],
                     );
                   });
@@ -563,18 +780,18 @@ class add_auction extends StatelessWidget {
   DropdownMenuItem drop_item(item) => DropdownMenuItem(value: item, child: Center(child: Text(item)));
 }
 
-Widget add_rout_home(context, index,text_slot_0_add_con,text_slot_1_add_con,text_slot_2_add_con,slot,setstate) {
-  TextEditingController con ;
-  if(index == 0){
+Widget add_rout_home(context, index, text_slot_0_add_con, text_slot_1_add_con, text_slot_2_add_con, slot, setstate) {
+  TextEditingController con;
+  if (index == 0) {
     con = text_slot_0_add_con;
-  }else if(index == 1){
+  } else if (index == 1) {
     con = text_slot_1_add_con;
-  }else{
+  } else {
     con = text_slot_2_add_con;
   }
   return WillPopScope(
-    onWillPop: ()async{
-      setstate((){});
+    onWillPop: () async {
+      setstate(() {});
       return true;
     },
     child: AlertDialog(
@@ -630,7 +847,7 @@ Widget add_rout_home(context, index,text_slot_0_add_con,text_slot_1_add_con,text
                     child: TextButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        setstate((){});
+                        setstate(() {});
 // if (title_con.text != "" && body_con.text != "") {
 //   is_edit
 //       ? app_bloc.get(acontext).updatesecdata(title_con.text, body_con.text, app_bloc.get(acontext).secdetails[old_title])

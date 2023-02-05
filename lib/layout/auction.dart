@@ -1,3 +1,5 @@
+import 'package:auction_app/cache.dart';
+import 'package:auction_app/layout/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_app/models/fav_molde.dart';
 import 'package:flutter/material.dart';
@@ -110,13 +112,37 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
             ),
             Container(color: Theme.of(context).brightness==Brightness.light ?const Color.fromARGB(255, 247, 247, 247):const Color.fromARGB(255, 35, 35, 35) ,width: double.infinity,child: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: model.status == "2" ? Center(child: Text("أنتهى وقت المزاد")):ElevatedButton(
-                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
-                  onPressed: () async {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Test2(type: model.type,id: model.id)));
-                  },
-                  child: const Text("الإنتقال إالى المزاد"),
-                )
+                child: Builder(builder: (context){
+                  print(cache.get_data("id"));
+                  print(cache.get_data("id"));
+                  print(cache.get_data("id"));
+                  print(cache.get_data("id"));
+                  print(cache.get_data("id"));
+                 if (model.status == "2" &&model.sub==cache.get_data("id").toString()){
+                    return  Center(child: Text("بإنتظار الموافقة على السعر"));
+                  }else if (model.status == "3"&&model.sub==cache.get_data("id").toString() ){
+
+                    return   ElevatedButton(
+                      style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
+                      onPressed: () async {
+                        //Navigator.push(context, MaterialPageRoute(builder: (context) => Payment(model: null,)));
+                      },
+                      child: const Text("يرجى الدفع"),
+                    );
+                  } else  if (model.status == "2" ||model.status == "3"){
+                   return  Center(child: Text("إنتها وقت المزاد"));
+                 }else if (model.status == "0" ){
+                    return   ElevatedButton(
+                      style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
+                      onPressed: () async {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Test2(type: model.type, id: model.id)));
+                      },
+                      child: const Text("الإنتقال إالى المزاد"),
+                    );
+                  }else{
+                    return Text("error");
+                  }
+                },)
             ),),
             // Padding(
             //   padding: EdgeInsets.all(15),

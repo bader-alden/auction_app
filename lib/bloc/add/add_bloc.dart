@@ -24,6 +24,11 @@ List<add_model> add_list = [];
       if(value?.data[0]["my_auction"] !=" " &&value?.data.isNotEmpty){
         value?.data[0]["my_auction"].toString().split(",").forEach((element) async {
           //print(element);
+          // print("_"*50);
+          // print(element.split("|"));
+          // print(element.split("|")[0]);
+          // print(element.split("|")[1]);
+          // print("_"*50);
           if(element!= ""){
 
           }
@@ -32,33 +37,28 @@ List<add_model> add_list = [];
               "id":element.split("|")[1] ,
               "type": element.split("|")[2],
             }).then((value) {
-              print(value?.data!=null);
-              print(value?.data.isEmpty);
-              print(value?.data);
              if(value?.data.isNotEmpty){
                add_list.add(add_model.fromjson(element,value?.data[0]));
                num++;
              }
             });
           }
-          if(element!="" &&element.split("|")[0].toString()=="0" ){
+          if(element!="" &&element.split("|")[0].toString()=="0" ||element.split("|")[0].toString()=="2"||element.split("|")[0].toString()=="3"){
             await dio.get_data(url: "/account/get_data_wait", quary: {
               "id":element.split("|")[1],
               "type": element.split("|")[2],
             }).then((value) {
               if(value?.data[0]!=""){
                 add_list.add(add_model.fromjson(element,value?.data[0]));
+                num++;
               }
             });
           }
-        print("=="*50);
           if(add_list.length == num){
-            print(add_list);
             emit(next());
           }
         });
       }else{
-        print("ok"*20);
         emit(empty_state());
       }
     });

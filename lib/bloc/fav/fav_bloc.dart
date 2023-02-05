@@ -87,7 +87,7 @@ List<fav_model> fav_list =[];
                 "id":element.split("|")[0] ,
                 "type": element.split("|")[1],
               }).then((value) {
-                fav_list.add(fav_model.fromjson(value?.data[0]["name"],value?.data[0]["created_at"],element.split("|")[1],element.split("|")[0],value?.data[0]["status"]));
+                fav_list.add(fav_model.fromjson(value?.data[0]["name"],value?.data[0]["created_at"],element.split("|")[1],element.split("|")[0],value?.data[0]["status"],value?.data[0]["sub"]));
                 if(lfav.length == fav_list.length){
                   emit(fav_state());
                 }

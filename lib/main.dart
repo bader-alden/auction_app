@@ -109,41 +109,41 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message,flutterLo
   }
 }
 main()async{
- //  await WidgetsFlutterBinding.ensureInitialized();
- //  dio.init();
- //  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
- //  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon')));
- //  await flutterLocalNotificationsPlugin
- //      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
- //      ?.createNotificationChannel(channel);
- //  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
- // await cache.init();
- //  await Firebase.initializeApp(
- //    options: DefaultFirebaseOptions.currentPlatform,
- //  );
- //  final fcmToken = await FirebaseMessaging.instance.getToken();
- //  FirebaseMessaging.onBackgroundMessage((message) => _firebaseMessagingBackgroundHandler(message,flutterLocalNotificationsPlugin));
- //  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
- //    RemoteNotification? notification = message.notification;
- //    AndroidNotification? android = message.notification?.android;
- //    if (notification != null && android != null) {
- //      flutterLocalNotificationsPlugin.show(
- //          notification.hashCode,
- //          notification.title,
- //          notification.body,
- //          NotificationDetails(
- //            android: AndroidNotificationDetails(
- //              channel.id,
- //              channel.name,
- //              channelDescription: channel.description,
- //              icon: 'app_icon',
- //            ),
- //          ));
- //    }
- //  });
- //  print(fcmToken);
- //  Bloc.observer =  MyBlocObserver();
-  runApp(const First());
+  await WidgetsFlutterBinding.ensureInitialized();
+  dio.init();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon')));
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
+ await cache.init();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  FirebaseMessaging.onBackgroundMessage((message) => _firebaseMessagingBackgroundHandler(message,flutterLocalNotificationsPlugin));
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+    if (notification != null && android != null) {
+      flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
+              icon: 'app_icon',
+            ),
+          ));
+    }
+  });
+  print(fcmToken);
+  Bloc.observer =  MyBlocObserver();
+  runApp(const App());
 
 }
 class First extends StatefulWidget {

@@ -4,8 +4,10 @@ class fav_model{
   String? id;
   String? time;
   String? status;
-  fav_model.fromjson(names,times,types,ids,sttatus){
-     name =names.toString();
+  String? sub;
+  fav_model.fromjson(names,times,types,ids,sttatus,ssub){
+    if(ssub != " "&&ssub!= ""&&ssub!=null) sub =ssub.toString().split(",")[0].split("|")[0].replaceAll("-", "");
+    name =names.toString();
      time =times.toString();
      type = types.toString();
      id = ids.toString();

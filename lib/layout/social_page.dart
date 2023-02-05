@@ -7,9 +7,24 @@ import 'package:social_media_flutter/widgets/text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../bloc/locale/locale_bloc.dart';
 List social_list=[];
-class Social_page extends StatelessWidget {
+class Social_page extends StatefulWidget {
   const Social_page({Key? key}) : super(key: key);
 
+  @override
+  State<Social_page> createState() => _Social_pageState();
+}
+
+class _Social_pageState extends State<Social_page> {
+  @override
+  void initState() {
+    super.initState();
+    dio.get_data(url: "/social").then((value) {
+      print(value?.data);
+      setState((){
+        social_list = value?.data ;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -27,13 +42,7 @@ class Social_page extends StatelessWidget {
               .of(context)
               .brightness == Brightness.dark ? Colors.white : Colors.black)),title: Text(context.read<LocaleBloc>().social), elevation: 0),
 
-          body: StatefulBuilder(builder: (context,setstate){
-            dio.get_data(url: "/social").then((value) {
-              print(value?.data);
-              setstate((){
-                social_list = value?.data ;
-              });
-            });
+          body: Builder(builder: (context){
             if(social_list == []){
               return CircularProgressIndicator();
             }

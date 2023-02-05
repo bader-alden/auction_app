@@ -6,17 +6,21 @@ class main_list_model{
   String? count;
   String? time;
   String? terms;
+  String? price;
   bool? with_location;
   List<all_kind_model>? all_kind=[];
   List<String>? text_slot=[];
   List<String>? file_slot=[];
   main_list_model.fromjson(Map<String,dynamic> json,counta,timea){
+    print(json);
+    print(json['price']);
      type=json['type'];
      json['all_kind'].toString().split("*").forEach((element) {
       all_kind?.add(all_kind_model.fromjson(element));
      });
      eng_name=json['eng_name'];
      ar_name=json['ar_name'];
+     price=json['price'].toString();
      terms=json['terms'];
      with_location=json['with_location'] == 1 ? true : false;
      count=counta.toString();
