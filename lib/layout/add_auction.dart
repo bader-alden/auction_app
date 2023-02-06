@@ -7,10 +7,13 @@ import 'package:auction_app/const.dart';
 import 'package:auction_app/layout/Home_page.dart';
 import 'package:auction_app/layout/add_auction_main_data.dart';
 import 'package:auction_app/layout/next.dart';
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 import '../bloc/add/add_bloc.dart';
 import '../bloc/home_page/home_page_list_bloc.dart';
@@ -19,6 +22,7 @@ import '../main.dart';
 import '../models/main_list_model.dart';
 import 'Terms_page.dart';
 import 'map_picker.dart';
+import 'package:auction_app/dio.dart';
 
 List city_list = ["جدة", "الرياض"];
 // List type_list = [
@@ -64,11 +68,24 @@ class add_auction extends StatelessWidget {
     String name_text_1 = "";
     String name_text_2 = "";
     String name_text_3 = "";
+    String file_slot_1_url = "";
+    String file_slot_2_url = "";
+    String file_slot_3_url = "";
+    String main_photo_url = "";
+    String list_photo_url = "";
+    FilePickerResult? file_slot_1;
+    FilePickerResult? file_slot_2;
+    FilePickerResult? file_slot_3;
     String main_data_empty = "";
     String main_data = "";
     PickedFile? main_image;
+    List<PickedFile?> list_image = [];
     int my_price = 100;
     init_add = false;
+    bool start_uplode = false;
+    var number_of_uploade = 0;
+    double presint = 0;
+    String name_of_porsses = "";
 
     bool is_loading = false;
     return MultiBlocProvider(
@@ -402,7 +419,7 @@ class add_auction extends StatelessWidget {
                           ],
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         Row(
                           children: [
@@ -548,12 +565,32 @@ class add_auction extends StatelessWidget {
                                       SizedBox(
                                         width: 20,
                                       ),
-                                      if ("a" == "b")
-                                        ElevatedButton(
-                                            onPressed: () async {
-                                              final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
-                                            },
-                                            child: Text("إضافة")),
+                                      ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor: MaterialStatePropertyAll(
+                                                  i == 0 && file_slot_1 != null || i == 1 && file_slot_2 != null || i == 2 && file_slot_3 != null
+                                                      ? Colors.green
+                                                      : Colors.red)),
+                                          onPressed: () async {
+                                            if (i == 0) {
+                                              file_slot_1 = await FilePicker.platform
+                                                  .pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
+                                              setstate(() {});
+                                            }
+                                            if (i == 1) {
+                                              file_slot_2 = await FilePicker.platform
+                                                  .pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
+                                              setstate(() {});
+                                            }
+                                            if (i == 2) {
+                                              file_slot_3 = await FilePicker.platform
+                                                  .pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
+                                              setstate(() {});
+                                            }
+                                          },
+                                          child: i == 0 && file_slot_1 != null || i == 1 && file_slot_2 != null || i == 2 && file_slot_3 != null
+                                              ? Icon(Icons.check)
+                                              : Text("إضافة")),
                                       Spacer(),
                                       Text(slot!.file_slot![i]),
                                       SizedBox(
@@ -575,46 +612,105 @@ class add_auction extends StatelessWidget {
                                 ],
                               ),
                             ),
+                        Center(
+                            child: Text(
+                          "الصور",
+                          style: TextStyle(fontSize: 25),
+                        )),
                         SizedBox(
-                          height: 150,
+                          height: 200,
                           child: ListView(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             children: [
-                              InkWell(
-                                onTap: () async {
-                                  main_image = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
-                                  setstate(() {});
-                                },
-                                child: main_image == null
-                                    ? Image.file(File(main_image!.path))
-                                    : Stack(
-                                        alignment: Alignment.bottomLeft,
-                                        children: [
-                                          Container(
-                                            color: Colors.grey.shade200,
-                                            height: 150,
-                                            width: 200,
-                                          ),
-                                          Container(
-                                              width: 200,
-                                              child: Center(
-                                                  child: CircleAvatar(
-                                                      radius: 30,
-                                                      backgroundColor: Colors.grey,
-                                                      child: Icon(
-                                                        Icons.add,
-                                                        color: Colors.white,
-                                                      )))),
-                                          Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Icon(Icons.star, color: Colors.yellow.shade800),
-                                          )
-                                        ],
-                                      ),
-                              )
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: InkWell(
+                                  onTap: () async {
+                                    main_image = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+                                    setstate(() {});
+                                  },
+                                  child: Stack(
+                                    alignment: Alignment.bottomLeft,
+                                    children: [
+                                      main_image != null
+                                          ? Image.file(File(main_image!.path))
+                                          : Container(
+                                              color: Colors.grey.shade200,
+                                              height: 200,
+                                              width: 250,
+                                              child: Container(
+                                                  width: 200,
+                                                  child: Center(
+                                                      child: CircleAvatar(
+                                                          radius: 30,
+                                                          backgroundColor: Colors.grey,
+                                                          child: Icon(
+                                                            Icons.add,
+                                                            color: Colors.white,
+                                                          )))),
+                                            ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Icon(Icons.star, color: Colors.yellow.shade800),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              if (list_image != [])
+                                ...list_image.map((e) => Stack(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Image.file(File(e!.path)),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: IconButton(
+                                              onPressed: () {
+                                                list_image.remove(e);
+                                                setstate(() {});
+                                              },
+                                              iconSize: 30,
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              )),
+                                        )
+                                      ],
+                                    )),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: InkWell(
+                                  onTap: () async {
+                                    //  var a  = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+                                    var a = await ImagePicker.platform.pickMultiImage();
+                                    list_image.addAll(a!.toList());
+                                    setstate(() {});
+                                  },
+                                  child: Container(
+                                    color: Colors.grey.shade200,
+                                    height: 150,
+                                    width: 250,
+                                    child: Container(
+                                        width: 200,
+                                        child: Center(
+                                            child: CircleAvatar(
+                                                radius: 30,
+                                                backgroundColor: Colors.grey,
+                                                child: Icon(
+                                                  Icons.add,
+                                                  color: Colors.white,
+                                                )))),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
+                        ),
+                        SizedBox(
+                          height: 15,
                         ),
                         if (slot?.with_location ?? false)
                           Center(
@@ -723,35 +819,229 @@ class add_auction extends StatelessWidget {
                                 des_add_con.text.isNotEmpty &&
                                 price_add_con.text.isNotEmpty &&
                                 num_day_add_con.text.isNotEmpty &&
-                                num_day_add_con.text.isNotEmpty &&
                                 city.isNotEmpty &&
                                 location != null &&
                                 is_terms_check &&
-                                main_data != "") {
-                              setstate(() {
-                                is_loading = true;
-                              });
-                              AddBloc.get(context).add_void(
-                                  cache.get_data("id"),
-                                  name_add_con.text,
-                                  des_add_con.text,
-                                  price_add_con.text,
-                                  my_price,
-                                  num_day_add_con.text,
-                                  city,
-                                  b[a.indexOf(type)],
-                                  location,
-                                  text_slot_0_add_con.text,
-                                  text_slot_1_add_con.text,
-                                  text_slot_2_add_con.text,
-                                  kind,
-                                  name_text_1,
-                                  name_text_2,
-                                  name_text_3,
-                                  main_data);
-                            } else {
-                              tost(msg: "يرجى ملئ جميع البيانات", color: Colors.red);
+                                main_data != "" &&
+                                main_image != null) {
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext dialogContext) {
+                                  return AlertDialog(
+                                    //   title: Center(child: Text('...جار الرفع')),
+                                    actions: <Widget>[
+                                      StatefulBuilder(builder: (acontext, settate) {
+                                        if (!start_uplode) {
+                                          Future.sync(() async {
+                                            start_uplode = true;
+                                            if (main_image != null) {
+                                              name_of_porsses = "الصورة الرئيسية";
+                                              settate(() {});
+                                              FormData formData = FormData.fromMap(
+                                                  {"file": MultipartFile.fromBytes(await main_image!.readAsBytes(), filename: Uuid().v4()+".png")});
+                                              await dio
+                                                  .post_data(
+                                                      url: "/uplode/uplode",
+                                                      data: formData,
+                                                      onsend: (start, end) {
+                                                        presint = start / end;
+                                                        settate(() {});
+                                                      })
+                                                  .then((value) {
+                                                print(value?.data);
+                                                main_photo_url = value?.data['message'];
+                                                presint = 0;
+                                                settate(() {});
+                                              });
+                                            }
+                                            for (int i = 0; i < list_image.length; i++) {
+                                              name_of_porsses = "الصورة " + (i + 1).toString();
+                                              settate(() {});
+                                              FormData formData = FormData.fromMap(
+                                                  {"file": MultipartFile.fromBytes(await list_image[i]!.readAsBytes(), filename: Uuid().v4()+".png")});
+                                              await dio
+                                                  .post_data(
+                                                      url: "/uplode/uplode",
+                                                      data: formData,
+                                                      onsend: (start, end) {
+                                                        presint = start / end;
+                                                        settate(() {});
+                                                      })
+                                                  .then((value) {
+                                                print(value?.data);
+                                                presint = 0;
+                                                number_of_uploade++;
+                                                settate(() {});
+                                                list_photo_url = list_photo_url + value?.data['message'] + "|";
+                                                if (i + 1 == list_image.length) {
+                                                  list_photo_url = list_photo_url + main_photo_url;
+                                                }
+                                              });
+                                            }
+                                            if (file_slot_1 != null) {
+                                              name_of_porsses = "ملف " + slot!.file_slot![0];
+                                              settate(() {});
+                                              FormData formData = FormData.fromMap(
+                                                  {"file": MultipartFile.fromFileSync(file_slot_1!.files.first.path!, filename: Uuid().v4()+".pdf")});
+                                              await dio
+                                                  .post_data(
+                                                      url: "/uplode/uplode",
+                                                      data: formData,
+                                                      onsend: (start, end) {
+                                                        presint = start / end;
+                                                        settate(() {});
+                                                      })
+                                                  .then((value) {
+                                                print(value?.data);
+                                                file_slot_1_url = value?.data['message'];
+                                                number_of_uploade++;
+                                                presint = 0;
+                                                settate(() {});
+                                              });
+                                            }
+                                            if (file_slot_2 != null) {
+                                              name_of_porsses = "ملف " + slot!.file_slot![1];
+                                              settate(() {});
+                                              FormData formData = FormData.fromMap(
+                                                  {"file": MultipartFile.fromFileSync(file_slot_2!.files.first.path!, filename: Uuid().v4()+".pdf")});
+                                              await dio
+                                                  .post_data(
+                                                      url: "/uplode/uplode",
+                                                      data: formData,
+                                                      onsend: (start, end) {
+                                                        presint = start / end;
+                                                        settate(() {});
+                                                      })
+                                                  .then((value) {
+                                                print(value?.data);
+                                                file_slot_2_url = value?.data['message'];
+                                                number_of_uploade++;
+                                                presint = 0;
+                                                settate(() {});
+                                              });
+                                            }
+                                            if (file_slot_3 != null) {
+                                              name_of_porsses = "ملف " + slot!.file_slot![2];
+                                              settate(() {});
+                                              FormData formData = FormData.fromMap(
+                                                  {"file": MultipartFile.fromFileSync(file_slot_3!.files.first.path!, filename:Uuid().v4()+".pdf")});
+                                              await dio
+                                                  .post_data(
+                                                      url: "/uplode/uplode",
+                                                      data: formData,
+                                                      onsend: (start, end) {
+                                                        presint = start / end;
+                                                        settate(() {});
+                                                      })
+                                                  .then((value) {
+                                                print(value?.data);
+                                                number_of_uploade++;
+                                                file_slot_3_url = value?.data['message'];
+                                                presint = 0;
+                                                settate(() {});
+                                              });
+                                            }
+                                              AddBloc.get(context).add_void(
+                                                  cache.get_data("id"),
+                                                  name_add_con.text,
+                                                  des_add_con.text,
+                                                  price_add_con.text,
+                                                  my_price,
+                                                  num_day_add_con.text,
+                                                  city,
+                                                  b[a.indexOf(type)],
+                                                  location,
+                                                  text_slot_0_add_con.text,
+                                                  text_slot_1_add_con.text,
+                                                  text_slot_2_add_con.text,
+                                                  kind,
+                                                  name_text_1,
+                                                  name_text_2,
+                                                  name_text_3,
+                                                  main_data,
+                                                  file_slot_1_url,
+                                                  file_slot_2_url,
+                                                  file_slot_3_url,
+                                                  main_photo_url,
+                                                  list_photo_url,
+                                                  slot!.file_slot!.length>0?slot!.file_slot![0]:"",
+                                                  slot!.file_slot!.length>1?slot!.file_slot![1]:"",
+                                                  slot!.file_slot!.length>2?slot!.file_slot![2]:"");
+                                              Navigator.pop(dialogContext);
+                                          });
+                                        }
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "جار رفع " + name_of_porsses,
+                                                style: TextStyle(fontSize: 22),
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              LinearProgressIndicator(value: presint),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  //Text(name_of_porsses),
+                                                  //  Text(number_of_uploade.toString()+"/5"),
+                                                  // Text("5/10")
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                    ],
+                                  );
+                                },
+                              );
                             }
+                            // if (!slot!.with_location!) {
+                            //   location = " ";
+                            // }
+                            // if (name_add_con.text.isNotEmpty &&
+                            //     des_add_con.text.isNotEmpty &&
+                            //     price_add_con.text.isNotEmpty &&
+                            //     num_day_add_con.text.isNotEmpty &&
+                            //     num_day_add_con.text.isNotEmpty &&
+                            //     city.isNotEmpty &&
+                            //     location != null &&
+                            //     is_terms_check &&
+                            //     main_data != "") {
+                            //   setstate(() {
+                            //     is_loading = true;
+                            //   });
+                            //   AddBloc.get(context).add_void(
+                            //       cache.get_data("id"),
+                            //       name_add_con.text,
+                            //       des_add_con.text,
+                            //       price_add_con.text,
+                            //       my_price,
+                            //       num_day_add_con.text,
+                            //       city,
+                            //       b[a.indexOf(type)],
+                            //       location,
+                            //       text_slot_0_add_con.text,
+                            //       text_slot_1_add_con.text,
+                            //       text_slot_2_add_con.text,
+                            //       kind,
+                            //       name_text_1,
+                            //       name_text_2,
+                            //       name_text_3,
+                            //       main_data);
+                            // } else {
+                            //   tost(msg: "يرجى ملئ جميع البيانات", color: Colors.red);
+                            // }
                           },
                           child: is_loading
                               ? Center(

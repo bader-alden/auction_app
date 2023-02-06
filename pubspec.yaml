@@ -75,7 +75,9 @@ dependencies:
   url_launcher:
   flutter_osm_plugin:
   image_picker:
-
+  file_picker:
+  uuid:
+  webviewx:
 dev_dependencies:
   flutter_test:
     sdk: flutter

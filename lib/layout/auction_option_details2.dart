@@ -45,7 +45,6 @@ class _option_details2State extends State<option_details2> {
            padding: const EdgeInsets.all(8.0),
            child: Row(
              children: [
-
                Text(main_data_map.keys.elementAt(index),style: TextStyle(fontSize: 22)),
                Spacer(),
                Text(main_data_map[main_data_map.keys.elementAt(index)],style: TextStyle(fontSize: 22)),
@@ -55,7 +54,7 @@ class _option_details2State extends State<option_details2> {
          );
        }, separatorBuilder: (context,index){
          return Container(height: 2,color: Colors.grey,);
-       }, itemCount: 2)
+       }, itemCount: main_data_map.length)
         // body: ListView.separated(
         //     itemBuilder: (context,index){
         //   return Padding(

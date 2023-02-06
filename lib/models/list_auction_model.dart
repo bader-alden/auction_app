@@ -55,8 +55,8 @@ class auction_details_list_model{
   String? details;
   String? name;
   auction_details_list_model.fromjson(String json){
-      name = json.split("-")[0];
-      details = json.split("-")[1];
+      name = json.split("*")[0];
+      details = json.split("*")[1];
   }
 
 }
@@ -64,6 +64,6 @@ class auction_details_list_model_file{
   String? link;
   String? name;
   auction_details_list_model_file.fromjson(String json){
-    name = json.split("-")[0];
-    link = json.split("-")[1];
+    name = json.split("*")[0];
+    link = json.split("*")[1];
   }}

@@ -17,10 +17,10 @@ class dio {
   }
 
   static Future<Response?> post_data(
-      {url, quary, data, lang = "ar", token}) async {
+      {url, quary, data, lang = "ar", token,onsend}) async {
     dios?.options.headers = {'Accept':'application/json'};
 
-    return dios?.post(url, queryParameters: quary, data: data);
+    return dios?.post(url, queryParameters: quary, data: data,onSendProgress:onsend);
   }
 
   static Future<Response?> put_data(

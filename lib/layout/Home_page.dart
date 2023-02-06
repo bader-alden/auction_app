@@ -50,7 +50,7 @@ Widget Home_page(BuildContext context, home_tab_con) {
                           //SizedBox(width: 5,)
                          // Text(context.read<LocaleBloc>().home_page_middle, style: const TextStyle(fontSize: 30)),
                           Spacer(),
-                          Image(image: AssetImage("assets/img/18.png"),height: 60),
+                          Image(image: AssetImage("assets/img/18.png"),height: 70),
                           //Text("اوكشن السعودية", style: const TextStyle(fontSize: 30)),
                           Spacer(),
                           SizedBox(width: 30,)
@@ -115,238 +115,238 @@ Widget Home_page(BuildContext context, home_tab_con) {
       }));
 }
 
-Widget sqr_widget(BuildContext context, home_tab_con) {
-  return BlocProvider(
-    create: (context) => StreamBloc()
-      ..sqr_void(),
-    child: Builder(builder: (context) {
-      return StreamBuilder(
-          stream: context.read<StreamBloc>().sqr_stream_controller.stream,
-          builder: (context, snapshot) {
-            print(snapshot.connectionState);
-            if (snapshot.data == "NOTFOUND") {
-              return Scaffold(
-                  body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("العنصر المطلوب غير متاح"),
-                    IconButton(
-                        onPressed: () {
-                          cache.remove_data("sqr");
-                          Phoenix.rebirth(context);
-                        },
-                        icon: const Icon(Icons.delete))
-                  ],
-                ),
-              ));
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Scaffold(
-                  body: Center(
-                child: Image(image: Theme.of(context).brightness == Brightness.light
-               ? const AssetImage("assets/img/loading.gif")
-              :  const AssetImage("assets/img/dark_loading.gif")
-                  ,width: 150,height: 150,),
-              ));
-            } else {
-              snapshot.data.runtimeType == list_auction_model ? model = snapshot.data : model = list_auction_model.fromjson(snapshot.data);
-              return Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Stack(
-                    children: [
-                      Stack(
-                        alignment: context.read<LocaleBloc>().lang
-                            ? AlignmentGeometry.lerp(Alignment.bottomRight, Alignment.centerRight, 0.4)!
-                            : AlignmentGeometry.lerp(Alignment.bottomLeft, Alignment.centerLeft, 0.4)!,
-                        children: [
-                          Stack(
-                            alignment: context.read<LocaleBloc>().lang ? Alignment.topRight : Alignment.topLeft,
-                            children: [
-                              Container(
-                                key: container_key,
-                                height: double.infinity,
-                                width: double.infinity,
-                                decoration: BoxDecoration(color: main_red, borderRadius: BorderRadius.circular(30)),
-                              ),
-                              Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 15),
-                                  height: MediaQuery.of(context).size.width / 1.5 > 270 ? 270 : MediaQuery.of(context).size.width / 1.5,
-                                  child: Image(
-                                    image: const AssetImage("assets/img/13.png"),
-                                    color: sec_color,
-                                    matchTextDirection: true,
-                                  )),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Test2(
-                                              id: cache.get_data("sqr").toString().split("-")[0],
-                                              type: cache.get_data("sqr").toString().split("-")[1],
-                                              from: "sqr",
-                                            )));
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(color: sec_color, borderRadius: BorderRadius.circular(20)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Text(
-                                    context.read<LocaleBloc>().home_page_sqr_buttumn,
-                                    style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 12),
-                              child: Text(
-                                context.read<LocaleBloc>().home_page_sqr_top,
-                                style: const TextStyle(color: Colors.white, fontSize: 17),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              width: 220,
-                              child: Stack(
-                                children: [
-                                  TabBar(
-                                    isScrollable: true,
-                                    controller: home_tab_con,
-                                    tabs: [model!.name!].map(tabbs).toList(),
-                                    padding: EdgeInsets.zero,
-                                    physics: const BouncingScrollPhysics(),
-                                    automaticIndicatorColorAdjustment: true,
-                                    labelStyle: const TextStyle(height: 1.3),
-                                    unselectedLabelStyle: const TextStyle(color: Colors.red),
-                                    indicator: ContainerTabIndicator(
-                                      color: sec_color,
-                                      radius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: context.read<LocaleBloc>().lang ? 0 : null,
-                                    left: context.read<LocaleBloc>().lang ? null : 0,
-                                    width: 50,
-                                    height: 100,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          end: context.read<LocaleBloc>().lang ? Alignment.centerLeft : Alignment.centerRight,
-                                          begin: context.read<LocaleBloc>().lang ? Alignment.centerRight : Alignment.centerLeft,
-                                          colors: [
-                                            main_red,
-                                            main_red.withOpacity(0.0),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width / 2 > 170 ? 170 : MediaQuery.of(context).size.width / 2,
-                              decoration: BoxDecoration(border: Border.all(color: Colors.white,width: 2), borderRadius: BorderRadius.circular(15)),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 20,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: const Image(image: AssetImage("assets/img/0.png")),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(context.read<LocaleBloc>().home_page_sqr_down,style: const TextStyle(color: Colors.white)),
-                                      Directionality(
-                                        textDirection: TextDirection.ltr,
-                                        child: AnimatedFlipCounter(
-                                          textStyle: const TextStyle(color: Colors.white),
-                                          duration: const Duration(milliseconds: 500),
-                                          value: int.parse(model!.price!),
-                                        ),
-                                      ),
-                                    //  Text(model!.price! + context.read<LocaleBloc>().curunce,style: TextStyle(color:Colors.white),),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Expanded(
-                              child: Container(
-                                // width: MediaQuery.of(context).size.width / 2 > 170 ? 170 : MediaQuery.of(context).size.width / 2,
-                                child: AspectRatio(
-                                  aspectRatio: 1,
-                                  child: Padding(
-                                    padding: context.read<LocaleBloc>().lang
-                                        ? EdgeInsets.only(
-                                            right: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30,
-                                            bottom: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30)
-                                        : EdgeInsets.only(
-                                            left: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30,
-                                            bottom: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30),
-                                    child: Container(
-                                      decoration: BoxDecoration(border: Border.all(color: Colors.white,width: 2),borderRadius: BorderRadius.circular(20)),
-                                      child: GridView.count(
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          crossAxisCount: 2, children: [
-                                        one(model!,context),
-                                        two(model!, context),
-                                        three(model!, context),
-                                        four(model!, context),
-                                      ]),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-          });
-    }),
-  );
-}
+// Widget sqr_widget(BuildContext context, home_tab_con) {
+//   return BlocProvider(
+//     create: (context) => StreamBloc()
+//       ..sqr_void(),
+//     child: Builder(builder: (context) {
+//       return StreamBuilder(
+//           stream: context.read<StreamBloc>().sqr_stream_controller.stream,
+//           builder: (context, snapshot) {
+//             print(snapshot.connectionState);
+//             if (snapshot.data == "NOTFOUND") {
+//               return Scaffold(
+//                   body: Center(
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     const Text("العنصر المطلوب غير متاح"),
+//                     IconButton(
+//                         onPressed: () {
+//                           cache.remove_data("sqr");
+//                           Phoenix.rebirth(context);
+//                         },
+//                         icon: const Icon(Icons.delete))
+//                   ],
+//                 ),
+//               ));
+//             }
+//             if (snapshot.connectionState == ConnectionState.waiting) {
+//               return Scaffold(
+//                   body: Center(
+//                 child: Image(image: Theme.of(context).brightness == Brightness.light
+//                ? const AssetImage("assets/img/loading.gif")
+//               :  const AssetImage("assets/img/dark_loading.gif")
+//                   ,width: 150,height: 150,),
+//               ));
+//             } else {
+//               snapshot.data.runtimeType == list_auction_model ? model = snapshot.data : model = list_auction_model.fromjson(snapshot.data);
+//               return Padding(
+//                 padding: const EdgeInsets.all(4.0),
+//                 child: AspectRatio(
+//                   aspectRatio: 1,
+//                   child: Stack(
+//                     children: [
+//                       Stack(
+//                         alignment: context.read<LocaleBloc>().lang
+//                             ? AlignmentGeometry.lerp(Alignment.bottomRight, Alignment.centerRight, 0.4)!
+//                             : AlignmentGeometry.lerp(Alignment.bottomLeft, Alignment.centerLeft, 0.4)!,
+//                         children: [
+//                           Stack(
+//                             alignment: context.read<LocaleBloc>().lang ? Alignment.topRight : Alignment.topLeft,
+//                             children: [
+//                               Container(
+//                                 key: container_key,
+//                                 height: double.infinity,
+//                                 width: double.infinity,
+//                                 decoration: BoxDecoration(color: main_red, borderRadius: BorderRadius.circular(30)),
+//                               ),
+//                               Container(
+//                                   padding: const EdgeInsets.symmetric(vertical: 15),
+//                                   height: MediaQuery.of(context).size.width / 1.5 > 270 ? 270 : MediaQuery.of(context).size.width / 1.5,
+//                                   child: Image(
+//                                     image: const AssetImage("assets/img/13.png"),
+//                                     color: main_red,
+//                                     matchTextDirection: true,
+//                                   )),
+//                             ],
+//                           ),
+//                           Padding(
+//                             padding: const EdgeInsets.all(8.0),
+//                             child: TextButton(
+//                               onPressed: () {
+//                                 Navigator.push(
+//                                     context,
+//                                     MaterialPageRoute(
+//                                         builder: (context) => Test2(
+//                                               id: cache.get_data("sqr").toString().split("-")[0],
+//                                               type: cache.get_data("sqr").toString().split("-")[1],
+//                                               from: "sqr",
+//                                             )));
+//                               },
+//                               child: Container(
+//                                 decoration: BoxDecoration(color: sec_color, borderRadius: BorderRadius.circular(20)),
+//                                 child: Padding(
+//                                   padding: const EdgeInsets.all(5.0),
+//                                   child: Text(
+//                                     context.read<LocaleBloc>().home_page_sqr_buttumn,
+//                                     style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                       Padding(
+//                         padding: const EdgeInsets.all(10),
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             const SizedBox(
+//                               height: 5,
+//                             ),
+//                             Padding(
+//                               padding: const EdgeInsets.only(left: 12),
+//                               child: Text(
+//                                 context.read<LocaleBloc>().home_page_sqr_top,
+//                                 style: const TextStyle(color: Colors.white, fontSize: 17),
+//                               ),
+//                             ),
+//                             const SizedBox(
+//                               height: 5,
+//                             ),
+//                             Container(
+//                               width: 220,
+//                               child: Stack(
+//                                 children: [
+//                                   TabBar(
+//                                     isScrollable: true,
+//                                     controller: home_tab_con,
+//                                     tabs: [model!.name!].map(tabbs).toList(),
+//                                     padding: EdgeInsets.zero,
+//                                     physics: const BouncingScrollPhysics(),
+//                                     automaticIndicatorColorAdjustment: true,
+//                                     labelStyle: const TextStyle(height: 1.3),
+//                                     unselectedLabelStyle: const TextStyle(color: Colors.red),
+//                                     indicator: ContainerTabIndicator(
+//                                       color: sec_color,
+//                                       radius: BorderRadius.circular(10.0),
+//                                     ),
+//                                   ),
+//                                   Positioned(
+//                                     right: context.read<LocaleBloc>().lang ? 0 : null,
+//                                     left: context.read<LocaleBloc>().lang ? null : 0,
+//                                     width: 50,
+//                                     height: 100,
+//                                     child: Container(
+//                                       decoration: BoxDecoration(
+//                                         gradient: LinearGradient(
+//                                           end: context.read<LocaleBloc>().lang ? Alignment.centerLeft : Alignment.centerRight,
+//                                           begin: context.read<LocaleBloc>().lang ? Alignment.centerRight : Alignment.centerLeft,
+//                                           colors: [
+//                                             main_red,
+//                                             main_red.withOpacity(0.0),
+//                                           ],
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   )
+//                                 ],
+//                               ),
+//                             ),
+//                             const SizedBox(
+//                               height: 10,
+//                             ),
+//                             Container(
+//                               width: MediaQuery.of(context).size.width / 2 > 170 ? 170 : MediaQuery.of(context).size.width / 2,
+//                               decoration: BoxDecoration(border: Border.all(color: Colors.white,width: 2), borderRadius: BorderRadius.circular(15)),
+//                               child: Row(
+//                                 children: [
+//                                   Padding(
+//                                     padding: const EdgeInsets.all(4.0),
+//                                     child: CircleAvatar(
+//                                       backgroundColor: Colors.white,
+//                                       radius: 20,
+//                                       child: Container(
+//                                         padding: const EdgeInsets.all(4.0),
+//                                         child: const Image(image: AssetImage("assets/img/0.png")),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                   const SizedBox(
+//                                     width: 5,
+//                                   ),
+//                                   Column(
+//                                     children: [
+//                                       Text(context.read<LocaleBloc>().home_page_sqr_down,style: const TextStyle(color: Colors.white)),
+//                                       Directionality(
+//                                         textDirection: TextDirection.ltr,
+//                                         child: AnimatedFlipCounter(
+//                                           textStyle: const TextStyle(color: Colors.white),
+//                                           duration: const Duration(milliseconds: 500),
+//                                           value: int.parse(model!.price!),
+//                                         ),
+//                                       ),
+//                                     //  Text(model!.price! + context.read<LocaleBloc>().curunce,style: TextStyle(color:Colors.white),),
+//                                     ],
+//                                   )
+//                                 ],
+//                               ),
+//                             ),
+//                             const SizedBox(
+//                               height: 10,
+//                             ),
+//                             Expanded(
+//                               child: Container(
+//                                 // width: MediaQuery.of(context).size.width / 2 > 170 ? 170 : MediaQuery.of(context).size.width / 2,
+//                                 child: AspectRatio(
+//                                   aspectRatio: 1,
+//                                   child: Padding(
+//                                     padding: context.read<LocaleBloc>().lang
+//                                         ? EdgeInsets.only(
+//                                             right: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30,
+//                                             bottom: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30)
+//                                         : EdgeInsets.only(
+//                                             left: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30,
+//                                             bottom: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30),
+//                                     child: Container(
+//                                       decoration: BoxDecoration(border: Border.all(color: Colors.white,width: 2),borderRadius: BorderRadius.circular(20)),
+//                                       child: GridView.count(
+//                                           physics: const NeverScrollableScrollPhysics(),
+//                                           crossAxisCount: 2, children: [
+//                                         one(model!,context),
+//                                         two(model!, context),
+//                                         three(model!, context),
+//                                         four(model!, context),
+//                                       ]),
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             )
+//                           ],
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               );
+//             }
+//           });
+//     }),
+//   );
+// }
 
 Widget tabbs(a) => Text(
       a,
