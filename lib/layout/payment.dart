@@ -7,16 +7,19 @@ import '../models/add_model.dart';
 late WebViewXController webviewController;
 
 class Payment extends StatefulWidget {
-  const Payment({Key? key, required this.model}) : super(key: key);
+  const Payment({Key? key, required this.model, required this.pay_type}) : super(key: key);
 final add_model model;
+final String pay_type;
+
   @override
-  _PaymentState createState() => _PaymentState(model);
+  _PaymentState createState() => _PaymentState(model,pay_type);
 }
 
 class _PaymentState extends State<Payment> {
   final add_model model;
+  final String pay_type;
 
-  _PaymentState(this.model);
+  _PaymentState(this.model, this.pay_type);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,18 +29,45 @@ class _PaymentState extends State<Payment> {
                 "user_id":cache.get_data("id"),
                 "id":model.id,
                 "type":model.type,
+                "pay_type":pay_type,
+                "price":model.price,
                 }),
         builder: (context,snapshot){
           print(snapshot.data);
           if(snapshot.connectionState == ConnectionState.waiting){
             return Center(child: CircularProgressIndicator(),);
           }else{
-            return WebViewX(width: double.infinity, height: MediaQuery.of(context).size.height, onWebViewCreated: (controller){
+            return WebViewX(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height,
+              onWebViewCreated: (controller){
               webviewController = controller;
               webviewController.loadContent(
                 snapshot.data.toString(),
                 SourceType.url,
-              );},);
+              );},
+            onPageStarted: (url){
+                print("="*20);
+                if(url.contains("https://faceted-dull-evening.glitch.me/pay/")){
+                  showDialog<void>(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Center(child: Text("سيتم التأكد من الدفعة خلال فترة يومان")),
+                          actions: <Widget>[
+                            Center(child: CircularProgressIndicator()),
+                          ],
+                        );
+                      },
+                    );
+                  Future.delayed(Duration(seconds: 3)).then((value) {
+                    Navigator.pop(context);
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>App()), (route) => false);
+                  });
+                  }
+            }
+            );
           }
         },
       ),

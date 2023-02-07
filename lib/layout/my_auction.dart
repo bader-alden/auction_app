@@ -143,8 +143,9 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                   ),
                   const SizedBox(
                     width: 5,
-                  ),
-                  if(model.auc_status == "2"||model.auc_status=="3")
+                  ),if(model.state == "2")
+                    Text("")
+                 else if(model.auc_status == "2"||model.auc_status=="3")
                   Row(
                     children: [
                       Text("أعلى سعر:"),
@@ -183,7 +184,7 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                     onPressed: () async {
                       showDialog<void>(
                         context: context,
-                        barrierDismissible: false, // false = user must tap button, true = tap outside dialog
+                        barrierDismissible: false,
                         builder: (BuildContext dialogContext) {
                           return AlertDialog(
                             content: Text('هل أنت متأكد من قبول سعر المزاد'),
@@ -233,7 +234,49 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                             child: ElevatedButton(
                               style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
                               onPressed: () async {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => Test2(type: model.type, id: model.id)));
+                                showDialog<void>(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: Text('هل أنت متأكد من رفض سعر المزاد'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text('لا'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop(); // Dismiss alert dialog
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text('نعم'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            dio.post_data(url: "/post_auction/reject",quary: {
+                                              "id":model.id,
+                                              "type":model.type,
+                                              "user_id":cache.get_data("id"),
+                                            }).then((value) {
+                                              print(value?.data);
+                                              if(value?.data =="yes"){
+                                                Navigator.of(context).pop();
+                                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>App()), (route) => false);
+                                              }
+                                            });
+                                            showDialog<void>(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Container(child: Center(child: CircularProgressIndicator(),)),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                               },
                               child: const Text("رفض السعر"),
                             ),
@@ -251,7 +294,7 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                       return   ElevatedButton(
                         style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
                         onPressed: () async {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => Payment(model: model)));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Payment(model: model,pay_type: "pay",)));
                         },
                         child: const Text("يرجى الدفع"),
                       );

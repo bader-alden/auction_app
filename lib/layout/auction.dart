@@ -113,11 +113,6 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
             Container(color: Theme.of(context).brightness==Brightness.light ?const Color.fromARGB(255, 247, 247, 247):const Color.fromARGB(255, 35, 35, 35) ,width: double.infinity,child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Builder(builder: (context){
-                  print(cache.get_data("id"));
-                  print(cache.get_data("id"));
-                  print(cache.get_data("id"));
-                  print(cache.get_data("id"));
-                  print(cache.get_data("id"));
                  if (model.status == "2" &&model.sub==cache.get_data("id").toString()){
                     return  Center(child: Text("بإنتظار الموافقة على السعر"));
                   }else if (model.status == "3"&&model.sub==cache.get_data("id").toString() ){

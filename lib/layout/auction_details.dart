@@ -1,4 +1,3 @@
-
 import 'package:auction_app/bloc/fav/fav_bloc.dart';
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
@@ -53,38 +52,38 @@ class Test2 extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-          StreamBloc()
+          create: (context) => StreamBloc()
             ..init_stream_void()
             ..get_one_void(id, type)
             ..get_fav(id, type),
         ),
-       BlocProvider(  create: (context) => FavBloc()..check(type, id),
-       ),
+        BlocProvider(
+          create: (context) => FavBloc()..check(type, id),
+        ),
         BlocProvider(
           create: (context) => LocaleBloc(),
         ),
       ],
       child: Builder(builder: (context) {
         return StreamBuilder(
-            stream: context
-                .read<StreamBloc>()
-                .get_one_stream_controller
-                .stream,
+            stream: context.read<StreamBloc>().get_one_stream_controller.stream,
             builder: (context, snapshot) {
               print(snapshot.data);
               if (snapshot.data.toString() == "NOTFOUND") {
                 return const Scaffold(
                     body: Center(
-                      child: Text("العنصر المطلوب غير متاح"),
-                    ));
+                  child: Text("العنصر المطلوب غير متاح"),
+                ));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return  Scaffold(
-                  body: Center(child: Image(
-                    image: Theme.of(context).brightness==Brightness.dark
-                        ?AssetImage("assets/img/dark_loading.gif")
-                        :AssetImage("assets/img/loading.gif")
-                    ,height: 125,width: 125,)),
+                return Scaffold(
+                  body: Center(
+                      child: Image(
+                    image: Theme.of(context).brightness == Brightness.dark
+                        ? AssetImage("assets/img/dark_loading.gif")
+                        : AssetImage("assets/img/loading.gif"),
+                    height: 125,
+                    width: 125,
+                  )),
                 );
               } else {
                 list_auction_model? model;
@@ -111,47 +110,36 @@ class Test2 extends StatelessWidget {
                 //       ));
                 // }
                 return Directionality(
-                  textDirection: context
-                      .read<LocaleBloc>()
-                      .lang ? TextDirection.ltr : TextDirection.rtl,
+                  textDirection: context.read<LocaleBloc>().lang ? TextDirection.ltr : TextDirection.rtl,
                   child: Scaffold(
                     appBar: AppBar(
                       elevation: 0,
-                      title: Text("${context
-                          .read<LocaleBloc>()
-                          .test2_id}${model?.id!}"),
+                      title: Text("${context.read<LocaleBloc>().test2_id}${model?.id!}"),
                       leading: IconButton(
                           onPressed: () {
-
-                            if(from_fav){
+                            if (from_fav) {
                               print("sta");
-                              Navigator.pop(context,"yse");
+                              Navigator.pop(context, "yse");
                               // FavBloc.get(context).close();
                               // context.read<FavBloc>().close();
                               // FavBloc().add(fav_evint());
                               // context.read<FavBloc>().add(fav_evint());
                               // FavBloc.get(context).add(fav_evint());
-                             // context.read<FavBloc>().fav_list.clear();
-                             // context.read<FavBloc>().fav_evint_void();
-                            }else{
+                              // context.read<FavBloc>().fav_list.clear();
+                              // context.read<FavBloc>().fav_evint_void();
+                            } else {
                               Navigator.pop(context);
                             }
                           },
-                          icon: context
-                              .read<LocaleBloc>()
-                              .lang
-                              ? Icon(Icons.arrow_forward_ios, color: Theme
-                              .of(context)
-                              .brightness == Brightness.dark ? Colors.white : Colors.black)
-                              : Icon(Icons.arrow_back_ios, color: Theme
-                              .of(context)
-                              .brightness == Brightness.dark ? Colors.white : Colors.black)),
+                          icon: context.read<LocaleBloc>().lang
+                              ? Icon(Icons.arrow_forward_ios, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)
+                              : Icon(Icons.arrow_back_ios, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
                     ),
                     body: WillPopScope(
                       onWillPop: () async {
-                        if(from_fav){
+                        if (from_fav) {
                           print("sta");
-                          Navigator.pop(context,"yse");
+                          Navigator.pop(context, "yse");
                           // FavBloc.get(context).close();
                           // context.read<FavBloc>().close();
                           // FavBloc().add(fav_evint());
@@ -159,7 +147,7 @@ class Test2 extends StatelessWidget {
                           // FavBloc.get(context).add(fav_evint());
                           // context.read<FavBloc>().fav_list.clear();
                           // context.read<FavBloc>().fav_evint_void();
-                        }else{
+                        } else {
                           Navigator.pop(context);
                         }
                         return true;
@@ -215,42 +203,34 @@ class Test2 extends StatelessWidget {
                                                       color: Colors.red,
                                                       child: Center(
                                                           child: Padding(
-                                                            padding: const EdgeInsets.all(4.0),
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Text("${a}",
-                                                                    style: TextStyle(
-                                                                      color:
-                                                                      Theme
-                                                                          .of(context)
-                                                                          .brightness == Brightness.dark ? Colors.black : Colors.white,
-                                                                    )),
-                                                                Text(context
-                                                                    .read<LocaleBloc>()
-                                                                    .of,
-                                                                    style: TextStyle(
-                                                                      color:
-                                                                      Theme
-                                                                          .of(context)
-                                                                          .brightness == Brightness.dark ? Colors.black : Colors.white,
-                                                                    )),
-                                                                Text(" ${model?.photos?.length}",
-                                                                    style: TextStyle(
-                                                                      color:
-                                                                      Theme
-                                                                          .of(context)
-                                                                          .brightness == Brightness.dark ? Colors.black : Colors.white,
-                                                                    )),
-                                                              ],
-                                                            ),
-                                                          )),
+                                                        padding: const EdgeInsets.all(4.0),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Text("${a}",
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+                                                                )),
+                                                            Text(context.read<LocaleBloc>().of,
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+                                                                )),
+                                                            Text(" ${model?.photos?.length}",
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+                                                                )),
+                                                          ],
+                                                        ),
+                                                      )),
                                                     ),
                                                   ),
                                                   const Spacer(),
                                                   InkWell(
                                                     borderRadius:
-                                                    const BorderRadius.only(bottomRight: Radius.circular(1000), topRight: Radius.circular(1000)),
+                                                        const BorderRadius.only(bottomRight: Radius.circular(1000), topRight: Radius.circular(1000)),
                                                     onTap: () {
                                                       if (img_page_con.page != 0) {
                                                         img_page_con.previousPage(duration: const Duration(milliseconds: 500), curve: Curves.linear);
@@ -259,22 +239,18 @@ class Test2 extends StatelessWidget {
                                                     child: Container(
                                                       height: 50,
                                                       width: 30,
-                                                      decoration: context
-                                                          .read<LocaleBloc>()
-                                                          .lang
+                                                      decoration: context.read<LocaleBloc>().lang
                                                           ? const BoxDecoration(
-                                                          color: Colors.red,
-                                                          borderRadius: BorderRadius.only(
-                                                              bottomRight: Radius.circular(1000), topRight: Radius.circular(1000)))
+                                                              color: Colors.red,
+                                                              borderRadius: BorderRadius.only(
+                                                                  bottomRight: Radius.circular(1000), topRight: Radius.circular(1000)))
                                                           : const BoxDecoration(
-                                                          color: Colors.red,
-                                                          borderRadius: BorderRadius.only(
-                                                              bottomLeft: Radius.circular(1000), topLeft: Radius.circular(1000))),
+                                                              color: Colors.red,
+                                                              borderRadius: BorderRadius.only(
+                                                                  bottomLeft: Radius.circular(1000), topLeft: Radius.circular(1000))),
                                                       child: Icon(
                                                         Icons.arrow_back_ios,
-                                                        color: Theme
-                                                            .of(context)
-                                                            .brightness == Brightness.dark ? Colors.black : Colors.white,
+                                                        color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
                                                       ),
                                                     ),
                                                   ),
@@ -310,9 +286,7 @@ class Test2 extends StatelessWidget {
                                                           color: Colors.red,
                                                           child: Icon(
                                                             Icons.fullscreen,
-                                                            color: Theme
-                                                                .of(context)
-                                                                .brightness == Brightness.dark ? Colors.black : Colors.white,
+                                                            color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
                                                           ),
                                                         )),
                                                   ),
@@ -323,7 +297,8 @@ class Test2 extends StatelessWidget {
                                               ),
                                               const Spacer(),
                                               InkWell(
-                                                borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(1000), topLeft: Radius.circular(1000)),
+                                                borderRadius:
+                                                    const BorderRadius.only(bottomLeft: Radius.circular(1000), topLeft: Radius.circular(1000)),
                                                 onTap: () {
                                                   if (img_page_con.page != model!.photos!.length - 1) {
                                                     img_page_con.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.linear);
@@ -332,22 +307,18 @@ class Test2 extends StatelessWidget {
                                                 child: Container(
                                                   height: 50,
                                                   width: 30,
-                                                  decoration: context
-                                                      .read<LocaleBloc>()
-                                                      .lang
+                                                  decoration: context.read<LocaleBloc>().lang
                                                       ? const BoxDecoration(
-                                                      color: Colors.red,
-                                                      borderRadius:
-                                                      BorderRadius.only(bottomLeft: Radius.circular(1000), topLeft: Radius.circular(1000)))
+                                                          color: Colors.red,
+                                                          borderRadius:
+                                                              BorderRadius.only(bottomLeft: Radius.circular(1000), topLeft: Radius.circular(1000)))
                                                       : const BoxDecoration(
-                                                      color: Colors.red,
-                                                      borderRadius:
-                                                      BorderRadius.only(bottomRight: Radius.circular(1000), topRight: Radius.circular(1000))),
+                                                          color: Colors.red,
+                                                          borderRadius:
+                                                              BorderRadius.only(bottomRight: Radius.circular(1000), topRight: Radius.circular(1000))),
                                                   child: Icon(
                                                     Icons.arrow_forward_ios,
-                                                    color: Theme
-                                                        .of(context)
-                                                        .brightness == Brightness.dark ? Colors.black : Colors.white,
+                                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
                                                   ),
                                                 ),
                                               ),
@@ -415,7 +386,7 @@ class Test2 extends StatelessWidget {
                                                       Icons.share,
                                                       color: Colors.white,
                                                     )),
-                                                Fav_icon(type,id),
+                                                Fav_icon(type, id),
                                                 //Image(image: AssetImage("assets/img/17.png"),height: 18,),
                                                 //Image(image: AssetImage("assets/img/20.png"),height: 22,color: Colors.white,),
                                                 IconButton(
@@ -434,9 +405,7 @@ class Test2 extends StatelessWidget {
                                         Container(
                                           decoration: BoxDecoration(
                                               color: Colors.red,
-                                              borderRadius: context
-                                                  .read<LocaleBloc>()
-                                                  .lang
+                                              borderRadius: context.read<LocaleBloc>().lang
                                                   ? const BorderRadius.only(topLeft: Radius.circular(50))
                                                   : const BorderRadius.only(topRight: Radius.circular(50))),
                                           width: 170,
@@ -453,8 +422,7 @@ class Test2 extends StatelessWidget {
                                               const SizedBox(
                                                 width: 10,
                                               ),
-                                              Timer_widget(
-                                                  model?.time, context, Colors.white)
+                                              Timer_widget(model?.time, context, Colors.white)
                                             ],
                                           ),
                                         )
@@ -468,9 +436,9 @@ class Test2 extends StatelessWidget {
                                       padding: const EdgeInsets.symmetric(vertical: 8),
                                       child: Center(
                                           child: Text(
-                                            model!.name!,
-                                            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                                          ))),
+                                        model!.name!,
+                                        style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                                      ))),
                                   const SizedBox(
                                     height: 10,
                                   ),
@@ -479,7 +447,7 @@ class Test2 extends StatelessWidget {
                                     height: 20,
                                   ),
                                   // end_test_2(model, context),
-                                  end_details(model,context),
+                                  end_details(model, context),
                                   const SizedBox(
                                     width: 10,
                                   ),
@@ -488,43 +456,48 @@ class Test2 extends StatelessWidget {
                               ),
                             ),
                           ),
-                          if(model.status!="2")
-                          Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: InkWell(
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: () {
-                                  var paid = model?.sub!.firstWhere((element) => element.contains("-${cache.get_data("id") ?? "]'/[;."}|"), orElse: () => "not|0");
-                                  print(paid?.split("|")[1]);
-                                  print(paid);
-                                  print(paid);
-                                  if (cache.get_data("id") != null) {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                confirm_pay(
-                                                  model: model,
-                                                  type: type,
-                                                  is_first: paid?.split("|")[1] == "0"
-                                                )));
-                                  } else {
-                                    tost(msg: "يلزم تسجيل الدخول", color: Colors.red);
-                                  }
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(20)),
-                                  height: 50,
-                                  width: double.infinity,
-                                  child: Center(
-                                      child: Text(
-                                        context
-                                            .read<LocaleBloc>()
-                                            .test2_end,
+                          if (model.status != "2")
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: model.user_id == cache.get_data("id").toString()
+                                  ? Container(
+                                      decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(20)),
+                                      height: 50,
+                                      width: double.infinity,
+                                      child: Center(
+                                          child: Text(
+                                        "لا يمكن لصاحب المزاد المزايدة",
                                         style: const TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
                                       )),
-                                )),
-                          )
+                                    )
+                                  : InkWell(
+                                      borderRadius: BorderRadius.circular(20),
+                                      onTap: () {
+                                        var paid = model?.sub!.firstWhere((element) => element.contains("-${cache.get_data("id") ?? "]'/[;."}|"),
+                                            orElse: () => "not|0");
+                                        print(paid?.split("|")[1]);
+                                        print(paid);
+                                        print(paid);
+                                        if (cache.get_data("id") != null) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => confirm_pay(model: model, type: type, is_first: paid?.split("|")[1] == "0")));
+                                        } else {
+                                          tost(msg: "يلزم تسجيل الدخول", color: Colors.red);
+                                        }
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(20)),
+                                        height: 50,
+                                        width: double.infinity,
+                                        child: Center(
+                                            child: Text(
+                                          context.read<LocaleBloc>().test2_end,
+                                          style: const TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
+                                        )),
+                                      )),
+                            )
                         ],
                       ),
                     ),
@@ -552,29 +525,27 @@ class Test2 extends StatelessWidget {
                 children: [
                   Expanded(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: main_red,
-                            radius: 15,
-                            child: const Padding(
-                              padding: EdgeInsets.all(5.0),
-                              child: Image(
-                                image: AssetImage("assets/img/1.png"),
-                              ),
-                            ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: main_red,
+                        radius: 15,
+                        child: const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Image(
+                            image: AssetImage("assets/img/1.png"),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            context
-                                .read<LocaleBloc>()
-                                .a + " : ${model.num_add!}",
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      )),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        context.read<LocaleBloc>().a + " : ${model.num_add!}",
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  )),
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -593,20 +564,14 @@ class Test2 extends StatelessWidget {
                           width: 10,
                         ),
                         Text(
-                          "${context
-                              .read<LocaleBloc>()
-                              .q} : ${rank! + 1 == 0 ? context
-                              .read<LocaleBloc>()
-                              .not : rank + 1}",
+                          "${context.read<LocaleBloc>().q} : ${rank! + 1 == 0 ? context.read<LocaleBloc>().not : rank + 1}",
                           style: TextStyle(
                               fontSize: 12,
                               color: rank + 1 == 1
                                   ? Colors.amber.shade900
-                                  : Theme
-                                  .of(context)
-                                  .brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white),
+                                  : Theme.of(context).brightness == Brightness.light
+                                      ? Colors.black
+                                      : Colors.white),
                         ),
                       ],
                     ),
@@ -621,30 +586,30 @@ class Test2 extends StatelessWidget {
                 children: [
                   Expanded(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: main_red,
-                            radius: 15,
-                            child: const Padding(
-                              padding: EdgeInsets.all(5.0),
-                              child: Image(
-                                image: AssetImage("assets/img/2.png"),
-                              ),
-                            ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: main_red,
+                        radius: 15,
+                        child: const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Image(
+                            image: AssetImage("assets/img/2.png"),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text("aaaaaaaaaaaa")
-                          // Text(
-                          //   context
-                          //       .read<LocaleBloc>()
-                          //       .w + " : ${model.time!.substring(0, 10)}",
-                          //   style: const TextStyle(fontSize: 12),
-                          // ),
-                        ],
-                      )),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text("aaaaaaaaaaaa")
+                      // Text(
+                      //   context
+                      //       .read<LocaleBloc>()
+                      //       .w + " : ${model.time!.substring(0, 10)}",
+                      //   style: const TextStyle(fontSize: 12),
+                      // ),
+                    ],
+                  )),
                   Expanded(
                     child: Stack(
                       alignment: Alignment.center,
@@ -666,9 +631,7 @@ class Test2 extends StatelessWidget {
                               width: 10,
                             ),
                             Text(
-                              "${context
-                                  .read<LocaleBloc>()
-                                  .z} : ${model.price!}",
+                              "${context.read<LocaleBloc>().z} : ${model.price!}",
                               style: const TextStyle(fontSize: 12),
                             ),
                           ],
@@ -693,31 +656,27 @@ class Test2 extends StatelessWidget {
                 children: [
                   Expanded(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: main_red,
-                            radius: 15,
-                            child: const Padding(
-                              padding: EdgeInsets.all(5.0),
-                              child: Image(
-                                image: AssetImage("assets/img/3.png"),
-                              ),
-                            ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: main_red,
+                        radius: 15,
+                        child: const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Image(
+                            image: AssetImage("assets/img/3.png"),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            context
-                                .read<LocaleBloc>()
-                                .x + " : ${paid.split("|")[1] == "0" ? context
-                                .read<LocaleBloc>()
-                                .not : paid.split("|")[1]}",
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      )),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        context.read<LocaleBloc>().x + " : ${paid.split("|")[1] == "0" ? context.read<LocaleBloc>().not : paid.split("|")[1]}",
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  )),
                   Expanded(
                     child: Stack(
                       alignment: Alignment.center,
@@ -739,9 +698,7 @@ class Test2 extends StatelessWidget {
                               width: 10,
                             ),
                             Text(
-                              context
-                                  .read<LocaleBloc>()
-                                  .s + " : ${model.num_price!}",
+                              context.read<LocaleBloc>().s + " : ${model.num_price!}",
                               style: const TextStyle(fontSize: 12),
                             ),
                           ],
@@ -768,112 +725,47 @@ class Test2 extends StatelessWidget {
   Widget end_details(list_auction_model model, BuildContext context) {
     var paid = model.sub!.firstWhere((element) => element.contains("-${cache.get_data("id") ?? "]'/[;."}|"), orElse: () => "not|0");
     var rank = model.sub?.indexOf(paid);
-  return   Padding(
-padding: EdgeInsets.only(right: 30),
-    child: GridView(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 3,crossAxisSpacing: 1),
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+    return Padding(
+      padding: EdgeInsets.only(right: 30),
+      child: GridView(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 3, crossAxisSpacing: 1),
         children: [
-          CircleAvatar(
-            backgroundColor: main_red,
-            radius: 15,
-            child: const Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Image(
-                image: AssetImage("assets/img/1.png"),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            context
-                .read<LocaleBloc>()
-                .a + " : ${model.num_add!}",
-            style: const TextStyle(fontSize: 12),
-          ),
-        ],
-      ),
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              backgroundColor: main_red,
-              radius: 15,
-              child: const Padding(
-                padding: EdgeInsets.all(6.0),
-                child: Image(
-                  image: AssetImage("assets/img/4.png"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                backgroundColor: main_red,
+                radius: 15,
+                child: const Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Image(
+                    image: AssetImage("assets/img/1.png"),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              "${context
-                  .read<LocaleBloc>()
-                  .q} : ${rank! + 1 == 0 ? context
-                  .read<LocaleBloc>()
-                  .not : rank + 1}",
-              style: TextStyle(
-                  fontSize: 12,
-                  color: rank + 1 == 1
-                      ? Colors.amber.shade900
-                      : Theme
-                      .of(context)
-                      .brightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white),
-            ),
-          ],
-        ),
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            backgroundColor: main_red,
-            radius: 15,
-            child: const Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Image(
-                image: AssetImage("assets/img/2.png"),
+              const SizedBox(
+                width: 10,
               ),
-            ),
+              Text(
+                context.read<LocaleBloc>().a + " : ${model.num_add!}",
+                style: const TextStyle(fontSize: 12),
+              ),
+            ],
           ),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            context
-                .read<LocaleBloc>()
-                .w + " : ${model.time!.substring(0, 10)}",
-            style: const TextStyle(fontSize: 12),
-          ),
-        ],
-      ),
-      Stack(
-        alignment: Alignment.centerRight,
-        children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const CircleAvatar(
-                  backgroundColor: Colors.redAccent,
+                CircleAvatar(
+                  backgroundColor: main_red,
                   radius: 15,
-                  child: Padding(
-                    padding: EdgeInsets.all(4.0),
+                  child: const Padding(
+                    padding: EdgeInsets.all(6.0),
                     child: Image(
-                      image: AssetImage("assets/img/0.png"),
+                      image: AssetImage("assets/img/4.png"),
                     ),
                   ),
                 ),
@@ -881,92 +773,139 @@ padding: EdgeInsets.only(right: 30),
                   width: 10,
                 ),
                 Text(
-                  "${context
-                      .read<LocaleBloc>()
-                      .z} : ${model.price!}",
-                  style: const TextStyle(fontSize: 12),
+                  "${context.read<LocaleBloc>().q} : ${rank! + 1 == 0 ? context.read<LocaleBloc>().not : rank + 1}",
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: rank + 1 == 1
+                          ? Colors.amber.shade900
+                          : Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white),
                 ),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: Container(
-              height: 37,
-              decoration: BoxDecoration(border: Border.all(color: main_red), borderRadius: BorderRadius.circular(10)),
-            ),
-          )
-        ],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            backgroundColor: main_red,
-            radius: 15,
-            child: const Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Image(
-                image: AssetImage("assets/img/3.png"),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            context
-                .read<LocaleBloc>()
-                .x + " : ${paid.split("|")[1] == "0" ? context
-                .read<LocaleBloc>()
-                .not : paid.split("|")[1]}",
-            style: const TextStyle(fontSize: 12),
-          ),
-        ],
-      ),
-      Stack(
-        alignment: Alignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const CircleAvatar(
-                  backgroundColor: Colors.redAccent,
-                  radius: 15,
-                  child: Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Image(
-                      image: AssetImage("assets/img/0.png"),
-                    ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                backgroundColor: main_red,
+                radius: 15,
+                child: const Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Image(
+                    image: AssetImage("assets/img/2.png"),
                   ),
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  context
-                      .read<LocaleBloc>()
-                      .s + " : ${model.num_price!}",
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                context.read<LocaleBloc>().w + " : ${model.time!.substring(0, 10)}",
+                style: const TextStyle(fontSize: 12),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: Container(
-              height: 37,
-              decoration: BoxDecoration(border: Border.all(color: main_red), borderRadius: BorderRadius.circular(10)),
-            ),
-          )
+          Stack(
+            alignment: Alignment.centerRight,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const CircleAvatar(
+                      backgroundColor: Colors.redAccent,
+                      radius: 15,
+                      child: Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Image(
+                          image: AssetImage("assets/img/0.png"),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "${context.read<LocaleBloc>().z} : ${model.price!}",
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Container(
+                  height: 37,
+                  decoration: BoxDecoration(border: Border.all(color: main_red), borderRadius: BorderRadius.circular(10)),
+                ),
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                backgroundColor: main_red,
+                radius: 15,
+                child: const Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Image(
+                    image: AssetImage("assets/img/3.png"),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                context.read<LocaleBloc>().x + " : ${paid.split("|")[1] == "0" ? context.read<LocaleBloc>().not : paid.split("|")[1]}",
+                style: const TextStyle(fontSize: 12),
+              ),
+            ],
+          ),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const CircleAvatar(
+                      backgroundColor: Colors.redAccent,
+                      radius: 15,
+                      child: Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Image(
+                          image: AssetImage("assets/img/0.png"),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      context.read<LocaleBloc>().s + " : ${model.num_price!}",
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Container(
+                  height: 37,
+                  decoration: BoxDecoration(border: Border.all(color: main_red), borderRadius: BorderRadius.circular(10)),
+                ),
+              )
+            ],
+          ),
         ],
       ),
-
-    ],),
-  );
-
+    );
   }
 
   Widget option_list(list_auction_model model, BuildContext context) {
@@ -976,8 +915,13 @@ padding: EdgeInsets.only(right: 30),
       physics: const NeverScrollableScrollPhysics(),
       children: [
         InkWell(
-          onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>option_details2(row: model.main_data,)));
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => option_details2(
+                          row: model.main_data,
+                        )));
           },
           child: Container(
             padding: const EdgeInsets.all(20),
@@ -1037,8 +981,7 @@ padding: EdgeInsets.only(right: 30),
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          pdf(
+                      builder: (context) => pdf(
                             name: file!.name!,
                             link: file.link!,
                           )));
@@ -1046,8 +989,7 @@ padding: EdgeInsets.only(right: 30),
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          option_details(
+                      builder: (context) => option_details(
                             model: model,
                           )));
             }
@@ -1068,40 +1010,54 @@ padding: EdgeInsets.only(right: 30),
       ],
     );
   }
-
 }
 
-  Widget Fav_icon(type,id) {
-    return BlocConsumer<FavBloc,FavState>(
-        listener: (context,state){
-         if(state is loadin_state){
-           print("loading.....");
-         }
-        },
-        builder: (context,state) {
-          if(state is loadin_state){
-            return const SizedBox(height: 20,width: 20,child: CircularProgressIndicator(color: Colors.white,));
-          }
-          else if(FavBloc.get(context).is_fav  == true){
-            return InkWell(onTap: (){
+Widget Fav_icon(type, id) {
+  return BlocConsumer<FavBloc, FavState>(
+    listener: (context, state) {
+      if (state is loadin_state) {
+        print("loading.....");
+      }
+    },
+    builder: (context, state) {
+      if (state is loadin_state) {
+        return const SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ));
+      } else if (FavBloc.get(context).is_fav == true) {
+        return InkWell(
+            onTap: () {
               FavBloc.get(context).delet_fav(type, id);
-            },child: const Image(image: AssetImage("assets/img/17.png"),height: 18,));
-          }
-          else if( FavBloc.get(context).is_fav  == false){
-            return InkWell(onTap:
-                (){
-              if(cache.get_data("id")!=null){
+            },
+            child: const Image(
+              image: AssetImage("assets/img/17.png"),
+              height: 18,
+            ));
+      } else if (FavBloc.get(context).is_fav == false) {
+        return InkWell(
+            onTap: () {
+              if (cache.get_data("id") != null) {
                 FavBloc.get(context).add_to_fav_void(type, id);
-              }else{
-                tost(msg: "يجب تسجيل الدخول أولا",color: Colors.red);
+              } else {
+                tost(msg: "يجب تسجيل الدخول أولا", color: Colors.red);
               }
-            },child: const Image(image: AssetImage("assets/img/20.png"),height: 22,color: Colors.white,));
-          }
-          else{
-            return const SizedBox(height: 15,width: 15,child: CircularProgressIndicator(color: Colors.red,));
-          }
-        },
-      );
-  }
-
-
+            },
+            child: const Image(
+              image: AssetImage("assets/img/20.png"),
+              height: 22,
+              color: Colors.white,
+            ));
+      } else {
+        return const SizedBox(
+            height: 15,
+            width: 15,
+            child: CircularProgressIndicator(
+              color: Colors.red,
+            ));
+      }
+    },
+  );
+}

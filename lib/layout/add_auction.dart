@@ -1006,6 +1006,9 @@ class add_auction extends StatelessWidget {
                                 },
                               );
                             }
+                            else {
+                              tost(msg: "يرجى ملئ جميع البيانات", color: Colors.red);
+                            }
                             // if (!slot!.with_location!) {
                             //   location = " ";
                             // }

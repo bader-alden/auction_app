@@ -7,7 +7,6 @@ class add_model{
   String? time;
   String? price;
   add_model.fromjson(json,json2){
-    print(json2);
     state = json.toString().split("|")[0];
     id = json.toString().split("|")[1];
     type = json.toString().split("|")[2];

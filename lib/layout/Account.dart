@@ -3,6 +3,7 @@ import 'package:auction_app/layout/FAQ_page.dart';
 import 'package:auction_app/layout/Login.dart';
 import 'package:auction_app/layout/Setting.dart';
 import 'package:auction_app/layout/Terms_page.dart';
+import 'package:auction_app/layout/add_money.dart';
 import 'package:auction_app/layout/my_auction.dart';
 import 'package:auction_app/layout/social_page.dart';
 import 'package:auction_app/models/user_model.dart';
@@ -129,7 +130,17 @@ class main_acount extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 50,
+              ),
+
+              InkWell(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>AddMoney()));
+                }, child: account_list_item("محفظتي", const Icon(Icons.wallet,color: Colors.white,)),
+              ),
+              Container(
+                height: 2,
+                color: Colors.grey.shade400,
               ),
               InkWell(
                 onTap: (){
