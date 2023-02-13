@@ -2,6 +2,7 @@ import 'package:auction_app/bloc/fav/fav_bloc.dart';
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
+import 'package:auction_app/dio.dart';
 import 'package:auction_app/layout/Home.dart';
 import 'package:auction_app/layout/Map.dart';
 import 'package:auction_app/layout/auction_option_details.dart';
@@ -18,8 +19,6 @@ import '../bloc/stram/stream_bloc.dart';
 import 'auction_option_details2.dart';
 import 'favotite.dart';
 
-var long_text =
-    """Lorem Ipsum és un text de farciment usat per la indústria de la tipografia i la impremta. Lorem Ipsum ha estat el text estàndard de la indústria des de l'any 1500, quan un impressor desconegut va fer servir una galerada de text i la va mesclar per crear un llibre de mostres tipogràfiques. romanent essencialment sense canvis. Es va popularitzar l'any 1960 amb el llançament de fulls Letraset que contenien passatges de Lorem Ipsum, i més recentment amb programari d'autoedició com Aldus Pagemaker que inclou versions de Lorem Ipsum.""";
 bool is_add = false;
 bool from_go = false;
 bool from_fav = false;
@@ -379,7 +378,7 @@ class Test2 extends StatelessWidget {
                                                 IconButton(
                                                     onPressed: () {
                                                       Share.share(
-                                                          'إضغط على الرابط لمشاهدة المزاد\n https://faceted-dull-evening.glitch.me/?id=$id&type=$type');
+                                                          base_url+'إضغط على الرابط لمشاهدة المزاد\n /?id=$id&type=$type');
                                                     },
                                                     iconSize: 20,
                                                     icon: const Icon(
@@ -475,14 +474,20 @@ class Test2 extends StatelessWidget {
                                       onTap: () {
                                         var paid = model?.sub!.firstWhere((element) => element.contains("-${cache.get_data("id") ?? "]'/[;."}|"),
                                             orElse: () => "not|0");
-                                        print(paid?.split("|")[1]);
-                                        print(paid);
-                                        print(paid);
                                         if (cache.get_data("id") != null) {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => confirm_pay(model: model, type: type, is_first: paid?.split("|")[1] == "0")));
+                                          dio.get_data(url: "pay/get_wallet",quary: {
+                                            "user_id":cache.get_data("id")
+                                          }).then((value)  {
+                                            var  user_mouny = int.parse(value?.data[0]['balance']);
+                                            if(user_mouny > int.parse(model!.price!)~/10){
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => confirm_pay(model: model, type: type, is_first: paid?.split("|")[1] == "0")));
+                                            }else {
+                                              tost(msg: "يلزم دفع 10 بالمئة من قيمة المزاد قبل المزايدة", color: Colors.red);
+                                            }
+                                          });
                                         } else {
                                           tost(msg: "يلزم تسجيل الدخول", color: Colors.red);
                                         }

@@ -14,14 +14,11 @@ import 'add_auction.dart';
 import 'auction_details.dart';
 import 'payment.dart';
 
-List<String> alist = ["aaaa", "cccccccc", "cccccccccc", "ajjaaa", "ccccccchhhc", "ccbbbbcccccccc"];
-List<String> s = ["Cars", "Plate", "House", "h", "k"];
 
 class My_action extends HookWidget {
   const My_action({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    var my_action_tab_con = useTabController(initialLength: alist.length);
     return BlocProvider(
         create: (context) => AddBloc()..check_add(),
         child: BlocConsumer<AddBloc, AddState>(
@@ -117,10 +114,10 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                   CircleAvatar(
                     radius: 25,
                     backgroundColor: Colors.red,
-                    child: Image(
+                    child:model.state=="4"?Icon(Icons.archive_outlined,color: Colors.white,size: 30,): Image(
                       height: 30,
                       width: 30,
-                      image: NetworkImage("https://faceted-dull-evening.glitch.me/file/${model.type!.replaceAll(" ", "")}.png"),
+                      image: NetworkImage(base_url+"/file/${model.type!.replaceAll(" ", "")}.png"),
                     ),
                   ),
                   const SizedBox(
@@ -143,7 +140,7 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                   ),
                   const SizedBox(
                     width: 5,
-                  ),if(model.state == "2")
+                  ),if(model.state == "2"||model.state == "4")
                     Text("")
                  else if(model.auc_status == "2"||model.auc_status=="3")
                   Row(
@@ -283,6 +280,10 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                           )
                         ],
                       );
+                    }else if (model.auc_status == "4" ){
+                      return ElevatedButton(
+                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
+                          onPressed: (){}, child: Text("التحدث مع الدعم الفني لإتمام التسلبم"));
                     }
                     else if (model.auc_status == "3" ){
                       return  Center(child: Text("بإنتظار الدفع من الفائز"));

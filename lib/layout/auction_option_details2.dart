@@ -16,7 +16,6 @@ class _option_details2State extends State<option_details2> {
   final row;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     row.toString().split("^").forEach((element) {
       main_data_map[element.split("**")[0]]=element.split("**")[1];

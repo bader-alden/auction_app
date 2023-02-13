@@ -1,4 +1,5 @@
 import 'package:auction_app/cache.dart';
+import 'package:auction_app/const.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_app/dio.dart';
 import 'package:webviewx/webviewx.dart';
@@ -31,8 +32,10 @@ class _PaymentState extends State<Payment> {
                 "type":model.type,
                 "pay_type":pay_type,
                 "price":model.price,
+                "discount":model.time
                 }),
         builder: (context,snapshot){
+          print(model.time);
           print(snapshot.data);
           if(snapshot.connectionState == ConnectionState.waiting){
             return Center(child: CircularProgressIndicator(),);
@@ -48,7 +51,7 @@ class _PaymentState extends State<Payment> {
               );},
             onPageStarted: (url){
                 print("="*20);
-                if(url.contains("https://faceted-dull-evening.glitch.me/pay/")){
+                if(url.contains(base_url)){
                   showDialog<void>(
                       context: context,
                       barrierDismissible: false,

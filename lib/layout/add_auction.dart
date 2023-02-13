@@ -6,7 +6,6 @@ import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
 import 'package:auction_app/layout/Home_page.dart';
 import 'package:auction_app/layout/add_auction_main_data.dart';
-import 'package:auction_app/layout/next.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -1136,7 +1135,7 @@ Widget add_rout_home(context, index, text_slot_0_add_con, text_slot_1_add_con, t
                 Expanded(
                   child: Container(
                     height: 50,
-                    decoration: BoxDecoration(color: Color.fromARGB(255, 17, 10, 64), borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(10)),
                     child: TextButton(
                       onPressed: () {
                         Navigator.pop(context);

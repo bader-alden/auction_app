@@ -82,7 +82,7 @@ List<fav_model> fav_list =[];
           lfav?.removeWhere((element) => element=="");
           fav_list =[];
           lfav?.forEach((element) async {
-            if(element!= ""){
+            if(element!= ""&& element.split("|")[1]!="archive"){
               await dio.get_data(url: "/account/get_data", quary: {
                 "id":element.split("|")[0] ,
                 "type": element.split("|")[1],
@@ -92,6 +92,11 @@ List<fav_model> fav_list =[];
                   emit(fav_state());
                 }
               });
+            }else if(element.split("|")[1]=="archive"){
+              fav_list.add(fav_model.fromjson("مزاد منهي","time",element.split("|")[1],element.split("|")[0],"4",cache.get_data("id")));
+              if(lfav.length == fav_list.length){
+                emit(fav_state());
+              }
             }
           });
         }else{

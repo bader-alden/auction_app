@@ -9,6 +9,7 @@ import '../bloc/fav/fav_bloc.dart';
 import '../bloc/locale/locale_bloc.dart';
 import '../const.dart';
 import 'auction_details.dart';
+import 'package:auction_app/models/add_model.dart';
 bool is_change = false;
 
 class Auctions extends StatelessWidget {
@@ -90,10 +91,10 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  CircleAvatar(radius:25 ,backgroundColor: Colors.red,child:Image(
+                  CircleAvatar(radius:25 ,backgroundColor: Colors.red,child:model.status=="4"?Icon(Icons.archive_outlined,color: Colors.white,size: 30,):Image(
                     height: 30,
                     width: 30,
-                    image: NetworkImage("https://faceted-dull-evening.glitch.me/file/${model.type!.replaceAll(" ", "")}.png"),
+                    image: NetworkImage(base_url+"/file/${model.type!.replaceAll(" ", "")}.png"),
                   ),),
                   const SizedBox(width: 10,),
                   Column(
@@ -106,6 +107,7 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
                   const Spacer(),
                   Container(width: 5,height: 5,decoration: BoxDecoration(color: Colors.red,borderRadius: BorderRadius.circular(20)),),
                   const SizedBox(width: 5,),
+                  if(model.status!="4")
                   Timer_widget(model.time, context, Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
                 ],
               ),
@@ -116,16 +118,47 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
                  if (model.status == "2" &&model.sub==cache.get_data("id").toString()){
                     return  Center(child: Text("بإنتظار الموافقة على السعر"));
                   }else if (model.status == "3"&&model.sub==cache.get_data("id").toString() ){
-
+                   print(model.status);
                     return   ElevatedButton(
                       style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
                       onPressed: () async {
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => Payment(model: null,)));
+                        showDialog<void>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Column(
+                                    children: [
+                                      TextButton(
+                                        child: Text('دفع المبلغ كامل بدون خصم'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => Payment(model: add_model.fromjson("a|${model.id}|${model.type}|a", {"name":"a","price":'0',"created_at":"no"}), pay_type: 'pay2',)));
+
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: Text(' خصم من الرصيد'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop(); // Dismiss alert dialog
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => Payment(model: add_model.fromjson("a|${model.id}|${model.type}|a", {"name":"a","price":'0',"created_at":"ok"}), pay_type: 'pay2',)));
+
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          //  Navigator.push(context, MaterialPageRoute(builder: (context) => Payment(model: add_model.fromjson("a|${model.id}|${model.type}|a", {"name":"a","price":'0',"time":"a"}), pay_type: 'pay2',)));
                       },
                       child: const Text("يرجى الدفع"),
                     );
-                  } else  if (model.status == "2" ||model.status == "3"){
-                   return  Center(child: Text("إنتها وقت المزاد"));
+                  } else  if (model.status == "2" ||model.status == "3") {
+                   return Center(child: Text("إنتها وقت المزاد"));
+                 } else  if (model.status == "4" ||model.type=="archive"){
+                   return  ElevatedButton(
+                       style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
+                       onPressed: (){}, child: Text("التواصل مع الدعم الفني لإتمام التسليم"));
                  }else if (model.status == "0" ){
                     return   ElevatedButton(
                       style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),

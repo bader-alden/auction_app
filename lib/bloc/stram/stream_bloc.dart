@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:auction_app/cache.dart';
+import 'package:auction_app/const.dart';
 import 'package:auction_app/models/list_auction_model.dart';
 import 'package:auction_app/models/main_list_model.dart';
 import 'package:bloc/bloc.dart';
@@ -35,8 +36,8 @@ var aa;
 
   Future init_stream_void()async {
     //emit(loading_init_stream_state());
-    // socket = IO.io('http://localhost:3000',
-     socket = IO.io('https://faceted-dull-evening.glitch.me',
+     socket = IO.io(base_url,
+     //socket = IO.io('https://faceted-dull-evening.glitch.me',
         OptionBuilder()
             .setTransports(['websocket'])
             .build());

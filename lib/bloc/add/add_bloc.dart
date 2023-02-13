@@ -53,6 +53,9 @@ List<add_model> add_list = [];
                 num++;
               }
             });
+          }else if (element.split("|")[0].toString()=="4"){
+            add_list.add(add_model.fromjson("4|m|m",{"name":"مزاد منتهي","price":"","created_at":"","status":"4"}));
+            num++;
           }
           if(add_list.length == num){
             emit(next());

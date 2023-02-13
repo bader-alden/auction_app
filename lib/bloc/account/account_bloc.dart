@@ -47,11 +47,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       if (value?.data.isNotEmpty && value?.data != "notfound") {
         cache.save_data("id",value?.data[0]['id'] );
         user = user_models.fromjson(value?.data[0]);
-        print(user?.name);
         cache.remove_data("otp_id");
         emit(is_login_state(user!));
       }else{
-        print("errrrrrorrrrrrrrr");
         emit(error_login_state());
       }
   });}
@@ -63,7 +61,6 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   }
 
   Future<FutureOr<void>> register(register_event event, Emitter<AccountState> emit) async {
-    print("start bloc login");
     await dio.post_data(url: "/account/signin", quary: {
       "mobile_id": cache.get_data("reg").toString().split("|")[0],
       "gsm_token": event.token.toString().split(":")[0],

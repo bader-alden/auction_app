@@ -100,7 +100,7 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
                    CircleAvatar(radius:25 ,backgroundColor: Colors.red,child:Image(
                      height: 30,
                     width: 30,
-                    image: NetworkImage("https://faceted-dull-evening.glitch.me/file/${model.type!.replaceAll(" ", "")}.png"),
+                    image: NetworkImage(base_url+"/file/${model.type!.replaceAll(" ", "")}.png"),
                   ),),
                   const SizedBox(width: 10,),
                   Column(

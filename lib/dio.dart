@@ -4,7 +4,7 @@ class dio {
   static Dio? dios;
   static init() {
     dios = Dio(BaseOptions(
-        baseUrl: "https://faceted-dull-evening.glitch.me/",
+        baseUrl: "http://31.220.50.200:3000/",
         receiveDataWhenStatusError: true,
         followRedirects: true,
         validateStatus: (status) { return status! < 500;},
@@ -17,16 +17,10 @@ class dio {
   }
 
   static Future<Response?> post_data(
-      {url, quary, data, lang = "ar", token,onsend}) async {
+      {url, quary, data, token,onsend}) async {
     dios?.options.headers = {'Accept':'application/json'};
 
     return dios?.post(url, queryParameters: quary, data: data,onSendProgress:onsend);
   }
 
-  static Future<Response?> put_data(
-      {url, quary, data, lang = "ar", token}) async {
-    dios?.options.headers = {'lang': lang, 'Authorization': token};
-
-    return dios?.put(url, queryParameters: quary, data: data);
-  }
 }
