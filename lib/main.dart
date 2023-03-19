@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:uni_links/uni_links.dart';
 import 'bloc/observ.dart';
 import 'bloc/theme/theme.dart';
@@ -61,9 +62,9 @@ Future<void> _initURIHandler(context) async {
 void _incomingLinkHandler(context) {
     _streamSubscription = uriLinkStream.listen((Uri? uri) {
       debugPrint('Received URI: $uri');
-      showDialog(context: context, builder: (context){
-        return const AlertDialog(title: Center(child: CircularProgressIndicator()),);
-      });
+      // showDialog(context: context, builder: (context){
+      //   return const AlertDialog(title: Center(child: CircularProgressIndicator()),);
+      // });
       if(uri?.queryParameters["id"] != null &&uri?.queryParameters["type"] != null){
         Future.delayed(const Duration(milliseconds: 500)).then((value) {
           Navigator.pop(context);
@@ -160,25 +161,31 @@ class _FirstState extends State<First> {
     return FutureBuilder(
       future: init(),
       builder: (context,snapshot) {
-        if(snapshot.connectionState == ConnectionState.waiting){
+        print(snapshot.data);
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
             color: Colors.black,
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Image.asset("assets/img/back.png",height: double.infinity,width: double.infinity,fit: BoxFit.fill),
+                Image.asset("assets/img/back.png", height: double.infinity, width: double.infinity, fit: BoxFit.fill),
                 Image.asset("assets/img/intro.gif",),
               ],
             ),
           );
         }
-        else return App();
-      }
-    );
+        else {
+          // else if(snapshot.data.toString() =="ok") {
+          return App();
+          // } else {
+          //   return Container(color: Colors.cyan,);
+          // }
+        }
+      });
   }
 }
 
-init() async{
+Future<String?> init() async{
   await WidgetsFlutterBinding.ensureInitialized();
   await dio.init();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -213,8 +220,10 @@ init() async{
   });
   print(fcmToken);
   Bloc.observer =  MyBlocObserver();
+
+  //return  "no";
   await Future.delayed(Duration(seconds:3));
-  return await "ok";
+ // return await "ok";
 }
 
 
@@ -288,31 +297,48 @@ class _ttState extends State<tt> {
 @override
   void initState() {
   _initURIHandler(context);
-  _incomingLinkHandler(context);
+ // _incomingLinkHandler(context);
     super.initState();
   }
   @override
   Widget build(BuildContext context)  {
   return const Home();
-  // return StatefulBuilder(
-  //   builder: (context,set) {
-  //     return FutureBuilder(
-  //         future: http.get(Uri.parse("https://tatbeky01.000webhostapp.com/"))
-  //         ,builder: (context,snapshot){
-  //           if(snapshot.hasData){
-  //             if(snapshot.data?.body == "b"){
-  //               return const Home();
-  //             }else{
-  //               return Container(color: Colors.black,);
-  //             }
+  // return FutureBuilder(
+  //     future: http.get(Uri.parse("http://saudisauctions.com:3000/main/version")),
+  //     builder: (context,snapshot)   {
+  //       if(snapshot.connectionState == ConnectionState.waiting){
+  //         return Container(color: Colors.red,);
+  //       }
+  //       else{
+  //         PackageInfo.fromPlatform().then((value) {
+  //           if(snapshot.data?.body == value.version){
+  //             return const Home();
+  //           }else{
+  //             return Container(color: Colors.black,);
   //           }
-  //        return Container();
-  //     });
-  //   }
-  // );
+  //         });
+  //         return Container(color: Colors.green,);
+  //       }
+  // });
    }
 }
-
+// Builder(builder: (context)  {
+// dio.get_data(url: "http://saudisauctions.com:3000/main/version").then((value) async {
+// var v = await PackageInfo.fromPlatform();
+// print(v.version);
+// print(value?.data);
+// print(value?.data.toString()== v.version);
+// if(value?.data.toString()== v.version){
+// return App();
+// }else{
+// return Container(color: Colors.cyan,);
+// }
+//
+// });
+// return Container(color: Colors.red,);
+// });
+// }
+// return Container(color: Colors.red,);
 
 
 

@@ -3,6 +3,7 @@ import 'package:auction_app/bloc/Main/Main_state.dart';
 import 'package:auction_app/bloc/locale/locale_bloc.dart';
 import 'package:auction_app/layout/Account.dart';
 import 'package:auction_app/layout/Home_page.dart';
+import 'package:auction_app/layout/add_auction.dart';
 import 'package:auction_app/layout/auction.dart';
 import 'package:auction_app/layout/my_auction.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'dart:math' as math;
 import '../bloc/stram/stream_bloc.dart';
 import '../bloc/theme/theme.dart';
 import 'favotite.dart';
+import 'new_version.dart';
 
 var con = PageController();
 
@@ -22,7 +24,7 @@ class Home extends HookWidget {
     var home_tab_con = useTabController(initialLength: 1);
     return MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => main_bloc()),
+          BlocProvider(create: (context) => main_bloc()..check_version()),
           BlocProvider(create: (context) => LocaleBloc()),
           BlocProvider(create: (context) => StreamBloc()..init_stream_void()),
         ],
@@ -43,7 +45,11 @@ class Home extends HookWidget {
             }
           },
           child: BlocConsumer<main_bloc, main_state>(
-            listener: (context, state) {},
+            listener: (context, state) {
+              if(state is not_match_version){
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>NewVersion(link: state.link,)), (route) => false);
+              }
+            },
             builder: (context, state) {
               return Scaffold(
                 body: PageView(

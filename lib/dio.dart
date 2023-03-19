@@ -5,6 +5,7 @@ class dio {
   static init() {
     dios = Dio(BaseOptions(
         baseUrl: "http://31.220.50.200:3000/",
+      //  baseUrl: "https://faceted-dull-evening.glitch.me/",
         receiveDataWhenStatusError: true,
         followRedirects: true,
         validateStatus: (status) { return status! < 500;},

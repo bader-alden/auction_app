@@ -8,6 +8,8 @@
     <application
         android:label="أوكشن السعودية"
         android:name="${applicationName}"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCqchf2DwHinNmTS1QMcJQVftUVpEYyM0Y"/>
@@ -34,7 +36,7 @@
                 <!-- Accepts URIs that begin with YOUR_SCHEME://YOUR_HOST -->
                 <data
                     android:scheme="https"
-                    android:host="faceted-dull-evening.glitch.me" />
+                    android:host="saudisauctions.com" />
             </intent-filter>
 
             <!-- App Links -->
@@ -45,7 +47,7 @@
                 <!-- Accepts URIs that begin with https://YOUR_HOST -->
                 <data
                     android:scheme="https"
-                    android:host="faceted-dull-evening.glitch.me" />
+                    android:host="saudisauctions.com" />
             </intent-filter>
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"

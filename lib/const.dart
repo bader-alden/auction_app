@@ -21,7 +21,7 @@ import 'bloc/locale/locale_bloc.dart';
 // Color main_red = const Color.fromARGB(255, 189, 93, 68);
 //Color sec_color = const Color.fromARGB(255, 245, 237, 220);
 // Color sec_color = const Color.fromARGB(255, 230, 214, 180);
-String base_url = "http://31.220.50.200:3000";
+String base_url = "http://saudisauctions.com:3000";
 void tost({String? msg,Color? color}) => Fluttertoast.showToast(
     msg: msg ??"null",
     toastLength: Toast.LENGTH_LONG,

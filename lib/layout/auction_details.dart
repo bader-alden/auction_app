@@ -378,7 +378,7 @@ class Test2 extends StatelessWidget {
                                                 IconButton(
                                                     onPressed: () {
                                                       Share.share(
-                                                          base_url+'إضغط على الرابط لمشاهدة المزاد\n /?id=$id&type=$type');
+                                                          'أوكشن السعودية للمزادات'+'\n'+'إضغط على الرابط لمشاهدة المزاد'+'\n'+'https://saudisauctions.com/?type=$type&id=$id');
                                                     },
                                                     iconSize: 20,
                                                     icon: const Icon(

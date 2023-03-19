@@ -2,7 +2,9 @@
 import 'package:auction_app/bloc/Main/Main_event.dart';
 import 'package:auction_app/bloc/Main/Main_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../models/main_list_model.dart';
+import 'package:auction_app/dio.dart';
 main_list_model? main_list;
 // List<main_list_model> test_list = [
 // main_list_model.fromjson(Map.from({'id': 1, 'type': 'real_estates', 'ar_name': 'عقارات', 'eng_name': 'Real Estates', 'detail': 'All about Real Estates', 'text':'كل شيئ عن عقارات', 'created_at': '2022-12-28T23:19:47.000000Z', 'updated_at': '2022-12-15T23:19:47.000000Z','all_kind':""})),
@@ -22,6 +24,19 @@ class main_bloc extends Bloc<main_event,main_state> {
   void change_nav_index(new_index) {
     nav_bar_index = new_index;
     emit(nav_bar_state());
+  }
+
+  void check_version (){
+    dio.get_data(url: "/main/version").then((value) {
+      PackageInfo.fromPlatform().then((valuee) {
+        if(value?.data['version']==valuee.version){
+
+        }else{
+          emit(not_match_version(value?.data['link']));
+        }
+      });
+
+    });
   }
 
   //List<main_list_model>? main_list = [];

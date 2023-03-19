@@ -1,11 +1,13 @@
+import 'dart:convert';
+
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
+import 'package:auction_app/layout/map_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_app/dio.dart';
-import 'package:webviewx/webviewx.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../main.dart';
 import '../models/add_model.dart';
-late WebViewXController webviewController;
 
 class Payment extends StatefulWidget {
   const Payment({Key? key, required this.model, required this.pay_type}) : super(key: key);
@@ -40,37 +42,82 @@ class _PaymentState extends State<Payment> {
           if(snapshot.connectionState == ConnectionState.waiting){
             return Center(child: CircularProgressIndicator(),);
           }else{
-            return WebViewX(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height,
-              onWebViewCreated: (controller){
-              webviewController = controller;
-              webviewController.loadContent(
-                snapshot.data.toString(),
-                SourceType.url,
-              );},
-            onPageStarted: (url){
+            // return WebViewX(
+            //   width: double.infinity,
+            //   height: MediaQuery.of(context).size.height,
+            //   onWebViewCreated: (controller){
+            //   webviewController = controller;
+            //   webviewController.loadContent(
+            //    // snapshot.data.toString(),
+            //     "https://saudisauctions.com:3000/",
+            //     SourceType.url,
+            //   );},
+            //
+            // onPageStarted: (url){
+            //     print("="*20);
+            //     if(url.contains(base_url)){
+            //       showDialog<void>(
+            //           context: context,
+            //           barrierDismissible: false,
+            //           builder: (BuildContext context) {
+            //             return AlertDialog(
+            //               title: Center(child: Text("سيتم التأكد من الدفعة خلال فترة يومان")),
+            //               actions: <Widget>[
+            //                 Center(child: CircularProgressIndicator()),
+            //               ],
+            //             );
+            //           },
+            //         );
+            //       Future.delayed(Duration(seconds: 3)).then((value) {
+            //         Navigator.pop(context);
+            //         webviewController.dispose();
+            //         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>App()), (route) => false);
+            //       });
+            //       }
+            // }
+            // );
+            return InAppWebView(
+            initialUrlRequest: URLRequest(url: Uri.parse(json.decode(snapshot.data.toString())!['url'].toString(),)),
+          onReceivedHttpAuthRequest: (controller, challenge) async {
+            //Do some checks here to decide if CANCELS or PROCEEDS
+            return HttpAuthResponse(action:HttpAuthResponseAction.PROCEED );
+          },
+              onReceivedClientCertRequest: (controller , challenge)async{
+              return ClientCertResponse(action: ClientCertResponseAction.IGNORE, certificatePath: '');
+              },
+          onReceivedServerTrustAuthRequest: (controller, challenge) async {
+          //Do some checks here to decide if CANCELS or PROCEEDS
+          return ServerTrustAuthResponse(action: ServerTrustAuthResponseAction.PROCEED);
+          },
+              onUpdateVisitedHistory: (con,url,c){
                 print("="*20);
-                if(url.contains(base_url)){
+                if(url!.host.contains("saudisauctions")){
+                  //dio.post_data()
                   showDialog<void>(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Center(child: Text("سيتم التأكد من الدفعة خلال فترة يومان")),
-                          actions: <Widget>[
-                            Center(child: CircularProgressIndicator()),
-                          ],
-                        );
-                      },
-                    );
-                  Future.delayed(Duration(seconds: 3)).then((value) {
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Center(child: Text("سيتم التأكد من الدفعة خلال فترة يومان")),
+                        actions: <Widget>[
+                          Center(child: CircularProgressIndicator()),
+                        ],
+                      );
+                    },
+                  );
+                  dio.post_data(url: "/pay/check",data: {
+                    'tranRef':json.decode(snapshot.data.toString())!['tran_ref']
+                  }).then((value){
                     Navigator.pop(context);
+                 //   webviewController.dispose();
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>App()), (route) => false);
                   });
-                  }
-            }
-            );
+                  // Future.delayed(Duration(seconds: 3)).then((value) {
+
+                  // });
+                }
+              },
+          );
           }
         },
       ),

@@ -10,4 +10,9 @@ class get_main_list_state extends main_state{
 }
 class loading_main_list_state extends main_state{}
 class sort_state extends main_state{}
+class not_match_version extends main_state{
+  final link;
+
+  not_match_version(this.link);
+}
 
