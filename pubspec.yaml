@@ -78,6 +78,7 @@ dependencies:
   file_picker:
   uuid:
   flutter_inappwebview:
+  change_app_package_name:
 dev_dependencies:
   flutter_test:
     sdk: flutter
