@@ -7,20 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:406163509005:android:8a77f8d0fd3601df222a44",
+        "mobilesdk_app_id": "1:406163509005:android:530288961a62e93b222a44",
         "android_client_info": {
-          "package_name": "sa.auction"
+          "package_name": "com.saudisauctions"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "406163509005-q9ogf89kndd79s572i6ogmgupq7o98fc.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "sa.auction",
-            "certificate_hash": "c54b1e38989c9b1fd1b3488e29e56783da40260e"
-          }
-        },
         {
           "client_id": "406163509005-2vgpi4illuugv58eqmo54jmdbagtg5t0.apps.googleusercontent.com",
           "client_type": 3

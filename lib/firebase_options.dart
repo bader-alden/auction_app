@@ -51,20 +51,20 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCqchf2DwHinNmTS1QMcJQVftUVpEYyM0Y',
-    appId: '1:406163509005:android:8a77f8d0fd3601df222a44',
+    appId: '1:406163509005:android:530288961a62e93b222a44',
     messagingSenderId: '406163509005',
     projectId: 'saudi-auction-a819c',
     storageBucket: 'saudi-auction-a819c.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDnKcfjlI3fURQTNShxMq_uGY4AMzBWtQs',
-    appId: '1:406163509005:ios:b1292749ce586f9d222a44',
+    apiKey: 'AIzaSyA2KKACci-tw3iCfFSsdaH2vIcbcYSAGd8',
+    appId: '1:406163509005:ios:7bc32568e8aac920222a44',
     messagingSenderId: '406163509005',
     projectId: 'saudi-auction-a819c',
     storageBucket: 'saudi-auction-a819c.appspot.com',
     androidClientId: '406163509005-q9ogf89kndd79s572i6ogmgupq7o98fc.apps.googleusercontent.com',
-    iosClientId: '406163509005-25v7fv114qgucm2cdb6mekv5a880v18s.apps.googleusercontent.com',
-    iosBundleId: 'com.tatbeky.auctionApp',
+    iosClientId: '406163509005-qr3bcfr6go9q9ej0ctmbvicn4f5fhbm9.apps.googleusercontent.com',
+    iosBundleId: 'com.saudisauctions',
   );
 }
