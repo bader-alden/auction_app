@@ -189,7 +189,7 @@ Future<String?> init() async{
   await WidgetsFlutterBinding.ensureInitialized();
   await dio.init();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon')));
+  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon'),iOS: DarwinInitializationSettings()));
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
@@ -215,6 +215,7 @@ Future<String?> init() async{
               channelDescription: channel.description,
               icon: 'app_icon',
             ),
+            iOS: DarwinNotificationDetails()
           ));
     }
   });
@@ -273,16 +274,14 @@ class _appState extends State<app> with WidgetsBindingObserver {
   }
   @override
   Widget build (BuildContext context) {
-    return DevicePreview(
-      builder: (context) => MaterialApp(
+    return
+      MaterialApp(
           theme: theme_light(),
           darkTheme: theme_dark(),
           themeMode: context.select((ThemeBloc theme) => theme.state.theme),
           useInheritedMediaQuery: true,
           debugShowCheckedModeBanner: false,
-          home: const tt()),
-      enabled: false,
-    );
+          home: const tt());
   }
 }
 class tt extends StatefulWidget {
