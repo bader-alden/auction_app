@@ -7,12 +7,15 @@ import 'package:auction_app/layout/add_money.dart';
 import 'package:auction_app/layout/my_auction.dart';
 import 'package:auction_app/layout/social_page.dart';
 import 'package:auction_app/models/user_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../bloc/locale/locale_bloc.dart';
+import '../bloc/theme/theme.dart';
 import '../const.dart';
 import 'Update_account.dart';
-
+import 'package:auction_app/dio.dart';
 bool? is_login_bool;
 PageController? account_con;
 
@@ -171,7 +174,6 @@ class main_acount extends StatelessWidget {
                         },
                         child: account_list_item(context.read<LocaleBloc>().terms, const Icon(Icons.list_alt_sharp,color: Colors.white,)),
                       ),
-
                       Container(
                         height: 2,
                         color: Colors.grey.shade400,
@@ -214,6 +216,31 @@ class main_acount extends StatelessWidget {
                         color: Colors.grey.shade400,
                       ),
                       InkWell(onTap: (){
+                       showDialog(context: context, builder: (context)=>AlertDialog(
+                         title: Text("يرجى التحدث مع الدعم الفني لألغاء الحساب و التأكد من عدم وجود مستحقات أو رد أموال",textDirection: TextDirection.rtl,),
+                       actions: [
+                         TextButton(onPressed: (){
+                           showCupertinoDialog(context: context, builder: (context)=>Center(child: Container(decoration: BoxDecoration(color: Theme.of(context).colorScheme.background,borderRadius: BorderRadius.circular(10)),width: 75,height: 75,child: Center(child: CircularProgressIndicator(color: main_red,),),),));
+                           dio.get_data(url: "/terms_and_conditions").then((value) {
+                             Navigator.pop(context);
+                             Navigator.pop(context);
+                             launchUrl(Uri.parse(value?.data[0]["the_support"]),mode:LaunchMode.externalNonBrowserApplication );
+                           });
+                         },  child: Text("موافق")),
+                         TextButton(onPressed: (){
+                           Navigator.pop(context);
+                         },  child: Text("إلغاء")),
+                       ],));
+                      },
+                        child:  account_list_item(
+                            "حذف الحساب",
+                            const Icon(Icons.delete,color: Colors.white,)),
+                      ),
+                      Container(
+                        height: 2,
+                        color: Colors.grey.shade400,
+                      ),
+                      InkWell(onTap: (){
                         context.read<AccountBloc>().add(logout_event());
                       },
                         child:  account_list_item(
@@ -223,7 +250,7 @@ class main_acount extends StatelessWidget {
                               height: 20,
                               color: Colors.white,
                             )),
-                      )
+                      ),
                     ],
                   ),
                 ),

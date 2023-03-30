@@ -79,6 +79,7 @@ dependencies:
   uuid:
   flutter_inappwebview:
   change_app_package_name:
+  shared_preferences:
 dev_dependencies:
   flutter_test:
     sdk: flutter

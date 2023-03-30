@@ -82,6 +82,7 @@ void _incomingLinkHandler(context) {
       debugPrint('Error occurred: $err');
     });
   }
+
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel', // id
   'High Importance Notifications', // description
@@ -91,7 +92,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message,flutterLo
   await Firebase.initializeApp();
   RemoteNotification? notification = message.notification;
   AndroidNotification? android = message.notification?.android;
-  if (notification != null && android != null) {
+  if (notification != null ) {
     flutterLocalNotificationsPlugin.show(
         notification.hashCode,
         notification.title,
@@ -106,6 +107,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message,flutterLo
             icon: 'app_icon',
             // other properties...
           ),
+            iOS: DarwinNotificationDetails(interruptionLevel: InterruptionLevel.critical)
         ));
   }
 }
@@ -203,7 +205,7 @@ Future<String?> init() async{
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
-    if (notification != null && android != null) {
+    if (notification != null ) {
       flutterLocalNotificationsPlugin.show(
           notification.hashCode,
           notification.title,
@@ -215,7 +217,7 @@ Future<String?> init() async{
               channelDescription: channel.description,
               icon: 'app_icon',
             ),
-            iOS: DarwinNotificationDetails()
+            iOS: DarwinNotificationDetails(interruptionLevel: InterruptionLevel.critical)
           ));
     }
   });
@@ -296,7 +298,7 @@ class _ttState extends State<tt> {
 @override
   void initState() {
   _initURIHandler(context);
- // _incomingLinkHandler(context);
+  _incomingLinkHandler(context);
     super.initState();
   }
   @override

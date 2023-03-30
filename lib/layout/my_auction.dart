@@ -4,9 +4,11 @@ import 'package:auction_app/cache.dart';
 import 'package:auction_app/dio.dart';
 import 'package:auction_app/main.dart';
 import 'package:auction_app/models/add_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../bloc/locale/locale_bloc.dart';
 import '../const.dart';
@@ -283,7 +285,14 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                     }else if (model.auc_status == "4" ){
                       return ElevatedButton(
                           style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
-                          onPressed: (){}, child: Text("التحدث مع الدعم الفني لإتمام التسلبم"));
+                          onPressed: (){
+                            showCupertinoDialog(context: context, builder: (context)=>Center(child: Container(decoration: BoxDecoration(color: Theme.of(context).colorScheme.background,borderRadius: BorderRadius.circular(10)),width: 75,height: 75,child: Center(child: CircularProgressIndicator(color: main_red,),),),));
+                            dio.get_data(url: "/terms_and_conditions").then((value) {
+                              Navigator.pop(context);
+                              print(value?.data);
+                              launchUrl(Uri.parse(value?.data[0]["the_support"]),mode:LaunchMode.externalNonBrowserApplication );
+                            });
+                          }, child: Text("التحدث مع الدعم الفني لإتمام التسليم"));
                     }
                     else if (model.auc_status == "3" ){
                       return  Center(child: Text("بإنتظار الدفع من الفائز"));
