@@ -105,13 +105,16 @@ class _PaymentState extends State<Payment> {
                       );
                     },
                   );
+                  print(json.decode(snapshot.data.toString())!['tran_ref']);
+                  print("start");
                   dio.post_data(url: "/pay/check",data: {
                     'tranRef':json.decode(snapshot.data.toString())!['tran_ref']
                   }).then((value){
+                    print(value?.data);
                     Navigator.pop(context);
                  //   webviewController.dispose();
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>App()), (route) => false);
-                  });
+                  }).onError((error, stackTrace)  {print(error.toString());});
                   // Future.delayed(Duration(seconds: 3)).then((value) {
 
                   // });

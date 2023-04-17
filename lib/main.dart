@@ -61,7 +61,6 @@ Future<void> _initURIHandler(context) async {
 
 void _incomingLinkHandler(context) {
     _streamSubscription = uriLinkStream.listen((Uri? uri) {
-      debugPrint('Received URI: $uri');
       // showDialog(context: context, builder: (context){
       //   return const AlertDialog(title: Center(child: CircularProgressIndicator()),);
       // });
@@ -75,15 +74,13 @@ void _incomingLinkHandler(context) {
         Navigator.pop(context);
        // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const App()), (route) => false);
       }
-      print(uri?.query);
-      print(uri?.queryParameters);
-      print(uri?.queryParameters["id"]);
     }, onError: (Object err) {
       debugPrint('Error occurred: $err');
     });
   }
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  'high_importance_channel', // id
   'high_importance_channel', // id
   'High Importance Notifications', // description
   importance: Importance.max,
@@ -103,11 +100,13 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message,flutterLo
             playSound: true,
             channel.id,
             channel.name,
-            channelDescription: channel.description,
+             channel.description,
             icon: 'app_icon',
             // other properties...
           ),
-            iOS: DarwinNotificationDetails(interruptionLevel: InterruptionLevel.critical)
+            iOS: IOSNotificationDetails(
+              subtitle:notification?.title,
+            )
         ));
   }
 }
@@ -163,7 +162,6 @@ class _FirstState extends State<First> {
     return FutureBuilder(
       future: init(),
       builder: (context,snapshot) {
-        print(snapshot.data);
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
             color: Colors.black,
@@ -188,19 +186,27 @@ class _FirstState extends State<First> {
 }
 
 Future<String?> init() async{
-  await WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // ).then((value) => print(value.name)).onError((error, stackTrace)
+  // {print(error);});
+  // print("aaaaaaa");
+  //
+
+  await Future.delayed(Duration(seconds:3));
   await dio.init();
+  print("aaaaaaa");
+  await cache.init();
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon'),iOS: DarwinInitializationSettings()));
+  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon'),iOS: IOSInitializationSettings()));
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
-  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
-  await cache.init();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  final fcmToken = await FirebaseMessaging.instance.getToken();
+  // flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
+
   FirebaseMessaging.onBackgroundMessage((message) => _firebaseMessagingBackgroundHandler(message,flutterLocalNotificationsPlugin));
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     RemoteNotification? notification = message.notification;
@@ -214,19 +220,30 @@ Future<String?> init() async{
             android: AndroidNotificationDetails(
               channel.id,
               channel.name,
-              channelDescription: channel.description,
+              channel.description,
               icon: 'app_icon',
             ),
-            iOS: DarwinNotificationDetails(interruptionLevel: InterruptionLevel.critical)
+            iOS: IOSNotificationDetails(
+              subtitle:notification.body,
+            )
           ));
     }
   });
-  print(fcmToken);
+
+
+
   Bloc.observer =  MyBlocObserver();
 
+  if (Firebase.apps.isEmpty) {
+    Firebase.initializeApp().then((value) => print(value.name)).onError((error, stackTrace) {print(error);});
+  }else {
+    Firebase.app();
+  }
+  final fcmToken = await FirebaseMessaging.instance.getToken().onError((error, stackTrace) {print(error);});
+  print(fcmToken);
   //return  "no";
-  await Future.delayed(Duration(seconds:3));
- // return await "ok";
+
+ return "ok";
 }
 
 

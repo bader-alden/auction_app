@@ -40,7 +40,7 @@ dependencies:
   custom_navigation_bar:
   container_tab_indicator:
   flutter_hooks:
-  device_preview:
+  device_preview: ^1.1.0
   dio:
   equatable:
   uni_links:
@@ -79,7 +79,8 @@ dependencies:
   uuid:
   flutter_inappwebview:
   change_app_package_name:
-  shared_preferences:
+  shared_preferences: ^2.1.0
+  flutter_html: ^3.0.0-alpha.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

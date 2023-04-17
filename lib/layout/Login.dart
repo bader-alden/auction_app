@@ -11,6 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:pinput/pinput.dart';
 
+import '../bloc/Main/Main_bloc.dart';
+import 'Home.dart';
+
 bool is_login = true;
 TextEditingController email_con = TextEditingController();
 TextEditingController name_con = TextEditingController();
@@ -81,10 +84,10 @@ Widget Login(BuildContext context, state) {
                                         });
                                       PhoneAuthCredential credential =
                                           PhoneAuthProvider.credential(verificationId: cache.get_data("otp_id"), smsCode: pinputController.text);
-                                      await FirebaseAuth.instance.signInWithCredential(credential).then((value) {
+                                      await FirebaseAuth.instance.signInWithCredential(credential).then((valuec) {
                                         if (cache.get_data("is_login")) {
                                           FirebaseMessaging.instance.getToken().then((value) {
-                                            print(cache.get_data("num"));
+                                            print(value);
                                             print(cache.get_data("num"));
                                             context.read<AccountBloc>().add(login_event(cache.get_data("num"), value));
                                              cache.remove_data("otp_id");
@@ -301,6 +304,7 @@ Widget Login(BuildContext context, state) {
                                           }
                                           await FirebaseAuth.instance.verifyPhoneNumber(
                                             //phoneNumber: '+963956956020',
+
                                             phoneNumber: "+966"+number_con.text,
                                             verificationCompleted: (PhoneAuthCredential credential) async {
                                               print("1");
@@ -334,9 +338,12 @@ Widget Login(BuildContext context, state) {
                                             },
                                             codeSent: (String verificationId, int? resendToken) {
                                               cache.save_data("otp_id", verificationId);
-                                              setstate((){
-                                                is_loading = false;
-                                              });
+                                              // setstate((){
+                                              //   is_loading = false;
+                                              // });
+                                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Home()), (route) => false);
+                                              context.read<main_bloc>().change_nav_index(3);
+                                              con.jumpToPage(3);
                                               print("3");
                                               print(verificationId);
                                               print(resendToken);

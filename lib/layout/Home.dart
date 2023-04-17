@@ -30,19 +30,19 @@ class Home extends HookWidget {
         ],
         child: BlocListener<StreamBloc, StreamState>(
           listener: (context, state) {
-            if (state is disconect_state) {
-              showDialog(
-                  context: context,
-                  builder: (contextk) {
-                    return AlertDialog(
-                      title: const Text("dissconect"),
-                      actions: [ElevatedButton(onPressed: (){
-                        context.read<StreamBloc>().init_stream_void();
-                        Navigator.pop(contextk);
-                      }, child: const Text("retry"))],
-                    );
-                  });
-            }
+            // if (state is disconect_state) {
+            //   showDialog(
+            //       context: context,
+            //       builder: (contextk) {
+            //         return AlertDialog(
+            //           title: const Text("dissconect"),
+            //           actions: [ElevatedButton(onPressed: (){
+            //             context.read<StreamBloc>().init_stream_void();
+            //             Navigator.pop(contextk);
+            //           }, child: const Text("retry"))],
+            //         );
+            //       });
+            // }
           },
           child: BlocConsumer<main_bloc, main_state>(
             listener: (context, state) {
