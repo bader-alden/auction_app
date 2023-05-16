@@ -29,7 +29,7 @@ class My_action extends HookWidget {
           if(state is empty_state){
            return Scaffold(
              appBar: AppBar(
-
+               leading: back_boutton(context),
                centerTitle: true,
                title: const Text("مزاداتي"),
                elevation: 0,
@@ -39,8 +39,11 @@ class My_action extends HookWidget {
                 children: [
                   Center(child: Text("لم تتم إضافة أي مزاد"),),
                   SizedBox(height: 20,),
-                  Center(child: ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_red)),onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const add_auction()));
+                  Center(child: ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_red)),onPressed: () async {
+                  await  Navigator.push(context, MaterialPageRoute(builder: (context) => const add_auction()));
+
+                  context.read<AddBloc>().check_add();
+                    AddBloc.get(context).check_add();
                   },child: Text("أنشاء"),),),
                 ],
               ),
@@ -59,10 +62,13 @@ class My_action extends HookWidget {
                               Icons.add,
                               color: Colors.white,
                             ),
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const add_auction()));
+                            onPressed: () async {
+                            await  Navigator.push(context, MaterialPageRoute(builder: (context) => const add_auction()));
+                            // context.read<AddBloc>().check_add();
+                              AddBloc.get(context).check_add();
                             }),
                         appBar: AppBar(
+                          leading :back_boutton(context),
                           centerTitle: true,
                           title: const Text("مزاداتي"),
                           elevation: 0,
@@ -116,7 +122,7 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                   CircleAvatar(
                     radius: 25,
                     backgroundColor: Colors.red,
-                    child:model.state=="4"?Icon(Icons.archive_outlined,color: Colors.white,size: 30,): Image(
+                    child:model.state=="4" || model.state == "5" ||model.type == "archive" ?Icon(Icons.archive_outlined,color: Colors.white,size: 30,): Image(
                       height: 30,
                       width: 30,
                       image: NetworkImage(base_url+"/file/${model.type!.replaceAll(" ", "")}.png"),
@@ -142,7 +148,7 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                   ),
                   const SizedBox(
                     width: 5,
-                  ),if(model.state == "2"||model.state == "4")
+                  ),if(model.state == "2"||model.state == "4"||model.state == "1" || model.auc_status == "1"||model.state == "6"||model.type == "archive")
                     Text("")
                  else if(model.auc_status == "2"||model.auc_status=="3")
                   Row(
@@ -177,7 +183,7 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                     if(model.auc_status=="2"){
                       return Row(
                         children: [
-                      Expanded(
+                          Expanded(
                         child: ElevatedButton(
                         style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green)),
                     onPressed: () async {
@@ -225,11 +231,12 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                           );
                         },
                       );
-
                     },
                     child: const Text("موافقة على السعر"),
                     ),
-                      ),SizedBox(width: 10,),Expanded(
+                      ),
+                          SizedBox(width: 10,),
+                          Expanded(
                             child: ElevatedButton(
                               style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
                               onPressed: () async {
@@ -282,7 +289,8 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                           )
                         ],
                       );
-                    }else if (model.auc_status == "4" ){
+                    }
+                    else if (model.state == "4"){
                       return ElevatedButton(
                           style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
                           onPressed: (){
@@ -296,8 +304,31 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                     }
                     else if (model.auc_status == "3" ){
                       return  Center(child: Text("بإنتظار الدفع من الفائز"));
+                    }else if (model.state == "8" ){
+                      return  Center(child: Text("تم رفض المزاد"));
+                    } else if (model.state == "9" ){
+                      return  Center(child: Text("لم يشارك أحد بالمزاد"));
                     } else if (model.state == "0" ){
                       return  Center(child: Text("بإنتظار الموافقة"));
+                    } else if (model.auc_status == "6" ){
+                      return  Center(child: Text("بإنتظار الموافقة على دفعة الفائز بالمزاد"));
+                    } else if (model.state == "5" ){
+                      return ElevatedButton(
+                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),
+                          onPressed: (){
+                            showCupertinoDialog(context: context, builder: (context)=>Center(child: Container(decoration: BoxDecoration(color: Theme.of(context).colorScheme.background,borderRadius: BorderRadius.circular(10)),width: 75,height: 75,child: Center(child: CircularProgressIndicator(color: main_red,),),),));
+                            dio.get_data(url: "/terms_and_conditions").then((value) {
+                              Navigator.pop(context);
+                              print(value?.data[0]["the_support"]);
+                              try{
+                                launchUrl(Uri.parse(value?.data[0]["the_support"]),mode:LaunchMode.externalNonBrowserApplication );
+                              }
+                            catch(e){
+                              launchUrl(Uri.parse(value?.data[0]["the_support"]),mode:LaunchMode.externalApplication );
+                            }
+                            });
+                          }, child: Text("تم رفض المزاد يرجى التواصل مع الدعم الفني لمعرفة الاسباب"));
+                    //  return  Center(child: Text("تم رفض المزاد يرجى التواصل مع الدعم الفني لمعرفة الاسباب"));
                     } else if (model.state == "3" ){
                       return  Center(child: Text("بإنتظار الموافقة على الدفعة"));
                     }else if (model.state == "2" ){

@@ -1,5 +1,6 @@
 import 'package:auction_app/bloc/locale/locale_bloc.dart';
 import 'package:auction_app/cache.dart';
+import 'package:auction_app/const.dart';
 import 'package:auction_app/dio.dart';
 import 'package:auction_app/layout/payment.dart';
 import 'package:auction_app/models/add_model.dart';
@@ -34,6 +35,7 @@ class _AddMoneyState extends State<AddMoney> {
       appBar: AppBar(
         title: Text("محفظتي"),
         centerTitle: true,
+        leading: back_boutton(context),
       ),
       body: Container(
         width: double.infinity,
@@ -85,7 +87,8 @@ class _AddMoneyState extends State<AddMoney> {
             SizedBox(height: 50,),
             ElevatedButton(onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>Payment(model: add_model.fromjson("a|a|mix|a", {"name":"a","price":add_mony_price.toString(),"time":"a"}), pay_type: "add")));
-            }, child: Text("دفع"))
+              add_mony_price_con.clear();
+              }, child: Text("دفع"))
           ],
         ),
       ),

@@ -16,6 +16,7 @@ class list_auction_model{
   String? user_id;
   String? main_data;
   String? status;
+  bool? is_hide;
   List<String>? location = [];
   auction_details_list_model? text_1;
   auction_details_list_model? text_2;
@@ -27,6 +28,7 @@ class list_auction_model{
     name = json['name'];
      id = json['id'].toString();
      kind = json['kind'].toString();
+     is_hide = json['is_hide'].toString()=="1";
      num = json['num'].toString();
      num_add = json['num_add'].toString();
      num_price = json['min_price'].toString();

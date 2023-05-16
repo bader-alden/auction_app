@@ -111,40 +111,71 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message,flutterLo
   }
 }
 main()async{
- //  await WidgetsFlutterBinding.ensureInitialized();
- //  dio.init();
- //  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
- //  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon')));
- //  await flutterLocalNotificationsPlugin
- //      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
- //      ?.createNotificationChannel(channel);
- //  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
- // await cache.init();
- //  await Firebase.initializeApp(
- //    options: DefaultFirebaseOptions.currentPlatform,
- //  );
- //  final fcmToken = await FirebaseMessaging.instance.getToken();
- //  FirebaseMessaging.onBackgroundMessage((message) => _firebaseMessagingBackgroundHandler(message,flutterLocalNotificationsPlugin));
- //  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
- //    RemoteNotification? notification = message.notification;
- //    AndroidNotification? android = message.notification?.android;
- //    if (notification != null && android != null) {
- //      flutterLocalNotificationsPlugin.show(
- //          notification.hashCode,
- //          notification.title,
- //          notification.body,
- //          NotificationDetails(
- //            android: AndroidNotificationDetails(
- //              channel.id,
- //              channel.name,
- //              channelDescription: channel.description,
- //              icon: 'app_icon',
- //            ),
- //          ));
- //    }
- //  });
- //  print(fcmToken);
- //  Bloc.observer =  MyBlocObserver();
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // ).then((value) => print(value.name)).onError((error, stackTrace)
+  // {print(error);});
+  // print("aaaaaaa");
+  //
+
+  await Future.delayed(Duration(seconds:3));
+  await dio.init();
+  print("aaaaaaa");
+  await cache.init();
+  if(cache.get_data("theme") == null){
+    cache.save_data("theme", "system");
+  }
+  if(cache.get_data("locale") == null){
+    cache.save_data("locale", "system");
+  }
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon'),iOS: IOSInitializationSettings()));
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+  // flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
+
+  FirebaseMessaging.onBackgroundMessage((message) => _firebaseMessagingBackgroundHandler(message,flutterLocalNotificationsPlugin));
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+    if (notification != null ) {
+      flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channel.description,
+                icon: 'app_icon',
+              ),
+              iOS: IOSNotificationDetails(
+                subtitle:notification.body,
+              )
+          ));
+    }
+  });
+
+
+
+  Bloc.observer =  MyBlocObserver();
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp().then((value) => print(value.name)).onError((error, stackTrace) {print(error);});
+  }else {
+    Firebase.app();
+  }
+  try{
+    final fcmToken = await FirebaseMessaging.instance.getToken().onError((error, stackTrace) {print(error);});
+    print(fcmToken);
+  }catch(e){
+
+  }
+  // final fcmToken = await FirebaseMessaging.instance.getToken().onError((error, stackTrace) {print(error);});
+  // print(fcmToken);
   runApp(const First());
 
 }
@@ -160,7 +191,7 @@ class _FirstState extends State<First> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: init(),
+    //  future: init(),
       builder: (context,snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
@@ -169,7 +200,7 @@ class _FirstState extends State<First> {
               alignment: Alignment.center,
               children: [
                 Image.asset("assets/img/back.png", height: double.infinity, width: double.infinity, fit: BoxFit.fill),
-                Image.asset("assets/img/intro.gif",),
+                Image.asset("assets/img/intro.gif", ),
               ],
             ),
           );
@@ -199,7 +230,12 @@ Future<String?> init() async{
   await dio.init();
   print("aaaaaaa");
   await cache.init();
-
+  if(cache.get_data("theme") == null){
+    cache.save_data("theme", "system");
+  }
+  if(cache.get_data("locale") == null){
+    cache.save_data("locale", "system");
+  }
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon'),iOS: IOSInitializationSettings()));
   await flutterLocalNotificationsPlugin
@@ -233,15 +269,20 @@ Future<String?> init() async{
 
 
   Bloc.observer =  MyBlocObserver();
-
   if (Firebase.apps.isEmpty) {
-    Firebase.initializeApp().then((value) => print(value.name)).onError((error, stackTrace) {print(error);});
+   await Firebase.initializeApp().then((value) => print(value.name)).onError((error, stackTrace) {print(error);});
   }else {
     Firebase.app();
   }
-  final fcmToken = await FirebaseMessaging.instance.getToken().onError((error, stackTrace) {print(error);});
-  print(fcmToken);
-  //return  "no";
+  try{
+    final fcmToken = await FirebaseMessaging.instance.getToken().onError((error, stackTrace) {print(error);});
+    print(fcmToken);
+  }catch(e){
+
+  }
+  // final fcmToken = await FirebaseMessaging.instance.getToken().onError((error, stackTrace) {print(error);});
+  // print(fcmToken);
+
 
  return "ok";
 }

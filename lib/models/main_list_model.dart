@@ -8,6 +8,7 @@ class main_list_model{
   String? terms;
   String? price;
   bool? with_location;
+  bool? is_soon;
   List<all_kind_model>? all_kind=[];
   List<String>? text_slot=[];
   List<String>? file_slot=[];
@@ -18,6 +19,7 @@ class main_list_model{
      });
      eng_name=json['eng_name'];
      ar_name=json['ar_name'];
+     is_soon=json['is_soon'].toString()=="1";
      price=json['price'].toString();
      terms=json['terms'];
      with_location=json['with_location'] == 1 ? true : false;

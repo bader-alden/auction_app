@@ -58,6 +58,20 @@ class FavBloc extends  Bloc<FavEvent,FavState> {
         }
       });
   }
+  void delet_fav_list(type,id) async {
+    await dio.get_data(url: "/account/fav", quary: {
+      "id": cache.get_data("id"),
+    }).then((value) {
+      if(value?.data[0]['fav'] !=null){
+        fav = value?.data[0]['fav'].toString().split(",");
+        fav?.remove(id+"|"+type);
+        dio.post_data(url: "/account/fav_delet", quary: {
+          "id": cache.get_data("id"),
+          "fav": fav,
+        });
+      }
+    });
+  }
  void add_to_fav_void( type, id) async {
     is_fav = true;
     emit(fav_state());
@@ -81,22 +95,24 @@ List<fav_model> fav_list =[];
           List<String>? lfav = value?.data[0][evint.type].toString().split(",");
           lfav?.removeWhere((element) => element=="");
           fav_list =[];
+
           lfav?.forEach((element) async {
-            if(element!= ""&& element.split("|")[1]!="archive"){
+
+            if(element!= ""|| element.split("|")[1]!="archive"){
               await dio.get_data(url: "/account/get_data", quary: {
                 "id":element.split("|")[0] ,
                 "type": element.split("|")[1],
               }).then((value) {
                 fav_list.add(fav_model.fromjson(value?.data[0]["name"],value?.data[0]["created_at"],element.split("|")[1],element.split("|")[0],value?.data[0]["status"],value?.data[0]["sub"]));
-                if(lfav.length == fav_list.length){
+               // if(lfav.length == fav_list.length){
                   emit(fav_state());
-                }
+              //  }
               });
             }else if(element.split("|")[1]=="archive"){
               fav_list.add(fav_model.fromjson("مزاد منهي","time",element.split("|")[1],element.split("|")[0],"4",cache.get_data("id")));
-              if(lfav.length == fav_list.length){
+             // if(lfav.length == fav_list.length){
                 emit(fav_state());
-              }
+             // }
             }
           });
         }else{

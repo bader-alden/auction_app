@@ -24,6 +24,11 @@ class logout_event extends AccountEvent {
   @override
   List<Object?> get props => [];
 }
+class set_event extends AccountEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class register_event extends AccountEvent{
   // final name;
   // final email;

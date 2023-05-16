@@ -9,6 +9,7 @@ import 'package:auction_app/layout/my_auction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'dart:math' as math;
 import '../bloc/stram/stream_bloc.dart';
 import '../bloc/theme/theme.dart';
@@ -30,19 +31,20 @@ class Home extends HookWidget {
         ],
         child: BlocListener<StreamBloc, StreamState>(
           listener: (context, state) {
-            // if (state is disconect_state) {
-            //   showDialog(
-            //       context: context,
-            //       builder: (contextk) {
-            //         return AlertDialog(
-            //           title: const Text("dissconect"),
-            //           actions: [ElevatedButton(onPressed: (){
-            //             context.read<StreamBloc>().init_stream_void();
-            //             Navigator.pop(contextk);
-            //           }, child: const Text("retry"))],
-            //         );
-            //       });
-            // }
+            if (state is disconect_state) {
+              context.read<StreamBloc>().init_stream_void();
+              // showDialog(
+              //     context: context,
+              //     builder: (contextk) {
+              //       return AlertDialog(
+              //         title: const Text("الاتصال بالسيرفر مقطوع"),
+              //         actions: [ElevatedButton(onPressed: (){
+              //           context.read<StreamBloc>().init_stream_void();
+              //          Phoenix.rebirth(context);
+              //         }, child: const Text("إعادة المحاولة"))],
+              //       );
+              //     });
+            }
           },
           child: BlocConsumer<main_bloc, main_state>(
             listener: (context, state) {

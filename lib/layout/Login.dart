@@ -130,6 +130,8 @@ Widget Login(BuildContext context, state) {
                                 TextButton(
                                     onPressed: () {
                                       cache.remove_data("otp_id");
+                                      is_loading = false;
+                                      pinputController.clear();
                                       setstate(() {});
                                     },
                                     child: Text("تغيير الرقم")),
@@ -239,7 +241,7 @@ Widget Login(BuildContext context, state) {
                                         textDirection: TextDirection.rtl,
                                         controller: adress_con,
                                         decoration: const InputDecoration(
-                                            hintText: "  العنوان", hintTextDirection: TextDirection.rtl, border: InputBorder.none),
+                                            hintText: "  العنوان (إختياري)", hintTextDirection: TextDirection.rtl, border: InputBorder.none),
                                       ),
                                     ),
                                   ),
@@ -247,27 +249,27 @@ Widget Login(BuildContext context, state) {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                if (!is_login)
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                                          ),
-                                          borderRadius: BorderRadius.circular(10)),
-                                      child: TextFormField(
-                                        keyboardType: TextInputType.number,
-                                        textDirection: TextDirection.rtl,
-                                        controller: id_num_con,
-                                        decoration: const InputDecoration(
-                                            hintText: "  رقم الهوية", hintTextDirection: TextDirection.rtl, border: InputBorder.none),
-                                      ),
-                                    ),
-                                  ),
-                                if(is_login)
-                                  SizedBox(height: 20,),
+                                // if (!is_login)
+                                //   Padding(
+                                //     padding: const EdgeInsets.all(8.0),
+                                //     child: Container(
+                                //       padding: const EdgeInsets.all(4),
+                                //       decoration: BoxDecoration(
+                                //           border: Border.all(
+                                //             color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                //           ),
+                                //           borderRadius: BorderRadius.circular(10)),
+                                //       child: TextFormField(
+                                //         keyboardType: TextInputType.number,
+                                //         textDirection: TextDirection.rtl,
+                                //         controller: id_num_con,
+                                //         decoration: const InputDecoration(
+                                //             hintText: "  رقم الهوية (إختياري)", hintTextDirection: TextDirection.rtl, border: InputBorder.none),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // if(is_login)
+                                //   SizedBox(height: 20,),
                                   if(!is_login)
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -299,12 +301,11 @@ Widget Login(BuildContext context, state) {
                                             cache.save_data("is_login", true);
                                           }
                                           else{
-                                            cache.save_data("reg", "${"+966"+number_con.text}|${name_con.text}|${email_con.text}|${adress_con.text}|${id_num_con.text}");
+                                            cache.save_data("reg", "${"+966"+number_con.text}|${name_con.text}|${email_con.text}|${adress_con.text!=""?adress_con.text:"......"}|${id_num_con.text!=""?id_num_con.text:"......"}");
                                             cache.save_data("is_login", false);
                                           }
                                           await FirebaseAuth.instance.verifyPhoneNumber(
-                                            //phoneNumber: '+963956956020',
-
+                                          //  phoneNumber: '+963956956020',
                                             phoneNumber: "+966"+number_con.text,
                                             verificationCompleted: (PhoneAuthCredential credential) async {
                                               print("1");
@@ -333,17 +334,21 @@ Widget Login(BuildContext context, state) {
                                               });
                                             },
                                             verificationFailed: (FirebaseAuthException e) {
+                                              setstate((){
+                                                is_loading = false;
+                                              });
                                               print(e.message);
                                               tost(msg: e.message, color: Colors.red);
                                             },
                                             codeSent: (String verificationId, int? resendToken) {
                                               cache.save_data("otp_id", verificationId);
-                                              // setstate((){
-                                              //   is_loading = false;
-                                              // });
-                                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Home()), (route) => false);
-                                              context.read<main_bloc>().change_nav_index(3);
-                                              con.jumpToPage(3);
+                                              setstate((){
+                                                is_loading = false;
+                                              });
+                                              // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Home()), (route) => false);
+                                              // context.read<main_bloc>().change_nav_index(3);
+                                              // con.jumpToPage(3);
+
                                               print("3");
                                               print(verificationId);
                                               print(resendToken);

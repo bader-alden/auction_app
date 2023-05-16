@@ -62,4 +62,5 @@ class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
   String get setting => lang ? "Setting " :"إعدادات التطبيق";
   String get profile => lang ? "Profile " :"الملف الشخصي";
   String get my_auction => lang ? "My Auction " :"مزاداتي";
+  String get support => lang ? "Support" :"الدعم الفني";
 }

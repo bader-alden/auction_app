@@ -29,6 +29,9 @@ class error_login_state extends AccountState {
   @override
   List<Object> get props => [];
 }
-
+class set_state extends AccountState {
+  @override
+  List<Object> get props => [];
+}
 
 

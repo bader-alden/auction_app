@@ -20,6 +20,7 @@ List<add_model> add_list = [];
   void check_add(){
     int num =0;
     dio.get_data(url: "/account/my_auction",quary: {"id":cache.get_data("id")}).then((value) {
+      add_list.clear();
       print(value?.data[0]["my_auction"]);
       if(value?.data[0]["my_auction"] !=" " &&value?.data.isNotEmpty){
         value?.data[0]["my_auction"].toString().split(",").forEach((element) async {
@@ -32,7 +33,7 @@ List<add_model> add_list = [];
           if(element!= ""){
 
           }
-          if(element!="" &&element.split("|")[0].toString()=="1" ){
+          if(element!="" &&element.split("|")[0].toString()=="1"||element.split("|")[0].toString()=="6"|| element.split("|")[0].toString()=="4"||element.split("|")[0].toString()=="8"||element.split("|")[0].toString()=="9"){
             await dio.get_data(url: "/account/get_data", quary: {
               "id":element.split("|")[1] ,
               "type": element.split("|")[2],
@@ -52,11 +53,11 @@ List<add_model> add_list = [];
                 add_list.add(add_model.fromjson(element,value?.data[0]));
                 num++;
               }
-            });
-          }else if (element.split("|")[0].toString()=="4"){
-            add_list.add(add_model.fromjson("4|m|m",{"name":"مزاد منتهي","price":"","created_at":"","status":"4"}));
-            num++;
-          }
+            });}
+          // }else if (element.split("|")[0].toString()=="4"){
+          //   add_list.add(add_model.fromjson("4|m|m",{"name":"مزاد منتهي","price":"","created_at":"","status":"4"}));
+          //   num++;
+          // }
           if(add_list.length == num){
             emit(next());
           }
@@ -67,7 +68,7 @@ List<add_model> add_list = [];
     });
   }
 
-  void add_void(my_id, name, des, price, min_price, num_day, city, type,location,text_slot_1,text_slot_2,text_slot_3,kind,name_text_1,name_text_2,name_text_3,main_data,file_slot_1,file_slot_2,file_slot_3,main_photo,list_photo,name_file1,name_file2,name_file3){
+  void add_void(my_id, name, des, price, min_price, num_day, city, type,location,text_slot_1,text_slot_2,text_slot_3,kind,name_text_1,name_text_2,name_text_3,main_data,file_slot_1,file_slot_2,file_slot_3,main_photo,list_photo,name_file1,name_file2,name_file3,is_hide){
 dio.post_data(
   url: "/post_auction",
   quary: {
@@ -94,7 +95,7 @@ dio.post_data(
   "photo":main_photo??"https://www.ipcc.ch/site/assets/uploads/sites/3/2019/10/img-placeholder.png" ,
   "photos":list_photo ,
   "main_data":main_data ,
-
+  "is_hide":is_hide ,
   }
 ).then((value) {
   print(value?.data);

@@ -168,6 +168,25 @@ class main_acount extends StatelessWidget {
                         height: 2,
                         color: Colors.grey.shade400,
                       ),
+                      InkWell(onTap: (){
+                        showCupertinoDialog(context: context, builder: (context)=>Center(child: Container(decoration: BoxDecoration(color: Theme.of(context).colorScheme.background,borderRadius: BorderRadius.circular(10)),width: 75,height: 75,child: Center(child: CircularProgressIndicator(color: main_red,),),),));
+                        dio.get_data(url: "/terms_and_conditions").then((value) {
+                          Navigator.pop(context);
+                          print(value?.data[0]["the_support"]);
+                            launchUrl(Uri.parse(value?.data[0]["the_support"]),mode:LaunchMode.externalApplication );
+                        });
+                      },
+                        child:  account_list_item(
+                            context.read<LocaleBloc>().support,
+                            const Icon(
+                            Icons.support_agent,
+                              color: Colors.white,
+                            )),
+                      ),
+                      Container(
+                        height: 2,
+                        color: Colors.grey.shade400,
+                      ),
                       InkWell(
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>Terms_page(with_init: true,)));

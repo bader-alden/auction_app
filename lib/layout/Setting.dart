@@ -82,6 +82,7 @@ class Setting extends StatelessWidget {
             SizedBox(height: 50,),
             InkWell(
                 onTap: () {
+
                   showMaterialModalBottomSheet(
                     useRootNavigator: true,
                     context: context,

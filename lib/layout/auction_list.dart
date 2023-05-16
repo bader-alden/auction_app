@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/const.dart';
+import 'package:auction_app/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -45,20 +47,21 @@ class Test3 extends StatelessWidget {
               create: (context) => LocaleBloc(),
             ),
           ],
-          child: Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: context.read<LocaleBloc>().lang
-                      ? Icon(Icons.arrow_forward_ios, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)
-                      : Icon(Icons.arrow_back_ios, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
-              title: Text(type_name),
-            ),
-            body: StatefulBuilder(builder: (context, setstate) {
-              return StreamBuilder(
+          child: StatefulBuilder(builder: (context, setstate) {
+            return Scaffold(
+              appBar: AppBar(
+                elevation: 0,
+                leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: context.read<LocaleBloc>().lang
+                        ? Icon(Icons.arrow_forward_ios, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)
+                        : Icon(Icons.arrow_back_ios, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
+                // title: Text(kind_index.),
+                title: Text(kind![kind_index].kind!),
+              ),
+              body: StreamBuilder(
                 initialData: "loading",
                 stream: context.read<StreamBloc>().get_stream_controller.stream,
                 builder: (BuildContext context, snapshot) {
@@ -72,8 +75,8 @@ class Test3 extends StatelessWidget {
                   if (snapshot.data.toString() == "NOTFOUND") {
                     return const Scaffold(
                         body: Center(
-                      child: Text("العنصر المطلوب غير متاح"),
-                    ));
+                          child: Text("العنصر المطلوب غير متاح"),
+                        ));
                   }
                   aa = "";
                   a = [];
@@ -91,15 +94,15 @@ class Test3 extends StatelessWidget {
                   }
                   list_model = [];
                   snapshot.data.forEach((element) {
-                    if (element.kind == kind?[kind_index].kind&&element.status.toString() !="2") {
+                    if (element.kind == kind?[kind_index].kind&&element.status.toString() =="0") {
                       if (filter_1 != null &&
                           double.parse(element.price) > double.parse(filter_1!.split("-")[0]) &&
                           double.parse(element.price) < double.parse(filter_1!.split("-")[1])) {
-                       if (filter_2 != null&&element.city == filter_2) {
-                        list_model?.add(element);
-                      }else if (filter_2 == null) {
-                         list_model?.add(element);
-                       }
+                        if (filter_2 != null&&element.city == filter_2) {
+                          list_model?.add(element);
+                        }else if (filter_2 == null) {
+                          list_model?.add(element);
+                        }
                       }
                       else if (filter_2 != null&&element.city == filter_2) {
                         if(filter_1 != null &&
@@ -119,328 +122,344 @@ class Test3 extends StatelessWidget {
                     child: snapshot.connectionState == ConnectionState.waiting
                         ? const Center(child: CircularProgressIndicator())
                         : Column(
-                            children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: StatefulBuilder(builder: (context, sertstte) {
-                                    return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: 85,
-                                          child: ListView.separated(
-                                            physics: BouncingScrollPhysics(),
-                                            shrinkWrap: true,
-                                              scrollDirection: Axis.horizontal,
-                                              itemBuilder: (context,index){
-                                              print(kind!.length);
-                                            return Column(
-                                              children: [
-                                                InkWell(
-                                                    borderRadius: BorderRadius.circular(100),
-                                                    onTap: () {
-                                                    //  StreamBloc().get_all(type, kind[1]);
-                                                      setstate(() {
-                                                        kind_index= index;
-                                                      });
-                                                    },
-                                                    child: CircleAvatar(
-                                                      radius: 30,
-                                                      backgroundColor: kind_index == index ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
-                                                      child:  Image(
-                                                        image: NetworkImage(kind![index].img!),
-                                                        height: 30,
-                                                      ),
-                                                    )),
-                                                SizedBox(height: 10,),
-                                                if(index == kind_index)
-                                                RotatedBox(
-                                                    quarterTurns: 90,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: StatefulBuilder(builder: (context, sertstte) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 85,
+                                  child: ListView.separated(
+                                      physics: BouncingScrollPhysics(),
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context,index){
+                                        print(kind!.length);
+                                        return Column(
+                                          children: [
+                                            InkWell(
+                                                borderRadius: BorderRadius.circular(100),
+                                                onTap: () {
+                                                  //  StreamBloc().get_all(type, kind[1]);
+                                                  setstate(() {
+                                                    kind_index= index;
+                                                  });
+                                                },
+                                                child: CircleAvatar(
+                                                  radius: 30,
+                                                  backgroundColor: kind_index == index ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
+                                                  child:  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
                                                     child: Image(
-                                                      image: const AssetImage("assets/img/5.png"),
-                                                      height: 15,
-                                                      width: 15,
-                                                      color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                                                      filterQuality: FilterQuality.high,
-                                                    ))
-                                              ],
-                                            );
-                                          }, separatorBuilder: (context,index){
-                                            return SizedBox(width: 20,);
-                                          }, itemCount: kind!.length),
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 2,
-                                          color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                                        ),
-                                        // Row(
-                                        //   children: [
-                                        //     ...kind!.map(kind_widget).toList(),
-                                        //     InkWell(
-                                        //         borderRadius: BorderRadius.circular(100),
-                                        //         onTap: () {
-                                        //           // StreamBloc().get_all(type, kind[0]);
-                                        //           setstate(() {
-                                        //             alg = 0.12;
-                                        //             is_press_kind = true;
-                                        //           });
-                                        //         },
-                                        //         child: CircleAvatar(
-                                        //           radius: 30,
-                                        //           backgroundColor:
-                                        //               is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
-                                        //           child:  Image(
-                                        //             image: NetworkImage(kind![0].img!),
-                                        //             height: 30,
-                                        //           ),
-                                        //         )),
-                                        //     const SizedBox(
-                                        //       width: 20,
-                                        //     ),
-                                        //     InkWell(
-                                        //         borderRadius: BorderRadius.circular(100),
-                                        //         onTap: () {
-                                        //           // StreamBloc().get_all(type, kind[1]);
-                                        //           setstate(() {
-                                        //             alg = 0.55;
-                                        //             is_press_kind = false;
-                                        //           });
-                                        //         },
-                                        //         child: CircleAvatar(
-                                        //           radius: 30,
-                                        //           backgroundColor:
-                                        //               !is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
-                                        //           child: const Image(
-                                        //             image: AssetImage("assets/img/12.png"),
-                                        //             height: 30,
-                                        //           ),
-                                        //         )),
-                                        //   ],
-                                        // ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        // Stack(
-                                        //   alignment: context.read<LocaleBloc>().lang
-                                        //       ? AlignmentGeometry.lerp(
-                                        //           Alignment.bottomLeft, Alignment.bottomCenter, 400 / MediaQuery.of(context).size.width * alg)!
-                                        //       : AlignmentGeometry.lerp(
-                                        //           Alignment.bottomRight, Alignment.bottomCenter, 400 / MediaQuery.of(context).size.width * alg)!,
-                                        //   children: [
-                                        //     Container(
-                                        //       width: double.infinity,
-                                        //       height: 2,
-                                        //       color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                                        //     ),
-                                        //     RotatedBox(
-                                        //         quarterTurns: 90,
-                                        //         child: Image(
-                                        //           image: const AssetImage("assets/img/5.png"),
-                                        //           height: 15,
-                                        //           width: 15,
-                                        //           color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                                        //           filterQuality: FilterQuality.high,
-                                        //         ))
-                                        //   ],
-                                        // ),
-                                        const SizedBox(
-                                          height: 0,
-                                        ),
-                                      ],
-                                    );
-                                  }),
-                                ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        showMaterialModalBottomSheet(
-                                          context: context,
-                                          backgroundColor: Colors.transparent,
-                                          builder: (context) => Container(
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context).brightness == Brightness.light ?Colors.white:Colors.grey.shade900,
-                                                borderRadius: const BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
-                                            height: MediaQuery.of(context).size.height / 3,
-                                            child: StatefulBuilder(builder: (context, setState) {
-                                              return Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  const SizedBox(height: 5,),
-                                                  Container(
-                                                    width: 150,
-                                                    height: 5,
-                                                   decoration: BoxDecoration( color: Colors.grey,borderRadius: BorderRadius.circular(30)),
-                                                  ), const SizedBox(height: 40,),
-                                                  Text(context.read<LocaleBloc>().range,style: const TextStyle(fontSize: 24),),
-                                                  Expanded(
-                                                    child: SfRangeSlider(
-                                                      min: 0.0,
-                                                      max: 100000.0,
-                                                      values: _values,
-                                                      interval: 20000,
-                                                      showTicks: true,
-                                                      showLabels: true,
-                                                      enableTooltip: true,
-                                                      minorTicksPerInterval: 1,
-                                                      onChanged: (SfRangeValues values) {
-                                                        setState(() {
-                                                          filter_1 = values.start.toString() + "-" + values.end.toString();
-                                                          _values = values;
-                                                        });
-                                                      },
+                                                      image: NetworkImage(kind![index].img!),
+                                                      height: 30,
                                                     ),
                                                   ),
-                                                  SizedBox(height: 30,),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                    if (filter_1 != null)
-                                                      ElevatedButton(
-                                                          onPressed: () {
-                                                            setstate(() {});
-                                                            Navigator.pop(context);
-                                                          },
-                                                          child: Text(context.read<LocaleBloc>().apply)),
-                                                    if (filter_1 != null)
-                                                      ElevatedButton(
-                                                        style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              filter_1 = null;
-                                                            });
-                                                            filter_1 == null;
-                                                            setstate(() {
-                                                              filter_1 == null;
-                                                            });
-                                                            Navigator.pop(context);
-                                                          },
-                                                          child: Text(context.read<LocaleBloc>().remove))
-                                                  ],),
-                                                  const SizedBox(height: 20,)
-                                                ],
-                                              );
-                                            }),
-                                          ),
+                                                )),
+                                            SizedBox(height: 10,),
+                                            if(index == kind_index)
+                                              RotatedBox(
+                                                  quarterTurns: 90,
+                                                  child: Image(
+                                                    image: const AssetImage("assets/img/5.png"),
+                                                    height: 15,
+                                                    width: 15,
+                                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                                    filterQuality: FilterQuality.high,
+                                                  ))
+                                          ],
                                         );
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: filter_1 == null ? Colors.grey : Colors.redAccent, borderRadius: BorderRadius.circular(20)),
-                                        width: 85,
-                                        height: 40,
-                                        child: Center(child: Text(context.read<LocaleBloc>().price,style: const TextStyle(color: Colors.white,fontSize: 20),)),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        showMaterialModalBottomSheet(
-                                          context: context,
-                                          backgroundColor: Colors.transparent,
-                                          builder: (context) => Container(
-                                            decoration: BoxDecoration(
-                                                color: Theme.of(context).brightness == Brightness.light ?Colors.white:Colors.grey.shade900,
-                                                borderRadius: const BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
-                                            height: MediaQuery.of(context).size.height / 3,
-                                            child: StatefulBuilder(builder: (context, setState) {
-                                              return Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  const SizedBox(height: 5,),
-                                                  Container(
-                                                    width: 150,
-                                                    height: 5,
-                                                    decoration: BoxDecoration( color: Colors.grey,borderRadius: BorderRadius.circular(30)),
-                                                  ), const SizedBox(height: 20,),
-                                                  Text(context.read<LocaleBloc>().city,style: const TextStyle(fontSize: 24),),
-                                                  const SizedBox(height: 20,),
-                                                  Expanded(
-                                                    child: ListView.separated(itemBuilder: (context,index){
-                                                      return Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: InkWell(
-                                                          onTap: (){
-                                                            setState((){
-                                                              filter_2= city_list[index];
-                                                            });
-                                                          },
-                                                            child: Center(child: Text(city_list[index],style: TextStyle(color:city_list[index]==filter_2?Colors.red:Theme.of(context).brightness == Brightness.dark ?Colors.white:Colors.black,),))),
-                                                      );
-                                                    }, separatorBuilder: (context,index){
-                                                      return Container(
-                                                        width: double.infinity,
-                                                         height: 1,
-                                                        color: Colors.grey,
-                                                      );
-                                                    }, itemCount: city_list.length),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      if (filter_2 != null)
-                                                        ElevatedButton(
-                                                            onPressed: () {
-                                                              setstate(() {});
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: Text(context.read<LocaleBloc>().apply)),
-                                                      if (filter_2 != null)
-                                                        ElevatedButton(
-                                                            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                filter_2 = null;
-                                                              });
-                                                              filter_2 == null;
-                                                              setstate(() {
-                                                                filter_2 == null;
-                                                              });
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: Text(context.read<LocaleBloc>().remove))
-                                                    ],),
-                                                  const SizedBox(height: 20,)
-                                                ],
-                                              );
-                                            }),
-                                          ),
+                                      }, separatorBuilder: (context,index){
+                                    return SizedBox(width: 20,);
+                                  }, itemCount: kind!.length),
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  height: 2,
+                                  color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                ),
+                                // Row(
+                                //   children: [
+                                //     ...kind!.map(kind_widget).toList(),
+                                //     InkWell(
+                                //         borderRadius: BorderRadius.circular(100),
+                                //         onTap: () {
+                                //           // StreamBloc().get_all(type, kind[0]);
+                                //           setstate(() {
+                                //             alg = 0.12;
+                                //             is_press_kind = true;
+                                //           });
+                                //         },
+                                //         child: CircleAvatar(
+                                //           radius: 30,
+                                //           backgroundColor:
+                                //               is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
+                                //           child:  Image(
+                                //             image: NetworkImage(kind![0].img!),
+                                //             height: 30,
+                                //           ),
+                                //         )),
+                                //     const SizedBox(
+                                //       width: 20,
+                                //     ),
+                                //     InkWell(
+                                //         borderRadius: BorderRadius.circular(100),
+                                //         onTap: () {
+                                //           // StreamBloc().get_all(type, kind[1]);
+                                //           setstate(() {
+                                //             alg = 0.55;
+                                //             is_press_kind = false;
+                                //           });
+                                //         },
+                                //         child: CircleAvatar(
+                                //           radius: 30,
+                                //           backgroundColor:
+                                //               !is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
+                                //           child: const Image(
+                                //             image: AssetImage("assets/img/12.png"),
+                                //             height: 30,
+                                //           ),
+                                //         )),
+                                //   ],
+                                // ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                // Stack(
+                                //   alignment: context.read<LocaleBloc>().lang
+                                //       ? AlignmentGeometry.lerp(
+                                //           Alignment.bottomLeft, Alignment.bottomCenter, 400 / MediaQuery.of(context).size.width * alg)!
+                                //       : AlignmentGeometry.lerp(
+                                //           Alignment.bottomRight, Alignment.bottomCenter, 400 / MediaQuery.of(context).size.width * alg)!,
+                                //   children: [
+                                //     Container(
+                                //       width: double.infinity,
+                                //       height: 2,
+                                //       color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                //     ),
+                                //     RotatedBox(
+                                //         quarterTurns: 90,
+                                //         child: Image(
+                                //           image: const AssetImage("assets/img/5.png"),
+                                //           height: 15,
+                                //           width: 15,
+                                //           color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                                //           filterQuality: FilterQuality.high,
+                                //         ))
+                                //   ],
+                                // ),
+                                const SizedBox(
+                                  height: 0,
+                                ),
+                              ],
+                            );
+                          }),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  showMaterialModalBottomSheet(
+                                    context: context,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) => Container(
+                                      decoration: BoxDecoration(
+                                          color: Theme.of(context).brightness == Brightness.light ?Colors.white:Colors.grey.shade900,
+                                          borderRadius: const BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
+                                      height: MediaQuery.of(context).size.height / 3,
+                                      child: StatefulBuilder(builder: (context, setState) {
+                                        return Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            const SizedBox(height: 5,),
+                                            Container(
+                                              width: 150,
+                                              height: 5,
+                                              decoration: BoxDecoration( color: Colors.grey,borderRadius: BorderRadius.circular(30)),
+                                            ), const SizedBox(height: 40,),
+                                            Text(context.read<LocaleBloc>().range,style: const TextStyle(fontSize: 24),),
+                                            Expanded(
+                                              child: SfRangeSlider(
+                                                min: 0.0,
+                                                max: 100000.0,
+                                                values: _values,
+                                                interval: 20000,
+                                                showTicks: true,
+                                                showLabels: true,
+                                                enableTooltip: true,
+                                                minorTicksPerInterval: 1,
+                                                onChanged: (SfRangeValues values) {
+                                                  setState(() {
+                                                    filter_1 = values.start.toString() + "-" + values.end.toString();
+                                                    _values = values;
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                            SizedBox(height: 30,),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                if (filter_1 != null)
+                                                  ElevatedButton(
+                                                      onPressed: () {
+                                                        setstate(() {});
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text(context.read<LocaleBloc>().apply)),
+                                                if (filter_1 != null)
+                                                  ElevatedButton(
+                                                      style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          filter_1 = null;
+                                                        });
+                                                        filter_1 == null;
+                                                        setstate(() {
+                                                          filter_1 == null;
+                                                        });
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text(context.read<LocaleBloc>().remove))
+                                              ],),
+                                            const SizedBox(height: 20,)
+                                          ],
                                         );
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: filter_2 == null ? Colors.grey : Colors.redAccent, borderRadius: BorderRadius.circular(20)),
-                                        width: 85,
-                                        height: 40,
-                                        child: Center(child: Text(context.read<LocaleBloc>().city_str,style: const TextStyle(color: Colors.white,fontSize: 20),)),
-                                      ),
+                                      }),
                                     ),
-                                    // InkWell(
-                                    //   onTap: (){
-                                    //
-                                    //   },
-                                    //   child: Container(
-                                    //     decoration: BoxDecoration(
-                                    //         color: filter_2 == null ? Colors.grey : Colors.redAccent, borderRadius: BorderRadius.circular(20)),
-                                    //     width: 85,
-                                    //     height: 40,
-                                    //     child: Center(child: Text("city",style: TextStyle(color: Colors.white,fontSize: 20),)),
-                                    //   ),
-                                    // ),
-                                  ],
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: filter_1 == null ? Colors.grey : Colors.redAccent, borderRadius: BorderRadius.circular(20)),
+                                  width: 85,
+                                  height: 40,
+                                  child: Center(child: Text(context.read<LocaleBloc>().price,style: const TextStyle(color: Colors.white,fontSize: 20),)),
                                 ),
                               ),
-                              Expanded(child: list_auction_widget(list_model!, aa)),
+                              InkWell(
+                                onTap: () {
+                                  showMaterialModalBottomSheet(
+                                    context: context,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) => Container(
+                                      decoration: BoxDecoration(
+                                          color: Theme.of(context).brightness == Brightness.light ?Colors.white:Colors.grey.shade900,
+                                          borderRadius: const BorderRadius.only(topRight: Radius.circular(50), topLeft: Radius.circular(50))),
+                                      height: MediaQuery.of(context).size.height / 3,
+                                      child: StatefulBuilder(builder: (context, setState) {
+                                        return Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            const SizedBox(height: 5,),
+                                            Container(
+                                              width: 150,
+                                              height: 5,
+                                              decoration: BoxDecoration( color: Colors.grey,borderRadius: BorderRadius.circular(30)),
+                                            ), const SizedBox(height: 20,),
+                                            Text(context.read<LocaleBloc>().city,style: const TextStyle(fontSize: 24),),
+                                            const SizedBox(height: 20,),
+                                            Expanded(
+                                              child: FutureBuilder(
+                                                  future: dio.get_data(url:"/dash/city"),
+                                                  builder: (context,snap) {
+                                                    print(snap.data?.data);
+                                                    print(snap.data);
+                                                    if(snap.connectionState == ConnectionState.waiting){
+                                                      return Center(child: CircularProgressIndicator(color: main_red,));
+                                                    }else {
+                                                      var citys_list = snap.data?.data as List;
+                                                      return ListView.separated(
+                                                          itemBuilder: (context,index){
+                                                            return Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: InkWell(
+                                                                  onTap: (){
+                                                                    setState((){
+                                                                      filter_2= citys_list[index]["namecity"];
+                                                                    });
+                                                                  },
+                                                                  child: Center(child: Text(citys_list[index]["namecity"],style: TextStyle(color:citys_list[index]["namecity"]==filter_2?Colors.red:Theme.of(context).brightness == Brightness.dark ?Colors.white:Colors.black,),))),
+                                                            );
+                                                          }, separatorBuilder: (context,index){
+                                                        return Container(
+                                                          width: double.infinity,
+                                                          height: 1,
+                                                          color: Colors.grey,
+                                                        );
+                                                      }, itemCount: citys_list.length);
+                                                    }
+                                                  }
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                if (filter_2 != null)
+                                                  ElevatedButton(
+                                                      onPressed: () {
+                                                        setstate(() {});
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text(context.read<LocaleBloc>().apply)),
+                                                if (filter_2 != null)
+                                                  ElevatedButton(
+                                                      style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          filter_2 = null;
+                                                        });
+                                                        filter_2 == null;
+                                                        setstate(() {
+                                                          filter_2 == null;
+                                                        });
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text(context.read<LocaleBloc>().remove))
+                                              ],),
+                                            const SizedBox(height: 20,)
+                                          ],
+                                        );
+                                      }),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: filter_2 == null ? Colors.grey : Colors.redAccent, borderRadius: BorderRadius.circular(20)),
+                                  width: 85,
+                                  height: 40,
+                                  child: Center(child: Text(context.read<LocaleBloc>().city_str,style: const TextStyle(color: Colors.white,fontSize: 20),)),
+                                ),
+                              ),
+                              // InkWell(
+                              //   onTap: (){
+                              //
+                              //   },
+                              //   child: Container(
+                              //     decoration: BoxDecoration(
+                              //         color: filter_2 == null ? Colors.grey : Colors.redAccent, borderRadius: BorderRadius.circular(20)),
+                              //     width: 85,
+                              //     height: 40,
+                              //     child: Center(child: Text("city",style: TextStyle(color: Colors.white,fontSize: 20),)),
+                              //   ),
+                              // ),
                             ],
                           ),
+                        ),
+                        Expanded(child: list_auction_widget(list_model!, aa)),
+                      ],
+                    ),
                   );
                 },
-              );
-            }),
-          ),
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -560,7 +579,15 @@ class Test3 extends StatelessWidget {
                               const SizedBox(
                                 height: 10,
                               ),
-                              Text(context.read<LocaleBloc>().price+": " + model.price! + context.read<LocaleBloc>().curunce, style: const TextStyle(color: Colors.grey)),
+                              Row(
+                                children: [
+                                  Text(context.read<LocaleBloc>().price+": " , style: const TextStyle(color: Colors.grey)),
+                                  ImageFiltered(
+                                    enabled: model.is_hide??false,
+                                      imageFilter: ImageFilter.blur(sigmaY: 3,sigmaX: 3),
+                                      child: Text((model.is_hide??false?"000000" : model.price!) + context.read<LocaleBloc>().curunce, style: const TextStyle(color: Colors.grey))),
+                                ],
+                              ),
                             ],
                           ),
                         ),

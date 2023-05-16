@@ -8,6 +8,7 @@ import 'package:auction_app/dio.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../main.dart';
 import '../models/add_model.dart';
+InAppWebViewController? webViewController;
 
 class Payment extends StatefulWidget {
   const Payment({Key? key, required this.model, required this.pay_type}) : super(key: key);
@@ -23,10 +24,22 @@ class _PaymentState extends State<Payment> {
   final String pay_type;
 
   _PaymentState(this.model, this.pay_type);
+
+  @override
+  void dispose() {
+    super.dispose();
+    webViewController?.clearCache();
+    webViewController?.clearFocus();
+    webViewController?.clearMatches();
+    webViewController?.removeAllUserScripts();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: back_boutton(context),
+      ),
       body: FutureBuilder(
         future: dio.post_data(url: "/pay",quary: {
                 "user_id":cache.get_data("id"),
@@ -78,6 +91,9 @@ class _PaymentState extends State<Payment> {
             // );
             return InAppWebView(
             initialUrlRequest: URLRequest(url: Uri.parse(json.decode(snapshot.data.toString())!['url'].toString(),)),
+          onWebViewCreated: (controller){
+            webViewController = controller;
+          },
           onReceivedHttpAuthRequest: (controller, challenge) async {
             //Do some checks here to decide if CANCELS or PROCEEDS
             return HttpAuthResponse(action:HttpAuthResponseAction.PROCEED );
@@ -91,6 +107,7 @@ class _PaymentState extends State<Payment> {
           },
               onUpdateVisitedHistory: (con,url,c){
                 print("="*20);
+                print(webViewController?.getTitle());
                 if(url!.host.contains("saudisauctions")){
                   //dio.post_data()
                   showDialog<void>(
@@ -109,7 +126,7 @@ class _PaymentState extends State<Payment> {
                   print("start");
                   dio.post_data(url: "/pay/check",data: {
                     'tranRef':json.decode(snapshot.data.toString())!['tran_ref']
-                  }).then((value){
+                  },quary: { 'tranRef':json.decode(snapshot.data.toString())!['tran_ref']}).then((value){
                     print(value?.data);
                     Navigator.pop(context);
                  //   webviewController.dispose();

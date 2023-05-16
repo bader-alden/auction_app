@@ -1,4 +1,5 @@
 import 'package:auction_app/bloc/theme/theme.dart';
+import 'package:auction_app/const.dart';
 import 'package:auction_app/dio.dart';
 import 'package:flutter/material.dart';
 bool is_repo_loading=false;
@@ -18,6 +19,7 @@ class _RepoState extends State<Repo> {
       appBar: AppBar(
         title:  Text("إرسال شكوى"),
         centerTitle: true,
+        leading: back_boutton(context),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

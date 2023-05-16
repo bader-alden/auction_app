@@ -36,18 +36,36 @@ var aa;
 
   Future init_stream_void()async {
     //emit(loading_init_stream_state());
-     socket = IO.io(base_url,
+     socket = IO.io(base_url,<String, dynamic>{
+     'transports': ['websocket'],
+     'force new connection': true,
+     'query': {
+     'timeStamp': new DateTime.now().millisecondsSinceEpoch
+     }
+     },
      //socket = IO.io('https://faceted-dull-evening.glitch.me',
-        OptionBuilder()
-            .setTransports(['websocket'])
-            .build());
+        );
    // socket?.connect();
      socket?.onConnect((_) {
       //  emit(scss_init_stream_state());
       // socket?.emit("a",socket.id);
     });
     socket?.onDisconnect((_)  {
+      // socket?.disconnect();
+      // socket?.dispose();
+      // socket?.destroy();
       print("desconect");
+      socket = IO.io(base_url,<String, dynamic>{
+        'transports': ['websocket'],
+        'force new connection': true,
+        'query': {
+          'timeStamp': new DateTime.now().millisecondsSinceEpoch
+        }
+      },
+
+        //socket = IO.io('https://faceted-dull-evening.glitch.me',
+      );
+
     emit(disconect_state());
     });
     socket?.onConnectError((err) {

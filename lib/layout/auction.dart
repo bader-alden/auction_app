@@ -91,7 +91,7 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  CircleAvatar(radius:25 ,backgroundColor: Colors.red,child:model.status=="4"?Icon(Icons.archive_outlined,color: Colors.white,size: 30,):Image(
+                  CircleAvatar(radius:25 ,backgroundColor: Colors.red,child:model.status=="4"||model.type=="archive"?Icon(Icons.archive_outlined,color: Colors.white,size: 30,):Image(
                     height: 30,
                     width: 30,
                     image: NetworkImage(base_url+"/file/${model.type!.replaceAll(" ", "")}.png"),
@@ -103,11 +103,10 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
                       Text(model.name!,style: const TextStyle(fontSize: 20),),
                     ],
                   ),
-                  
                   const Spacer(),
                   Container(width: 5,height: 5,decoration: BoxDecoration(color: Colors.red,borderRadius: BorderRadius.circular(20)),),
                   const SizedBox(width: 5,),
-                  if(model.status!="4")
+                  if(model.status=="0")
                   Timer_widget(model.time, context, Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
                 ],
               ),
@@ -155,6 +154,8 @@ Widget my_auction_item(context,index,fav_model model,setstate) {
                     );
                   } else  if (model.status == "2" ||model.status == "3") {
                    return Center(child: Text("إنتها وقت المزاد"));
+                 } else  if (model.status == "6" ) {
+                   return Center(child: Text("بإنتظار الموافقة على الدفعة"));
                  } else  if (model.status == "4" ||model.type=="archive"){
                    return  ElevatedButton(
                        style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.grey.shade400)),

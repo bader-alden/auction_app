@@ -268,3 +268,121 @@ Widget drawer_widget(BuildContext context,GlobalKey<ScaffoldState> scaffold){
     ),
   ));
 }
+
+Widget back_boutton (context){
+  return  IconButton(
+  onPressed: () {
+  Navigator.pop(context);
+  },
+  icon:Icon(Icons.arrow_back_ios_new, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black));
+}
+
+Widget Timer_widget_home(time,BuildContext context,Color text_color){
+  return CountdownTimer(
+    // endTime:  DateTime.now().millisecondsSinceEpoch + 1000 * 190000000,
+    endTime: DateTime.parse(time!).microsecondsSinceEpoch ~/ 1000,
+    widgetBuilder: (_, CurrentRemainingTime? time) {
+      if (time == null) {
+        return Center(child: Text('---',style: TextStyle(color: text_color),));
+      }
+      if(time.days == null && time.hours == null && time.min == null  ){
+        return  Directionality(
+          textDirection: TextDirection.ltr,
+          child: AnimatedFlipCounter(
+            textStyle:  TextStyle(color: text_color),
+            duration: const Duration(seconds: 1),
+            value: time.sec!.toInt(),
+            prefix: context.read<LocaleBloc>().lang?"":"${context.read<LocaleBloc>().second} ",
+            suffix: context.read<LocaleBloc>().lang?" ${context.read<LocaleBloc>().second}":"",
+          ),
+        );
+        //return Text('${time.sec} '+context.read<LocaleBloc>().second,style: TextStyle(color: text_color),);
+      }
+      if(time.days == null &&time.hours == null ){
+        return  Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: AnimatedFlipCounter(
+                textStyle: TextStyle(color: text_color),
+                duration: const Duration(seconds: 1),
+                value: time.sec!.toInt(),
+                prefix: context.read<LocaleBloc>().lang?"":"${context.read<LocaleBloc>().second} ",
+                suffix: context.read<LocaleBloc>().lang?" ${context.read<LocaleBloc>().second}":"",
+              ),
+            ),
+            Text(" : ",style:TextStyle(color: text_color),),
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: AnimatedFlipCounter(
+                textStyle: TextStyle(color: text_color),
+                duration: const Duration(seconds: 1),
+                value: time.min!.toInt(),
+                prefix: context.read<LocaleBloc>().lang?"":"${context.read<LocaleBloc>().minutes} ",
+                suffix: context.read<LocaleBloc>().lang?" ${context.read<LocaleBloc>().minutes}":"",
+              ),
+            ),
+          ],
+        );
+        //return Text('${time.min} ${context.read<LocaleBloc>().minutes} : ${time.sec} '+context.read<LocaleBloc>().second,style: TextStyle(color: text_color),);
+      }
+      if(time.days == null ){
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: AnimatedFlipCounter(
+                textStyle: TextStyle(color: text_color),
+                duration: const Duration(seconds: 1),
+                value: time.min!.toInt(),
+                prefix: context.read<LocaleBloc>().lang?"":"${context.read<LocaleBloc>().minutes} ",
+                suffix: context.read<LocaleBloc>().lang?" ${context.read<LocaleBloc>().minutes}":"",
+              ),
+            ),
+            Text(" : ",style:TextStyle(color: text_color),),
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: AnimatedFlipCounter(
+                textStyle: TextStyle(color: text_color),
+                duration: const Duration(seconds: 1),
+                value: time.hours!.toInt(),
+                prefix: context.read<LocaleBloc>().lang?"":"${context.read<LocaleBloc>().hour} ",
+                suffix: context.read<LocaleBloc>().lang?" ${context.read<LocaleBloc>().hour}":"",
+              ),
+            ),
+          ],
+        );
+        //return Text('${time.hours} ${context.read<LocaleBloc>().hour} : ${time.min} '+context.read<LocaleBloc>().minutes,style: TextStyle(color: text_color),);
+      }
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: AnimatedFlipCounter(
+              textStyle: TextStyle(color: text_color),
+              duration: const Duration(seconds: 1),
+              value: time.hours!.toInt(),
+              prefix: context.read<LocaleBloc>().lang?"":"${context.read<LocaleBloc>().hour} ",
+              suffix: context.read<LocaleBloc>().lang?" ${context.read<LocaleBloc>().hour}":"",
+            ),
+          ),
+          Text(" : ",style:TextStyle(color: text_color),),
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: AnimatedFlipCounter(
+              textStyle: TextStyle(color: text_color),
+              duration: const Duration(seconds: 1),
+              value: time.days!.toInt(),
+              prefix: context.read<LocaleBloc>().lang?"":"${context.read<LocaleBloc>().day} ",
+              suffix: context.read<LocaleBloc>().lang?" ${context.read<LocaleBloc>().day}":"",
+            ),
+          ),
+        ],
+      );
+      //return Text('${time.days} ${context.read<LocaleBloc>().day} : ${time.hours} '+context.read<LocaleBloc>().hour,style: TextStyle(color: text_color),);
+    },
+  );
+}

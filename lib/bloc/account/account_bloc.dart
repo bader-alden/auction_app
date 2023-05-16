@@ -14,6 +14,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<login_event>(login);
     on<logout_event>(logout);
     on<register_event>(register);
+    on<set_event>(set_void);
   }
   user_models? user;
   Future<void> app_load(Accountlodaded event, Emitter<AccountState>emit) async {
@@ -84,8 +85,15 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           }
         });
       }else{
+        print("get null");
         print(value?.data);
       }
     });
+  }
+
+
+
+  FutureOr<void> set_void(set_event event, Emitter<AccountState> emit) {
+    emit(set_state());
   }
 }

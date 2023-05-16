@@ -1,4 +1,6 @@
 
+import 'dart:ui';
+
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:auction_app/bloc/home_page/home_page_list_bloc.dart';
 import 'package:auction_app/layout/Setting.dart';
@@ -60,7 +62,7 @@ Widget Home_page(BuildContext context, home_tab_con) {
                   ),
                 ),
                 Expanded(
-                    flex: 3,
+                    flex: 4,
                     child: BlocConsumer<HomePageListBloc, HomePageListState>(
                       listener: (context, state) {},
                       builder: (context, state) {
@@ -355,7 +357,7 @@ Widget tabbs(a) => Text(
 
 Widget home_page_item(int index, BuildContext context, main_list_model model) {
   return InkWell(
-    onTap: () {
+    onTap: model.is_soon??true ?null:() {
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -363,60 +365,79 @@ Widget home_page_item(int index, BuildContext context, main_list_model model) {
                   Test3(type: model.type, type_name: context.read<LocaleBloc>().lang ? model.eng_name! : model.ar_name!, kind: model.all_kind)));
     },
     borderRadius: BorderRadius.circular(20),
-    child: Column(
-      children: [
-        Stack(
-          alignment: context.read<LocaleBloc>().lang ? Alignment.topRight : Alignment.topLeft,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(right: context.read<LocaleBloc>().lang ? 8 : 0, left: context.read<LocaleBloc>().lang ? 0 : 8, top: 2),
-              child: CircleAvatar(
-                  radius: 25,
-                  backgroundColor: main_red,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image(
-                      image: NetworkImage(base_url+"/file/${model.type!}.png"),
-                    ),
-                  )),
-            ),
-            Container(
-              height: 23,
-                width: 23,
-                decoration: BoxDecoration(
-                    color: sec_color,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white, width: 2.5)),
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: Center(
-                    child: Text(
-                  model.count!,
-                  style: const TextStyle(color: Colors.black, fontSize: 12),
-                ))),
-          ],
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        Builder(builder: (context) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+    child: Container(
+      foregroundDecoration:
+      model.is_soon??true ? BoxDecoration(
+        color: Colors.grey,
+        backgroundBlendMode: BlendMode.saturation,
+      )
+      :BoxDecoration(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+
+    Padding(
+      padding: const EdgeInsets.all(0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Stack(
+            alignment: context.read<LocaleBloc>().lang ? Alignment.topRight : Alignment.topLeft,
             children: [
-              SizedBox(height: 10,),
-              Text(context.read<LocaleBloc>().lang ? model.eng_name! : model.ar_name!,style: TextStyle(fontWeight: FontWeight.bold),),
-             // Text(context.read<LocaleBloc>().lang ? model.detail! : model.text!)
+              Padding(
+                 padding: EdgeInsets.only(right: context.read<LocaleBloc>().lang ? 8 : 0, left: context.read<LocaleBloc>().lang ? 0 : 8, top: 2),
+                child: CircleAvatar(
+                  backgroundColor: main_red,
+                    radius: 25,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image(
+                        image: NetworkImage(base_url+"/file/${model.type!}.png"),
+                      ),
+                    )),
+              ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    height: 23,
+                    width: 23,
+                    decoration: BoxDecoration(
+                        color: sec_color,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white, width: 2.5)),
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                  ),
+                  Text(
+                    model.is_soon??true?"0":model.count!,
+                    style: const TextStyle(color: Colors.black, fontSize: 12),
+                  ),
+                ],
+              ),
             ],
-          );
-        }),
-        SizedBox(height: 10,),
-        //const Spacer(),
-        Container(
-          child:  Timer_widget(model.time, context,Theme.of(context).brightness == Brightness.dark ? Colors.white:Colors.black),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-      ],
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          SizedBox(height: 10,),
+          Text(context.read<LocaleBloc>().lang ? model.eng_name! : model.ar_name!,style: TextStyle(fontWeight: FontWeight.bold),),
+          // Text(context.read<LocaleBloc>().lang ? model.detail! : model.text!)
+        ],
+      ),
+    ),
+          SizedBox(height: 10,),
+          //const Spacer(),
+          Container(
+            child:model.is_soon??true
+            ?Text("قريبا...")
+            :Timer_widget_home(model.time, context,Theme.of(context).brightness == Brightness.dark ? Colors.white:Colors.black),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+        ],
+      ),
     ),
   );
 }

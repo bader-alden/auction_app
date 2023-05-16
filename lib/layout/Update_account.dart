@@ -75,33 +75,6 @@ class Update_account extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(
-                      "رقم الهوية:",
-                      style: TextStyle(fontSize: 25),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                        ),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: TextFormField(
-                      controller: number_id_update_con,
-                      textDirection: TextDirection.rtl,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     child: Text(
@@ -146,7 +119,7 @@ class Update_account extends StatelessWidget {
                               "id":user.id,
                               "email":email_update_con.text,
                               "address":address_update_con.text,
-                              "id_number":number_id_update_con.text,
+                              "id_number":"....",
                             },
                           ).then((value) {
                             print(value);

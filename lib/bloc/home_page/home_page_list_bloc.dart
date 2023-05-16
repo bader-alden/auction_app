@@ -15,9 +15,10 @@ class HomePageListBloc extends Bloc<HomePageListEvent, HomePageListState> {
   Future<void> get_main_list() async {
     main_list = [];
    await dio.get_data(url: "main").then((value) {
+     print(value?.data);
       value?.data.forEach((element) async {
         await  dio.get_data(url:"main_data",quary:{"type":element['type'] } ).then((value) {
-          print(value?.data);
+        //  print(value?.data);
           main_list?.add( main_list_model.fromjson(element,value?.data['results'][0]["num"],value?.data['b']));
         });
         if( main_list?.length == value.data.length ){

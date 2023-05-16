@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auction_app/bloc/fav/fav_bloc.dart';
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
@@ -69,7 +71,8 @@ class Test2 extends StatelessWidget {
             builder: (context, snapshot) {
               print(snapshot.data);
               if (snapshot.data.toString() == "NOTFOUND") {
-                return const Scaffold(
+                return  Scaffold(
+                  appBar: AppBar(leading: back_boutton(context),),
                     body: Center(
                   child: Text("العنصر المطلوب غير متاح"),
                 ));
@@ -87,7 +90,14 @@ class Test2 extends StatelessWidget {
               } else {
                 list_auction_model? model;
                 snapshot.data.runtimeType == list_auction_model ? model = snapshot.data : model = list_auction_model.fromjson(snapshot.data);
-                // if(model.user_id.toString() == cache.get_data("id").toString()){
+                if (model?.status.toString() != "0") {
+                  return Scaffold(
+                      appBar: AppBar(leading: back_boutton(context),),
+                      body: Center(
+                        child: Text("العنصر المطلوب غير متاح"),
+                      ));
+                }
+                  // if(model.user_id.toString() == cache.get_data("id").toString()){
                 //   tost(msg: "yes",color: Colors.red);
                 // }
                 // if(model!.status=="2"){
@@ -479,13 +489,13 @@ class Test2 extends StatelessWidget {
                                             "user_id":cache.get_data("id")
                                           }).then((value)  {
                                             var  user_mouny = int.parse(value?.data[0]['balance']);
-                                            if(user_mouny > int.parse(model!.price!)~/10){
+                                            if(user_mouny > int.parse(model!.price!)~/10 || user_mouny == int.parse(model!.price!)~/10){
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) => confirm_pay(model: model, type: type, is_first: paid?.split("|")[1] == "0")));
                                             }else {
-                                              tost(msg: "يلزم دفع 10 بالمئة من قيمة المزاد قبل المزايدة", color: Colors.red);
+                                              tost(msg: "يلزم وجود "+(int.parse(model!.price!)~/10).toString()+" على الأقل في محفظتك للمشاركة", color: Colors.red);
                                             }
                                           });
                                         } else {
@@ -822,9 +832,9 @@ class Test2 extends StatelessWidget {
                   children: [
                     const CircleAvatar(
                       backgroundColor: Colors.redAccent,
-                      radius: 15,
+                      radius: 12,
                       child: Padding(
-                        padding: EdgeInsets.all(4.0),
+                        padding: EdgeInsets.all(2.0),
                         child: Image(
                           image: AssetImage("assets/img/0.png"),
                         ),
@@ -834,9 +844,13 @@ class Test2 extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      "${context.read<LocaleBloc>().z} : ${model.price!}",
+                      "${context.read<LocaleBloc>().z}:",
                       style: const TextStyle(fontSize: 12),
                     ),
+                    ImageFiltered(
+                        enabled: model.is_hide??false,
+                        imageFilter: ImageFilter.blur(sigmaY: 3,sigmaX: 3),
+                        child: Text((model.is_hide??false?"000000" : model.price!) , style: const TextStyle(fontSize: 12))),
                   ],
                 ),
               ),

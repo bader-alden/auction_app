@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
@@ -8,12 +9,13 @@ import 'package:auction_app/layout/Home_page.dart';
 import 'package:auction_app/layout/add_auction_main_data.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:http/http.dart' as http;
 import '../bloc/add/add_bloc.dart';
 import '../bloc/home_page/home_page_list_bloc.dart';
 import '../bloc/locale/locale_bloc.dart';
@@ -23,7 +25,7 @@ import 'Terms_page.dart';
 import 'map_picker.dart';
 import 'package:auction_app/dio.dart';
 
-List city_list = ["جدة", "الرياض"];
+//List city_list = ["جدة", "الرياض"];
 // List type_list = [
 //   "المركبات"
 //   , "العقارات"
@@ -39,28 +41,32 @@ List city_list = ["جدة", "الرياض"];
 //   , "mobile_numbe"
 // ];
 bool is_terms_check = false;
-
+List<int> f1 =[];
+List<int> f2 = [];
+List<int> f3 = [];
 class add_auction extends StatelessWidget {
   const add_auction({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     var name_add_con = TextEditingController();
     var des_add_con = TextEditingController();
-    var photo_add_con = TextEditingController();
+    var city_con = TextEditingController();
     var price_add_con = TextEditingController();
     var min_price_add_con = TextEditingController();
     var num_day_add_con = TextEditingController();
     var text_slot_0_add_con = TextEditingController();
     var text_slot_1_add_con = TextEditingController();
     var text_slot_2_add_con = TextEditingController();
-    var city = "جدة";
+    var city ;
     String? location;
     List a = [];
     List b = [];
     List all_kind = [];
     List all_kind_time = [];
     List all_kind_main_data = [];
+    List  citys_list = [];
     bool init_add = false;
+    bool is_hide = false;
     String? type;
     String? kind;
     main_list_model? slot;
@@ -122,13 +128,7 @@ class add_auction extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text("إضافة المزاد"),
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: context.read<LocaleBloc>().lang
-                    ? Icon(Icons.arrow_forward_ios, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)
-                    : Icon(Icons.arrow_back_ios, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
+            leading: back_boutton(context),
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -145,8 +145,10 @@ class add_auction extends StatelessWidget {
                       init_add = true;
                       is_terms_check = false;
                       context.read<HomePageListBloc>().state.list?.forEach((element) {
-                        a.add(element.ar_name);
-                        b.add(element.type);
+                        if(!(element.is_soon??true)){
+                          a.add(element.ar_name);
+                          b.add(element.type);
+                        }
                       });
                       type = a[0]!;
                       slot = context.read<HomePageListBloc>().state.list![0];
@@ -159,339 +161,458 @@ class add_auction extends StatelessWidget {
                       num_day_add_con.text = all_kind_time[0];
                       main_data_empty = all_kind_main_data[0];
                     }
-
-                    return ListView(
-                      physics: BouncingScrollPhysics(),
-                      //crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(height: 15),
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 8),
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: DropdownButton(
-                                      underline: Text(""),
-                                      borderRadius: BorderRadius.circular(20),
-                                      items: a.map(drop_item).toList(),
-                                      value: type ?? "",
-                                      hint: Text("faa"),
-                                      onChanged: (value) {
-                                        setstate(() {
-                                          type = value!;
-                                          slot = context.read<HomePageListBloc>().state.list?.firstWhere((element) => element.ar_name == value);
-                                          all_kind.clear();
-                                          all_kind_time.clear();
-                                          all_kind_main_data.clear();
-                                          main_data = "";
-                                          slot?.all_kind?.forEach((element) {
-                                            print(element.main_data);
-                                            all_kind.add(element.kind);
-                                            all_kind_time.add(element.time);
-                                            all_kind_main_data.add(element.main_data);
-                                          });
-                                          kind = all_kind[0];
-                                          num_day_add_con.text = all_kind_time[0];
-                                          main_data_empty = all_kind_main_data[0];
-                                        });
-                                      }),
-                                ),
-                                Spacer(),
-                                Text(
-                                  ":النوع",
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 8),
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: DropdownButton(
-                                      underline: Text(""),
-                                      borderRadius: BorderRadius.circular(20),
-                                      items: all_kind.map(drop_item).toList(),
-                                      value: kind ?? "",
-                                      hint: Text(" "),
-                                      onChanged: (value) {
-                                        setstate(() {
-                                          kind = value!;
-                                          main_data = "";
-                                          num_day_add_con.text = all_kind_time[all_kind.indexOf(kind)];
-                                          main_data_empty = all_kind_main_data[all_kind.indexOf(kind)];
-                                          print(all_kind);
-                                          print(kind);
-                                        });
-                                      }),
-                                ),
-                                Spacer(),
-                                Text(
-                                  ":الصنف",
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          "الاسم:",
-                          textDirection: TextDirection.rtl,
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: TextFormField(
-                            textDirection: TextDirection.rtl,
-                            decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
-                            controller: name_add_con,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          "الوصف:",
-                          textDirection: TextDirection.rtl,
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Container(
-                          height: 150,
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: TextFormField(
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            textDirection: TextDirection.rtl,
-                            decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
-                            controller: des_add_con,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          "السعر المبدئي:",
-                          textDirection: TextDirection.rtl,
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: TextFormField(
-                            textDirection: TextDirection.rtl,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
-                            controller: price_add_con,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          "أقل مزايدة:",
-                          textDirection: TextDirection.rtl,
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      return ListView(
+                        physics: BouncingScrollPhysics(),
+                        //crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          SizedBox(height: 15),
+                          Column(
                             children: [
-                              InkWell(
-                                  onTap: () {
-                                    if (my_price - 100 >= 100) {
-                                      setstate(() {
-                                        my_price = my_price - 100;
-                                      });
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 35,
-                                    width: 35,
-                                    // color: Colors.red,
-                                    child: Center(
-                                      child: const Text(
-                                        "-",
-                                        style: TextStyle(fontSize: 40, height: 0.9),
-                                      ),
-                                    ),
-                                  )),
-                              AnimatedFlipCounter(
-                                duration: const Duration(milliseconds: 500),
-                                value: my_price,
-                                textStyle: TextStyle(
-                                    fontSize: 30,
-                                    color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                                    fontWeight: FontWeight.w600),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                                        borderRadius: BorderRadius.circular(10)),
+                                    child: DropdownButton(
+                                        underline: Text(""),
+                                        borderRadius: BorderRadius.circular(20),
+                                        items: a.map(drop_item).toList(),
+                                        value: type ?? "",
+                                        hint: Text("faa"),
+                                        onChanged: (value) {
+                                          setstate(() {
+                                            type = value!;
+                                            slot = context.read<HomePageListBloc>().state.list?.firstWhere((element) => element.ar_name == value);
+                                            all_kind.clear();
+                                            all_kind_time.clear();
+                                            all_kind_main_data.clear();
+                                            main_data = "";
+                                            slot?.all_kind?.forEach((element) {
+                                              print(element.main_data);
+                                              all_kind.add(element.kind);
+                                              all_kind_time.add(element.time);
+                                              all_kind_main_data.add(element.main_data);
+                                            });
+                                            kind = all_kind[0];
+                                            num_day_add_con.text = all_kind_time[0];
+                                            main_data_empty = all_kind_main_data[0];
+                                          });
+                                        }),
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                    ":النوع",
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ],
                               ),
-                              InkWell(
-                                  onTap: () {
-                                    setstate(() {
-                                      my_price = my_price + 100;
-                                    });
-                                  },
-                                  child: const Text(
-                                    "+",
-                                    style: TextStyle(fontSize: 40),
-                                  )),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                                        borderRadius: BorderRadius.circular(10)),
+                                    child: DropdownButton(
+                                        underline: Text(""),
+                                        borderRadius: BorderRadius.circular(20),
+                                        items: all_kind.map(drop_item).toList(),
+                                        value: kind ?? "",
+                                        hint: Text(" "),
+                                        onChanged: (value) {
+                                          setstate(() {
+                                            kind = value!;
+                                            main_data = "";
+                                            num_day_add_con.text = all_kind_time[all_kind.indexOf(kind)];
+                                            main_data_empty = all_kind_main_data[all_kind.indexOf(kind)];
+                                            print(all_kind);
+                                            print(kind);
+                                          });
+                                        }),
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                    ":الصنف",
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-
-                          // child: TextFormField(
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            "الاسم:",
+                            textDirection: TextDirection.rtl,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: TextFormField(
+                              textDirection: TextDirection.rtl,
+                              decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
+                              controller: name_add_con,
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Text(
+                            "الوصف:",
+                            textDirection: TextDirection.rtl,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          Container(
+                            height: 150,
+                            padding: EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: TextFormField(
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              textDirection: TextDirection.rtl,
+                              decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
+                              controller: des_add_con,
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Text(
+                            "السعر المبدئي:",
+                            textDirection: TextDirection.rtl,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: TextFormField(
+                              textDirection: TextDirection.rtl,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
+                              controller: price_add_con,
+                            ),
+                          ),
+                          // SizedBox(height: 15),
+                          // Text(
+                          //   "أقل مزايدة:",
                           //   textDirection: TextDirection.rtl,
-                          //   decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
-                          //   controller: price_add_con,
+                          //   style: TextStyle(fontSize: 20),
                           // ),
-                        ),
-                        SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              "ريال سعودي",
-                              textDirection: TextDirection.rtl,
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              slot?.price ?? "",
-                              textDirection: TextDirection.rtl,
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              "تكاليف عرض المزاد:",
-                              textDirection: TextDirection.rtl,
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              width: 50,
-                              padding: EdgeInsets.all(4),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-                              child: TextFormField(
+                          // Container(
+                          //   padding: EdgeInsets.all(15),
+                          //   decoration: BoxDecoration(
+                          //       color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                          //       borderRadius: BorderRadius.circular(8)),
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //     children: [
+                          //       InkWell(
+                          //           onTap: () {
+                          //             if (my_price - 100 >= 100) {
+                          //               setstate(() {
+                          //                 my_price = my_price - 100;
+                          //               });
+                          //             }
+                          //           },
+                          //           child: Container(
+                          //             height: 35,
+                          //             width: 35,
+                          //             // color: Colors.red,
+                          //             child: Center(
+                          //               child: const Text(
+                          //                 "-",
+                          //                 style: TextStyle(fontSize: 40, height: 0.9),
+                          //               ),
+                          //             ),
+                          //           )),
+                          //       AnimatedFlipCounter(
+                          //         duration: const Duration(milliseconds: 500),
+                          //         value: my_price,
+                          //         textStyle: TextStyle(
+                          //             fontSize: 30,
+                          //             color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                          //             fontWeight: FontWeight.w600),
+                          //       ),
+                          //       InkWell(
+                          //           onTap: () {
+                          //             setstate(() {
+                          //               my_price = my_price + 100;
+                          //             });
+                          //           },
+                          //           child: const Text(
+                          //             "+",
+                          //             style: TextStyle(fontSize: 40),
+                          //           )),
+                          //     ],
+                          //   ),
+                          //
+                          //   // child: TextFormField(
+                          //   //   textDirection: TextDirection.rtl,
+                          //   //   decoration: const InputDecoration( border: InputBorder.none,hintTextDirection: TextDirection.rtl),
+                          //   //   controller: price_add_con,
+                          //   // ),
+                          // ),
+                          SizedBox(height: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(" مخفي",style: TextStyle(color: is_hide?main_red:Colors.black,fontSize: 18),),
+                              SizedBox(width: 5),
+                              Directionality(textDirection: TextDirection.rtl,child: CupertinoSwitch(activeColor: main_red,value: is_hide, onChanged: (value)=>setstate((){is_hide=value;}))),
+                              SizedBox(width: 5),
+                              Text("غير مخفي",style: TextStyle(color: !is_hide?main_red:Colors.black,fontSize: 18),),
+                              SizedBox(width: 15),
+                              Text("حالة السعر:", textDirection: TextDirection.rtl,
+                                style: TextStyle(fontSize: 20),)
+                            ],
+                          ),
+                          SizedBox(height: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                "ريال سعودي",
                                 textDirection: TextDirection.rtl,
-                                decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
-                                controller: num_day_add_con,
-                                readOnly: true,
+                                style: TextStyle(fontSize: 20),
                               ),
-                            ),
-                            Text(
-                              "عدد أيام عرض المزاد:",
-                              textDirection: TextDirection.rtl,
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 20,
-                            ),
-                            DropdownButton(
-                                items: city_list.map(drop_item).toList(),
-                                value: city,
-                                onChanged: (value) {
-                                  setstate(() {
-                                    city = value;
-                                  });
-                                }),
-                            Spacer(),
-                            Text(
-                              ":المدينة التي يوجد بها المنتج",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Center(
-                            child: Text(
-                          "معلومات الأساسية",
-                          style: TextStyle(fontSize: 25),
-                        )),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: ElevatedButton(
-                              onPressed: () async {
-                                final main_data_pop = await Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => add_auction_main_data(row: main_data_empty, old: main_data)));
-                                if (main_data_pop != null) {
-                                  setstate(() {
-                                    main_data = main_data_pop;
-                                  });
-                                }
-                              },
-                              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_data != "" ? Colors.green : main_red)),
-                              child: main_data != ""
-                                  ? Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                    )
-                                  : Text("تعبئة")),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty)
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                slot?.price ?? "",
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "تكاليف عرض المزاد:",
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                width: 50,
+                                padding: EdgeInsets.all(4),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+                                child: TextFormField(
+                                  textDirection: TextDirection.rtl,
+                                  decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
+                                  controller: num_day_add_con,
+                                  readOnly: true,
+                                ),
+                              ),
+                              Text(
+                                "عدد أيام عرض المزاد:",
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 20,
+                              ),
+                              // FutureBuilder(
+                              //     future: dio.get_data(url:"/dash/city"),
+                              //     builder: (context,snap) {
+                              //       print(snap.data?.data);
+                              //       print(snap.data);
+                              //       if(snap.connectionState == ConnectionState.waiting  ){
+                              //       return Center(child: CircularProgressIndicator(color: main_red,));
+                              //   //    DropdownMenuItem drop_item(item) => DropdownMenuItem(value: item, child: Center(child: Text(item)));
+                              //       }else {
+                              //         var citys_list = snap.data?.data as List;
+                              //       return DropdownButton(
+                              //         items: citys_list.map((e)=>DropdownMenuItem(value: e["namecity"],child: Center(child: Text(e["namecity"]),),)).toList(),
+                              //         value: city,
+                              //         onChanged: (value) {
+                              //           setstate(() {
+                              //             city = value.toString();
+                              //           });
+                              //         });
+                              //     }
+                              //   }
+                              // ),
+                              Expanded(
+                                child: FutureBuilder(
+                                    future: dio.get_data(url:"/dash/city"),
+                                    builder: (context,snap) {
+                                      print(snap.data?.data);
+                                      print(snap.data);
+                                      if(snap.connectionState == ConnectionState.waiting && citys_list.isEmpty  ){
+                                        return Center(child: CircularProgressIndicator(color: main_red,));
+                                        //    DropdownMenuItem drop_item(item) => DropdownMenuItem(value: item, child: Center(child: Text(item)));
+                                      }else if(snap.data?.data  !=null ){
+                                         citys_list = snap.data?.data as List;
+                                        return CustomDropdown.search(
+                                            fillColor: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+                                      items: citys_list.map((e)=>e["namecity"].toString()).toList(),
+                                          hintText:  ":المدينة التي يوجد بها المنتج",
+                                            hintStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+                                            errorText:"غير موجود",
+                                            onChanged: (value) {
+                                              setstate(() {
+                                                city = value.toString();
+                                                city_con.text = value.toString();
+                                              });
+                                            }, controller:city_con,
+                                            listItemBuilder:(context,text){
+                                              return Center(child: Text(text,style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),),);
+                                            }
+                                        );
+                                      }else{
+                                        return Center();
+                                      }
+                                    }
+                                ),
+                              ),
+                              // Spacer(),
+                              // Text(
+                              //   ":المدينة التي يوجد بها المنتج",
+                              //   style: TextStyle(fontSize: 20),
+                              // ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
                           Center(
                               child: Text(
-                            "معلومات إضافية",
+                            "معلومات الأساسية",
                             style: TextStyle(fontSize: 25),
                           )),
-                        if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty)
-                          for (int i = 0; i < slot!.text_slot!.length; i++)
-                            Builder(builder: (context) {
-                              TextEditingController con;
-                              if (i == 0) {
-                                name_text_1 = slot!.text_slot![0];
-                                con = text_slot_0_add_con;
-                              } else if (i == 1) {
-                                name_text_2 = slot!.text_slot![1];
-                                con = text_slot_1_add_con;
-                              } else {
-                                name_text_3 = slot!.text_slot![2];
-                                con = text_slot_2_add_con;
-                              }
-                              return Padding(
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: ElevatedButton(
+                                onPressed: () async {
+                                  final main_data_pop = await Navigator.push(
+                                      context, MaterialPageRoute(builder: (context) => add_auction_main_data(row: main_data_empty, old: main_data)));
+                                  if (main_data_pop != null) {
+                                    setstate(() {
+                                      main_data = main_data_pop;
+                                    });
+                                  }
+                                },
+                                style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_data != "" ? Colors.green : main_red)),
+                                child: main_data != ""
+                                    ? Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                      )
+                                    : Text("تعبئة")),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty)
+                            Center(
+                                child: Text(
+                              "معلومات إضافية",
+                              style: TextStyle(fontSize: 25),
+                            )),
+                          if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty)
+                            for (int i = 0; i < slot!.text_slot!.length; i++)
+                              Builder(builder: (context) {
+                                TextEditingController con;
+                                if (i == 0) {
+                                  name_text_1 = slot!.text_slot![0];
+                                  con = text_slot_0_add_con;
+                                } else if (i == 1) {
+                                  name_text_2 = slot!.text_slot![1];
+                                  con = text_slot_1_add_con;
+                                } else {
+                                  name_text_3 = slot!.text_slot![2];
+                                  con = text_slot_2_add_con;
+                                }
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          ElevatedButton(
+                                              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(con.text != "" ? Colors.green : Colors.red)),
+                                              onPressed: () {
+                                                showDialog(
+                                                    barrierDismissible: false,
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return add_rout_home(
+                                                          context, i, text_slot_0_add_con, text_slot_1_add_con, text_slot_2_add_con, slot, setstate);
+                                                    });
+                                              },
+                                              child: con.text != ""
+                                                  ? Icon(
+                                                      Icons.check,
+                                                      color: Colors.white,
+                                                    )
+                                                  : Text("إضافة")),
+                                          Spacer(),
+                                          Text(slot!.text_slot![i]),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        width: double.infinity,
+                                        height: 1,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }),
+                          if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "")
+                            Center(
+                                child: Text(
+                              "ملفات إضافية",
+                              style: TextStyle(fontSize: 25),
+                            )),
+                          if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "")
+                            for (int i = 0; i < slot!.file_slot!.length; i++)
+                              Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -505,24 +626,36 @@ class add_auction extends StatelessWidget {
                                           width: 20,
                                         ),
                                         ElevatedButton(
-                                            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(con.text != "" ? Colors.green : Colors.red)),
-                                            onPressed: () {
-                                              showDialog(
-                                                  barrierDismissible: false,
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return add_rout_home(
-                                                        context, i, text_slot_0_add_con, text_slot_1_add_con, text_slot_2_add_con, slot, setstate);
-                                                  });
+                                            style: ButtonStyle(
+                                                backgroundColor: MaterialStatePropertyAll(
+                                                    i == 0 && file_slot_1 != null || i == 1 && file_slot_2 != null || i == 2 && file_slot_3 != null
+                                                        ? Colors.green
+                                                        : Colors.red)),
+                                            onPressed: () async {
+                                              if (i == 0) {
+                                               file_slot_1 =await  FilePicker.platform
+                                                    .pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
+                                                      File(file_slot_1!.files.first.path!).readAsBytes().then((value) => f1 = value.toList());
+                                                 setstate(() {});
+                                              }
+                                              if (i == 1) {
+                                                file_slot_2 = await FilePicker.platform
+                                                    .pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
+                                                File(file_slot_2!.files.first.path!).readAsBytes().then((value) => f2 = value.toList());
+                                                setstate(() {});
+                                              }
+                                              if (i == 2) {
+                                                file_slot_3 = await FilePicker.platform
+                                                    .pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
+                                                File(file_slot_3!.files.first.path!).readAsBytes().then((value) => f3 = value.toList());
+                                                setstate(() {});
+                                              }
                                             },
-                                            child: con.text != ""
-                                                ? Icon(
-                                                    Icons.check,
-                                                    color: Colors.white,
-                                                  )
+                                            child: i == 0 && file_slot_1 != null || i == 1 && file_slot_2 != null || i == 2 && file_slot_3 != null
+                                                ? Icon(Icons.check)
                                                 : Text("إضافة")),
                                         Spacer(),
-                                        Text(slot!.text_slot![i]),
+                                        Text(slot!.file_slot![i]),
                                         SizedBox(
                                           width: 20,
                                         ),
@@ -541,532 +674,480 @@ class add_auction extends StatelessWidget {
                                     )
                                   ],
                                 ),
-                              );
-                            }),
-                        if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "")
+                              ),
                           Center(
                               child: Text(
-                            "ملفات إضافية",
+                            "الصور",
                             style: TextStyle(fontSize: 25),
                           )),
-                        if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "")
-                          for (int i = 0; i < slot!.file_slot!.length; i++)
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      ElevatedButton(
-                                          style: ButtonStyle(
-                                              backgroundColor: MaterialStatePropertyAll(
-                                                  i == 0 && file_slot_1 != null || i == 1 && file_slot_2 != null || i == 2 && file_slot_3 != null
-                                                      ? Colors.green
-                                                      : Colors.red)),
-                                          onPressed: () async {
-                                            if (i == 0) {
-                                              file_slot_1 = await FilePicker.platform
-                                                  .pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
-                                              setstate(() {});
-                                            }
-                                            if (i == 1) {
-                                              file_slot_2 = await FilePicker.platform
-                                                  .pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
-                                              setstate(() {});
-                                            }
-                                            if (i == 2) {
-                                              file_slot_3 = await FilePicker.platform
-                                                  .pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
-                                              setstate(() {});
-                                            }
-                                          },
-                                          child: i == 0 && file_slot_1 != null || i == 1 && file_slot_2 != null || i == 2 && file_slot_3 != null
-                                              ? Icon(Icons.check)
-                                              : Text("إضافة")),
-                                      Spacer(),
-                                      Text(slot!.file_slot![i]),
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: Colors.grey.shade700,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  )
-                                ],
-                              ),
-                            ),
-                        Center(
-                            child: Text(
-                          "الصور",
-                          style: TextStyle(fontSize: 25),
-                        )),
-                        SizedBox(
-                          height: 200,
-                          child: ListView(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: InkWell(
-                                  onTap: () async {
-                                    main_image = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
-                                    setstate(() {});
-                                  },
-                                  child: Stack(
-                                    alignment: Alignment.bottomLeft,
-                                    children: [
-                                      main_image != null
-                                          ? Image.file(File(main_image!.path))
-                                          : Container(
-                                              color: Colors.grey.shade200,
-                                              height: 200,
-                                              width: 250,
-                                              child: Container(
-                                                  width: 200,
-                                                  child: Center(
-                                                      child: CircleAvatar(
-                                                          radius: 30,
-                                                          backgroundColor: Colors.grey,
-                                                          child: Icon(
-                                                            Icons.add,
-                                                            color: Colors.white,
-                                                          )))),
-                                            ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Icon(Icons.star, color: Colors.yellow.shade800),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              if (list_image != [])
-                                ...list_image.map((e) => Stack(
+                          SizedBox(
+                            height: 200,
+                            child: ListView(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      main_image = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+                                      setstate(() {});
+                                    },
+                                    child: Stack(
+                                      alignment: Alignment.bottomLeft,
                                       children: [
+                                        main_image != null
+                                            ? Image.file(File(main_image!.path))
+                                            : Container(
+                                                color: Colors.grey.shade200,
+                                                height: 200,
+                                                width: 250,
+                                                child: Container(
+                                                    width: 200,
+                                                    child: Center(
+                                                        child: CircleAvatar(
+                                                            radius: 30,
+                                                            backgroundColor: Colors.grey,
+                                                            child: Icon(
+                                                              Icons.add,
+                                                              color: Colors.white,
+                                                            )))),
+                                              ),
                                         Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Image.file(File(e!.path)),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: IconButton(
-                                              onPressed: () {
-                                                list_image.remove(e);
-                                                setstate(() {});
-                                              },
-                                              iconSize: 30,
-                                              icon: Icon(
-                                                Icons.delete,
-                                                color: Colors.red,
-                                              )),
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Icon(Icons.star, color: Colors.yellow.shade800),
                                         )
                                       ],
-                                    )),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: InkWell(
-                                  onTap: () async {
-                                    //  var a  = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
-                                    var a = await ImagePicker.platform.pickMultiImage();
-                                    list_image.addAll(a!.toList());
-                                    setstate(() {});
-                                  },
-                                  child: Container(
-                                    color: Colors.grey.shade200,
-                                    height: 150,
-                                    width: 250,
-                                    child: Container(
-                                        width: 200,
-                                        child: Center(
-                                            child: CircleAvatar(
-                                                radius: 30,
-                                                backgroundColor: Colors.grey,
-                                                child: Icon(
-                                                  Icons.add,
-                                                  color: Colors.white,
-                                                )))),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        if (slot?.with_location ?? false)
-                          Center(
-                              child: Text(
-                            "الموقع",
-                            style: TextStyle(fontSize: 25),
-                          )),
-                        if (slot?.with_location ?? false)
-                          InkWell(
-                            onTap: () async {
-                              showSimplePickerLocation(
-                                context: context,
-                                isDismissible: true,
-                                title: "أختر الموقع",
-                                textConfirmPicker: "إختيار",
-                                initCurrentUserPosition: true,
-                                textCancelPicker: "إلغاء",
-                                initZoom: 19,
-                              ).then((value) {
-                                if (value != null) {
-                                  location = "${value.latitude.toString()} , ${value.longitude}";
-                                  setstate(() {});
-                                  //print(await location?.latitude);
-                                  print(location);
-                                  //Navigator.push(context, MaterialPageRoute(builder: (context)=>map_picker()));
-                                }
-                              });
-                            },
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Image(
-                                  image: NetworkImage(
-                                      "https://media.istockphoto.com/id/1306807452/vector/map-city-vector-illustration.jpg?b=1&s=612x612&w=0&k=20&c=RBfRJ1UZ4D-2F1HVkeZ0SHVmPWqj3eS9batfcKiQzW4="),
-                                ),
-                                Container(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  width: double.infinity,
-                                  height: 200,
-                                ),
-                                Column(
-                                  children: [
-                                    if (location == null) Text("إنقر لأضافة موقع", style: TextStyle(fontSize: 25)),
-                                    Icon(
-                                      Icons.location_on_outlined,
-                                      size: 50,
-                                      color: location == null ? Colors.red : Colors.green,
-                                    )
-                                  ],
+                                if (list_image != [])
+                                  ...list_image.map((e) => Stack(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Image.file(File(e!.path)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  list_image.remove(e);
+                                                  setstate(() {});
+                                                },
+                                                iconSize: 30,
+                                                icon: Icon(
+                                                  Icons.delete,
+                                                  color: Colors.red,
+                                                )),
+                                          )
+                                        ],
+                                      )),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      //  var a  = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+                                      var a = await ImagePicker.platform.pickMultiImage();
+                                      list_image.addAll(a!.toList());
+                                      setstate(() {});
+                                    },
+                                    child: Container(
+                                      color: Colors.grey.shade200,
+                                      height: 150,
+                                      width: 250,
+                                      child: Container(
+                                          width: 200,
+                                          child: Center(
+                                              child: CircleAvatar(
+                                                  radius: 30,
+                                                  backgroundColor: Colors.grey,
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    color: Colors.white,
+                                                  )))),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Terms_page(
-                                                with_init: false,
-                                                inh_terms: slot?.terms,
-                                              )));
-                                },
+                          SizedBox(
+                            height: 15,
+                          ),
+                          if (slot?.with_location ?? false)
+                            Center(
                                 child: Text(
-                                  " أحكام و شروط " + type.toString(),
-                                  style: TextStyle(fontSize: 16),
-                                )),
-                            Text(
-                              "الموافقة على ",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
+                              "الموقع",
+                              style: TextStyle(fontSize: 25),
+                            )),
+                          if (slot?.with_location ?? false)
                             InkWell(
-                                onTap: () {
-                                  setstate(() {
-                                    is_terms_check = !is_terms_check;
-                                  });
-                                },
-                                child: Container(
-                                    decoration: BoxDecoration(border: Border.all(color: Colors.white), borderRadius: BorderRadius.circular(5)),
-                                    width: 30,
-                                    height: 30,
-                                    child: is_terms_check ? Icon(Icons.check) : null)),
-                            SizedBox(
-                              width: 5,
+                              onTap: () async {
+                                showSimplePickerLocation(
+                                  context: context,
+                                  isDismissible: true,
+                                  title: "أختر الموقع",
+                                  textConfirmPicker: "إختيار",
+                                  initCurrentUserPosition: true,
+                                  textCancelPicker: "إلغاء",
+                                  initZoom: 19,
+                                ).then((value) {
+                                  if (value != null) {
+                                    location = "${value.latitude.toString()} , ${value.longitude}";
+                                    setstate(() {});
+                                    //print(await location?.latitude);
+                                    print(location);
+                                    //Navigator.push(context, MaterialPageRoute(builder: (context)=>map_picker()));
+                                  }
+                                });
+                              },
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Image(
+                                    image: NetworkImage(
+                                        "https://media.istockphoto.com/id/1306807452/vector/map-city-vector-illustration.jpg?b=1&s=612x612&w=0&k=20&c=RBfRJ1UZ4D-2F1HVkeZ0SHVmPWqj3eS9batfcKiQzW4="),
+                                  ),
+                                  Container(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    width: double.infinity,
+                                    height: 200,
+                                  ),
+                                  Column(
+                                    children: [
+                                      if (location == null) Text("إنقر لأضافة موقع", style: TextStyle(fontSize: 25)),
+                                      Icon(
+                                        Icons.location_on_outlined,
+                                        size: 50,
+                                        color: location == null ? Colors.red : Colors.green,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (!slot!.with_location!) {
-                              location = " ";
-                            }
-                            if (name_add_con.text.isNotEmpty &&
-                                des_add_con.text.isNotEmpty &&
-                                price_add_con.text.isNotEmpty &&
-                                num_day_add_con.text.isNotEmpty &&
-                                city.isNotEmpty &&
-                                location != null &&
-                                is_terms_check &&
-                                main_data != "" &&
-                                main_image != null) {
-                              showDialog<void>(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext dialogContext) {
-                                  return AlertDialog(
-                                    //   title: Center(child: Text('...جار الرفع')),
-                                    actions: <Widget>[
-                                      StatefulBuilder(builder: (acontext, settate) {
-                                        if (!start_uplode) {
-                                          Future.sync(() async {
-                                            start_uplode = true;
-                                            if (main_image != null) {
-                                              name_of_porsses = "الصورة الرئيسية";
-                                              settate(() {});
-                                              FormData formData = FormData.fromMap(
-                                                  {"file": MultipartFile.fromBytes(await main_image!.readAsBytes(), filename: Uuid().v4()+".png")});
-                                              await dio
-                                                  .post_data(
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Terms_page(
+                                                  with_init: false,
+                                                  inh_terms: slot?.terms,
+                                                )));
+                                  },
+                                  child: Text(
+                                    " أحكام و شروط " + type.toString(),
+                                    style: TextStyle(fontSize: 16),
+                                  )),
+                              Text(
+                                "الموافقة على ",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              InkWell(
+                                  onTap: () {
+                                    setstate(() {
+                                      is_terms_check = !is_terms_check;
+                                    });
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black), borderRadius: BorderRadius.circular(5)),
+                                      width: 30,
+                                      height: 30,
+                                      child: is_terms_check ? Icon(Icons.check) : null)),
+                              SizedBox(
+                                width: 5,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (!slot!.with_location!) {
+                                location = " ";
+                              }
+                              if (name_add_con.text.isNotEmpty &&
+                                  des_add_con.text.isNotEmpty &&
+                                  price_add_con.text.isNotEmpty &&
+                                  num_day_add_con.text.isNotEmpty &&
+                                  city.isNotEmpty &&
+                                  location != null &&
+                                  is_terms_check &&
+                                  main_data != "" &&
+                                  main_image != null) {
+
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext dialogContext) {
+                                      return AlertDialog(
+                                        //   title: Center(child: Text('...جار الرفع')),
+                                        actions: <Widget>[
+                                          StatefulBuilder(builder: (acontext, settate) {
+                                            if (!start_uplode) {
+                                             try{
+                                              Future.sync(() async {
+                                                start_uplode = true;
+                                                if (main_image != null) {
+                                                  name_of_porsses = "الصورة الرئيسية";
+                                                  settate(() {});
+                                                  FormData formData = FormData.fromMap(
+                                                      {"file": MultipartFile.fromBytes(await main_image!.readAsBytes(), filename: Uuid().v4()+".png")});
+                                                  await dio
+                                                      .post_data(
                                                       url: "/uplode/uplode",
                                                       data: formData,
                                                       onsend: (start, end) {
                                                         presint = start / end;
                                                         settate(() {});
                                                       })
-                                                  .then((value) {
-                                                print(value?.data);
-                                                main_photo_url = value?.data['message'];
-                                                presint = 0;
-                                                settate(() {});
-                                              });
-                                            }
-                                            for (int i = 0; i < list_image.length; i++) {
-                                              name_of_porsses = "الصورة " + (i + 1).toString();
-                                              settate(() {});
-                                              FormData formData = FormData.fromMap(
-                                                  {"file": MultipartFile.fromBytes(await list_image[i]!.readAsBytes(), filename: Uuid().v4()+".png")});
-                                              await dio
-                                                  .post_data(
-                                                      url: "/uplode/uplode",
-                                                      data: formData,
-                                                      onsend: (start, end) {
-                                                        presint = start / end;
-                                                        settate(() {});
-                                                      })
-                                                  .then((value) {
-                                                print(value?.data);
-                                                presint = 0;
-                                                number_of_uploade++;
-                                                settate(() {});
-                                                list_photo_url = list_photo_url + value?.data['message'] + "|";
-                                                if (i + 1 == list_image.length) {
-                                                  list_photo_url = list_photo_url + main_photo_url;
+                                                      .then((value) {
+                                                    print(value?.data);
+                                                    main_photo_url = value?.data['message'];
+                                                    presint = 0;
+                                                    settate(() {});
+                                                  });
                                                 }
-                                              });
-                                            }
-                                            if (file_slot_1 != null) {
-                                              name_of_porsses = "ملف " + slot!.file_slot![0];
-                                              settate(() {});
-                                              FormData formData = FormData.fromMap(
-                                                  {"file": MultipartFile.fromFileSync(file_slot_1!.files.first.path!, filename: Uuid().v4()+".pdf")});
-                                              await dio
-                                                  .post_data(
+                                                for (int i = 0; i < list_image.length; i++) {
+                                                  name_of_porsses = "الصورة " + (i + 1).toString();
+                                                  settate(() {});
+                                                  FormData formData = FormData.fromMap(
+                                                      {"file": MultipartFile.fromBytes(await list_image[i]!.readAsBytes(), filename: Uuid().v4()+".png")});
+                                                  await dio
+                                                      .post_data(
                                                       url: "/uplode/uplode",
                                                       data: formData,
                                                       onsend: (start, end) {
                                                         presint = start / end;
                                                         settate(() {});
                                                       })
-                                                  .then((value) {
-                                                print(value?.data);
-                                                file_slot_1_url = value?.data['message'];
-                                                number_of_uploade++;
-                                                presint = 0;
-                                                settate(() {});
-                                              });
-                                            }
-                                            if (file_slot_2 != null) {
-                                              name_of_porsses = "ملف " + slot!.file_slot![1];
-                                              settate(() {});
-                                              FormData formData = FormData.fromMap(
-                                                  {"file": MultipartFile.fromFileSync(file_slot_2!.files.first.path!, filename: Uuid().v4()+".pdf")});
-                                              await dio
-                                                  .post_data(
+                                                      .then((value) {
+                                                    print(value?.data);
+                                                    presint = 0;
+                                                    number_of_uploade++;
+                                                    settate(() {});
+                                                    list_photo_url = list_photo_url + value?.data['message'] + "|";
+                                                    if (i + 1 == list_image.length) {
+                                                      list_photo_url = list_photo_url + main_photo_url;
+                                                    }
+                                                  });
+                                                }
+                                                if (file_slot_1 != null) {
+                                                  name_of_porsses = "ملف " + slot!.file_slot![0];
+                                                  settate(() {});
+                                                  FormData formData = FormData.fromMap(
+                                                    //    {"file": MultipartFile.fromFileSync(file_slot_1!.files.first.path!, filename: Uuid().v4()+".pdf")});
+                                                    //    {"file": f1});
+                                                      {"file":MultipartFile.fromBytes(f1, filename: Uuid().v4()+".pdf")});
+                                                  //    {"file":MultipartFile(f1!.openRead(),await f1!.length(),filename: Uuid().v4()+".pdf")});
+                                                  await dio
+                                                      .post_data(
                                                       url: "/uplode/uplode",
                                                       data: formData,
                                                       onsend: (start, end) {
                                                         presint = start / end;
                                                         settate(() {});
                                                       })
-                                                  .then((value) {
-                                                print(value?.data);
-                                                file_slot_2_url = value?.data['message'];
-                                                number_of_uploade++;
-                                                presint = 0;
-                                                settate(() {});
-                                              });
-                                            }
-                                            if (file_slot_3 != null) {
-                                              name_of_porsses = "ملف " + slot!.file_slot![2];
-                                              settate(() {});
-                                              FormData formData = FormData.fromMap(
-                                                  {"file": MultipartFile.fromFileSync(file_slot_3!.files.first.path!, filename:Uuid().v4()+".pdf")});
-                                              await dio
-                                                  .post_data(
+                                                      .then((value) {
+                                                    print(value?.data);
+                                                    file_slot_1_url = value?.data['message'];
+                                                    number_of_uploade++;
+                                                    presint = 0;
+                                                    settate(() {});
+                                                  });
+                                                }
+                                                if (file_slot_2 != null) {
+                                                  name_of_porsses = "ملف " + slot!.file_slot![1];
+                                                  settate(() {});
+                                                  FormData formData = FormData.fromMap(
+                                                    //    {"file": MultipartFile.fromFileSync(file_slot_2!.files.first.path!, filename: Uuid().v4()+".pdf")});
+                                                      {"file":MultipartFile.fromBytes(f2, filename: Uuid().v4()+".pdf")});
+                                                  await dio
+                                                      .post_data(
                                                       url: "/uplode/uplode",
                                                       data: formData,
                                                       onsend: (start, end) {
                                                         presint = start / end;
                                                         settate(() {});
                                                       })
-                                                  .then((value) {
-                                                print(value?.data);
-                                                number_of_uploade++;
-                                                file_slot_3_url = value?.data['message'];
-                                                presint = 0;
-                                                settate(() {});
+                                                      .then((value) {
+                                                    print(value?.data);
+                                                    file_slot_2_url = value?.data['message'];
+                                                    number_of_uploade++;
+                                                    presint = 0;
+                                                    settate(() {});
+                                                  });
+                                                }
+                                                if (file_slot_3 != null) {
+                                                  name_of_porsses = "ملف " + slot!.file_slot![2];
+                                                  settate(() {});
+                                                  FormData formData = FormData.fromMap(
+                                                    //     {"file": MultipartFile.fromFileSync(file_slot_3!.files.first.path!, filename:Uuid().v4()+".pdf")});
+                                                      {"file":MultipartFile.fromBytes(f3, filename: Uuid().v4()+".pdf")});
+                                                  await dio
+                                                      .post_data(
+                                                      url: "/uplode/uplode",
+                                                      data: formData,
+                                                      onsend: (start, end) {
+                                                        presint = start / end;
+                                                        settate(() {});
+                                                      })
+                                                      .then((value) {
+                                                    print(value?.data);
+                                                    number_of_uploade++;
+                                                    file_slot_3_url = value?.data['message'];
+                                                    presint = 0;
+                                                    settate(() {});
+                                                  });
+                                                }
+                                                AddBloc.get(context).add_void(
+                                                    cache.get_data("id"),
+                                                    name_add_con.text,
+                                                    des_add_con.text,
+                                                    price_add_con.text,
+                                                    "100",
+                                                    num_day_add_con.text,
+                                                    city,
+                                                    b[a.indexOf(type)],
+                                                    location,
+                                                    text_slot_0_add_con.text,
+                                                    text_slot_1_add_con.text,
+                                                    text_slot_2_add_con.text,
+                                                    kind,
+                                                    name_text_1,
+                                                    name_text_2,
+                                                    name_text_3,
+                                                    main_data,
+                                                    file_slot_1_url,
+                                                    file_slot_2_url,
+                                                    file_slot_3_url,
+                                                    main_photo_url,
+                                                    list_photo_url,
+                                                    slot!.file_slot!.length>0?slot!.file_slot![0]:"",
+                                                    slot!.file_slot!.length>1?slot!.file_slot![1]:"",
+                                                    slot!.file_slot!.length>2?slot!.file_slot![2]:"",
+                                                    is_hide);
+                                                Navigator.pop(dialogContext);
                                               });
-                                            }
-                                              AddBloc.get(context).add_void(
-                                                  cache.get_data("id"),
-                                                  name_add_con.text,
-                                                  des_add_con.text,
-                                                  price_add_con.text,
-                                                  my_price,
-                                                  num_day_add_con.text,
-                                                  city,
-                                                  b[a.indexOf(type)],
-                                                  location,
-                                                  text_slot_0_add_con.text,
-                                                  text_slot_1_add_con.text,
-                                                  text_slot_2_add_con.text,
-                                                  kind,
-                                                  name_text_1,
-                                                  name_text_2,
-                                                  name_text_3,
-                                                  main_data,
-                                                  file_slot_1_url,
-                                                  file_slot_2_url,
-                                                  file_slot_3_url,
-                                                  main_photo_url,
-                                                  list_photo_url,
-                                                  slot!.file_slot!.length>0?slot!.file_slot![0]:"",
-                                                  slot!.file_slot!.length>1?slot!.file_slot![1]:"",
-                                                  slot!.file_slot!.length>2?slot!.file_slot![2]:"");
+                                             }catch(e){
                                               Navigator.pop(dialogContext);
-                                          });
-                                        }
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "جار رفع " + name_of_porsses,
-                                                style: TextStyle(fontSize: 22),
-                                              ),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              LinearProgressIndicator(value: presint),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                              start_uplode = false;
+                                              setstate((){});
+                                              tost(msg: "فشل الرفع يرجى إعادى المحاولة",color: Colors.red);
+                                             }
+                                            }
+                                            return Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Column(
                                                 children: [
-                                                  //Text(name_of_porsses),
-                                                  //  Text(number_of_uploade.toString()+"/5"),
-                                                  // Text("5/10")
+                                                  Text(
+                                                    "جار رفع " + name_of_porsses,
+                                                    style: TextStyle(fontSize: 22),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  LinearProgressIndicator(value: presint),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      //Text(name_of_porsses),
+                                                      //  Text(number_of_uploade.toString()+"/5"),
+                                                      // Text("5/10")
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 20,
+                                                  )
                                                 ],
                                               ),
-                                              SizedBox(
-                                                height: 20,
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                    ],
+                                            );
+                                          }),
+                                        ],
+                                      );
+                                    },
                                   );
-                                },
-                              );
-                            }
-                            else {
-                              tost(msg: "يرجى ملئ جميع البيانات", color: Colors.red);
-                            }
-                            // if (!slot!.with_location!) {
-                            //   location = " ";
-                            // }
-                            // if (name_add_con.text.isNotEmpty &&
-                            //     des_add_con.text.isNotEmpty &&
-                            //     price_add_con.text.isNotEmpty &&
-                            //     num_day_add_con.text.isNotEmpty &&
-                            //     num_day_add_con.text.isNotEmpty &&
-                            //     city.isNotEmpty &&
-                            //     location != null &&
-                            //     is_terms_check &&
-                            //     main_data != "") {
-                            //   setstate(() {
-                            //     is_loading = true;
-                            //   });
-                            //   AddBloc.get(context).add_void(
-                            //       cache.get_data("id"),
-                            //       name_add_con.text,
-                            //       des_add_con.text,
-                            //       price_add_con.text,
-                            //       my_price,
-                            //       num_day_add_con.text,
-                            //       city,
-                            //       b[a.indexOf(type)],
-                            //       location,
-                            //       text_slot_0_add_con.text,
-                            //       text_slot_1_add_con.text,
-                            //       text_slot_2_add_con.text,
-                            //       kind,
-                            //       name_text_1,
-                            //       name_text_2,
-                            //       name_text_3,
-                            //       main_data);
-                            // } else {
-                            //   tost(msg: "يرجى ملئ جميع البيانات", color: Colors.red);
-                            // }
-                          },
-                          child: is_loading
-                              ? Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : Text("إضافة"),
-                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_red)),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                      ],
-                    );
-                  });
-                }
-              },
+
+
+                              }
+                              else {
+                                tost(msg: "يرجى ملئ جميع البيانات", color: Colors.red);
+                              }
+                              // if (!slot!.with_location!) {
+                              //   location = " ";
+                              // }
+                              // if (name_add_con.text.isNotEmpty &&
+                              //     des_add_con.text.isNotEmpty &&
+                              //     price_add_con.text.isNotEmpty &&
+                              //     num_day_add_con.text.isNotEmpty &&
+                              //     num_day_add_con.text.isNotEmpty &&
+                              //     city.isNotEmpty &&
+                              //     location != null &&
+                              //     is_terms_check &&
+                              //     main_data != "") {
+                              //   setstate(() {
+                              //     is_loading = true;
+                              //   });
+                              //   AddBloc.get(context).add_void(
+                              //       cache.get_data("id"),
+                              //       name_add_con.text,
+                              //       des_add_con.text,
+                              //       price_add_con.text,
+                              //       my_price,
+                              //       num_day_add_con.text,
+                              //       city,
+                              //       b[a.indexOf(type)],
+                              //       location,
+                              //       text_slot_0_add_con.text,
+                              //       text_slot_1_add_con.text,
+                              //       text_slot_2_add_con.text,
+                              //       kind,
+                              //       name_text_1,
+                              //       name_text_2,
+                              //       name_text_3,
+                              //       main_data);
+                              // } else {
+                              //   tost(msg: "يرجى ملئ جميع البيانات", color: Colors.red);
+                              // }
+                            },
+                            child: is_loading
+                                ? Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text("إضافة"),
+                            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_red)),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      );
+                    });
+                  }
+                },
+              ),
             ),
-          ),
-        );
-      }),
-    );
+          );
+        }),
+      );
+
   }
 
   DropdownMenuItem drop_item(item) => DropdownMenuItem(value: item, child: Center(child: Text(item)));
