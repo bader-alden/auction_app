@@ -38,7 +38,7 @@ class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
   String get minutes => lang ? "m" : "د";
   String get day => lang ? "d" : "ي";
   String get q => lang ? "your rank" : "ترتيبك هو";
-  String get a => lang ? "number of baids" : "عدد المزايدين";
+  String get a => lang ? "number of baids" : "عدد المزايدات";
   String get z => lang ? "Current Price" : "السعر الحالي";
   String get w => lang ? "end in" : "ينتهي في";
   String get s => lang ? "Min increment" : "أقل مزايدة";

@@ -132,7 +132,13 @@ var aa;
   void update(list_auction_model model,type,my_price){
     // log  num_add  sub  price
     print (model.sub);
-    var r_price= (int.parse(model.price!) + int.parse(my_price)).toString();
+    var r_price="0";
+    if(model.is_hide??false){
+      r_price=my_price.toString();
+    }else{
+      r_price=(int.parse(model.price!) + int.parse(my_price)).toString();
+    }
+
     var user_id = cache.get_data("id");
     socket?.emit("update",{"id":int.parse(model.id!),"name":user_id,"type":type!,"sub_price":r_price});
     // var b = list_auction_model.fromjson({

@@ -508,7 +508,9 @@ class Test2 extends StatelessWidget {
                                         width: double.infinity,
                                         child: Center(
                                             child: Text(
-                                          context.read<LocaleBloc>().test2_end,
+                                            (model.is_hide??false)&&model.user_id!=cache.get_data("id").toString()
+                                                ?"دفع أعلى سعر"
+                                              : context.read<LocaleBloc>().test2_end,
                                           style: const TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
                                         )),
                                       )),
@@ -848,9 +850,9 @@ class Test2 extends StatelessWidget {
                       style: const TextStyle(fontSize: 12),
                     ),
                     ImageFiltered(
-                        enabled: model.is_hide??false,
+                        enabled: (model.is_hide??false)&&model.user_id!=cache.get_data("id").toString(),
                         imageFilter: ImageFilter.blur(sigmaY: 3,sigmaX: 3),
-                        child: Text((model.is_hide??false?"000000" : model.price!) , style: const TextStyle(fontSize: 12))),
+                        child: Text(((model.is_hide??false)&&model.user_id!=cache.get_data("id").toString()?"000000" : model.price!) , style: const TextStyle(fontSize: 12))),
                   ],
                 ),
               ),

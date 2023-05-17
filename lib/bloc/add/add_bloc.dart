@@ -95,7 +95,7 @@ dio.post_data(
   "photo":main_photo??"https://www.ipcc.ch/site/assets/uploads/sites/3/2019/10/img-placeholder.png" ,
   "photos":list_photo ,
   "main_data":main_data ,
-  "is_hide":is_hide ,
+  "is_hide":is_hide?"1":"0" ,
   }
 ).then((value) {
   print(value?.data);

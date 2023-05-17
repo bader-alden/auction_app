@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:auction_app/bloc/theme/theme.dart';
+import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
 import 'package:auction_app/dio.dart';
 import 'package:flutter/material.dart';
@@ -583,9 +584,9 @@ class Test3 extends StatelessWidget {
                                 children: [
                                   Text(context.read<LocaleBloc>().price+": " , style: const TextStyle(color: Colors.grey)),
                                   ImageFiltered(
-                                    enabled: model.is_hide??false,
+                                    enabled: (model.is_hide??false)&&model.user_id!=cache.get_data("id").toString(),
                                       imageFilter: ImageFilter.blur(sigmaY: 3,sigmaX: 3),
-                                      child: Text((model.is_hide??false?"000000" : model.price!) + context.read<LocaleBloc>().curunce, style: const TextStyle(color: Colors.grey))),
+                                      child: Text(((model.is_hide??false)&&model.user_id!=cache.get_data("id").toString()?"000000" : model.price!) + context.read<LocaleBloc>().curunce, style: const TextStyle(color: Colors.grey))),
                                 ],
                               ),
                             ],

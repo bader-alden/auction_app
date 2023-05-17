@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/dio.dart';
@@ -12,7 +14,7 @@ import '../bloc/stram/stream_bloc.dart';
 import '../bloc/theme/theme_bloc.dart';
 import '../const.dart';
 import '../models/list_auction_model.dart';
-
+var price = TextEditingController(text: "100");
 class confirm_pay extends StatelessWidget {
   const confirm_pay({Key? key, this.model, this.type, this.is_first}) : super(key: key);
   final list_auction_model? model;
@@ -23,7 +25,6 @@ class confirm_pay extends StatelessWidget {
     int my_price = int.parse(model!.num_price!);
     bool is_check = false;
     bool is_click = false;
-    var price = TextEditingController(text: "100");
     return BlocProvider(
       create: (context) => ThemeBloc(),
       child: Scaffold(
@@ -69,13 +70,19 @@ class confirm_pay extends StatelessWidget {
                                 SizedBox(height: 40,),
                                 Center(
                                     child: Text(
+                                      (model?.is_hide??false)&&model?.user_id!=cache.get_data("id").toString()
+                                      ? "دفع أعلى سعر"
+                                          :
                                   " مزايدة",
                                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
                                 )),
                                 Center(child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(model!.price!,style: TextStyle(fontSize: 22),),
+                                    if( (model?.is_hide??false)&&model?.user_id!=cache.get_data("id").toString())
+                                    ImageFiltered(
+                                        imageFilter: ImageFilter.blur(sigmaX: 5,sigmaY: 5),child: Text("000000",style: TextStyle(fontSize: 22),))
+                                    else   Text(model!.price!,style: TextStyle(fontSize: 22),),
                                     Text(":أعلى سعر",style: TextStyle(fontSize: 20),)
                                   ],
                                 )),
@@ -134,7 +141,10 @@ class confirm_pay extends StatelessWidget {
                                                     focusedBorder: UnderlineInputBorder(
                                                       borderSide: BorderSide(color: main_red),
                                                     ),
-                                                    hintText: "المزايدة بقيمة"
+                                                    hintText:
+                                                    (model?.is_hide??false)&&model?.user_id!=cache.get_data("id").toString()
+                                                    ?"أعلى سعر"
+                                                        :"المزايدة بقيمة"
                                                 ),
                                               ),)
 
@@ -271,7 +281,8 @@ class confirm_pay extends StatelessWidget {
                                               ),
                                             ),
                                           );
-                                        })
+                                        }),
+                                        SizedBox(height: 10,)
                                       ],
                                     ))),
                             //    SizedBox(height: 50,),
