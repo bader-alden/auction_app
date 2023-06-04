@@ -1,17 +1,11 @@
 
-import 'dart:ui';
 
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:auction_app/bloc/home_page/home_page_list_bloc.dart';
-import 'package:auction_app/layout/Setting.dart';
-import 'package:auction_app/layout/auction_details.dart';
 import 'package:auction_app/layout/auction_list.dart';
-import 'package:container_tab_indicator/container_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import '../bloc/locale/locale_bloc.dart';
-import '../bloc/stram/stream_bloc.dart';
 import '../bloc/theme/theme.dart';
 import '../models/list_auction_model.dart';
 import '../const.dart';

@@ -5,21 +5,17 @@ import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
 import 'package:auction_app/dio.dart';
-import 'package:auction_app/layout/Home.dart';
-import 'package:auction_app/layout/Map.dart';
 import 'package:auction_app/layout/auction_option_details.dart';
 import 'package:auction_app/layout/confirm_pay.dart';
 import 'package:auction_app/layout/pdf.dart';
 import 'package:auction_app/models/list_auction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:share/share.dart';
 import '../bloc/locale/locale_bloc.dart';
 import '../bloc/stram/stream_bloc.dart';
 
 import 'auction_option_details2.dart';
-import 'favotite.dart';
 
 bool is_add = false;
 bool from_go = false;
@@ -90,13 +86,13 @@ class Test2 extends StatelessWidget {
               } else {
                 list_auction_model? model;
                 snapshot.data.runtimeType == list_auction_model ? model = snapshot.data : model = list_auction_model.fromjson(snapshot.data);
-                if (model?.status.toString() != "0") {
-                  return Scaffold(
-                      appBar: AppBar(leading: back_boutton(context),),
-                      body: Center(
-                        child: Text("العنصر المطلوب غير متاح"),
-                      ));
-                }
+                // if (model?.status.toString() != "0") {
+                //   return Scaffold(
+                //       appBar: AppBar(leading: back_boutton(context),),
+                //       body: Center(
+                //         child: Text("العنصر المطلوب غير متاح"),
+                //       ));
+                // }
                   // if(model.user_id.toString() == cache.get_data("id").toString()){
                 //   tost(msg: "yes",color: Colors.red);
                 // }
@@ -164,7 +160,7 @@ class Test2 extends StatelessWidget {
                       child: Column(
                         children: [
                           Expanded(
-                            child: Container(
+                            child: SizedBox(
                               width: double.infinity,
                               child: ListView(
                                 physics: const BouncingScrollPhysics(),
@@ -186,6 +182,7 @@ class Test2 extends StatelessWidget {
                                               physics: const BouncingScrollPhysics(),
                                               itemBuilder: (context, index) {
                                                 return Image(
+                                                   fit: BoxFit.fitWidth,
                                                     image: NetworkImage(model?.photos?.length == 1 ? model!.photo! : model!.photos![index]),
                                                     loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                                                       if (loadingProgress == null) return child;
@@ -198,6 +195,7 @@ class Test2 extends StatelessWidget {
                                                       );
                                                     });
                                               }),
+                                          if(model!.photos!.length>1)
                                           Row(
                                             children: [
                                               Column(
@@ -277,7 +275,7 @@ class Test2 extends StatelessWidget {
                                                                     titlePadding: EdgeInsets.zero,
                                                                     backgroundColor: Colors.transparent,
                                                                     children: [
-                                                                      Container(
+                                                                      SizedBox(
                                                                         width: double.infinity,
                                                                         child: Image(
                                                                           image: NetworkImage(model?.photos?.length == 1
@@ -388,7 +386,7 @@ class Test2 extends StatelessWidget {
                                                 IconButton(
                                                     onPressed: () {
                                                       Share.share(
-                                                          'أوكشن السعودية للمزادات'+'\n'+'إضغط على الرابط لمشاهدة المزاد'+'\n'+'https://saudisauctions.com/?type=$type&id=$id');
+                                                          'أوكشن السعودية للمزادات'+'\n'+'إضغط على الرابط لمشاهدة المزاد'+'\n'+'https://mobile.saudisauctions.com/?type=$type&id=$id');
                                                     },
                                                     iconSize: 20,
                                                     icon: const Icon(
@@ -465,7 +463,7 @@ class Test2 extends StatelessWidget {
                               ),
                             ),
                           ),
-                          if (model.status != "2")
+                          if (model?.status.toString() == "0"&&type !="wait")
                             Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: model.user_id == cache.get_data("id").toString()
@@ -1060,11 +1058,12 @@ Widget Fav_icon(type, id) {
       } else if (FavBloc.get(context).is_fav == false) {
         return InkWell(
             onTap: () {
+              if(type !="wait"){
               if (cache.get_data("id") != null) {
                 FavBloc.get(context).add_to_fav_void(type, id);
               } else {
                 tost(msg: "يجب تسجيل الدخول أولا", color: Colors.red);
-              }
+              }}
             },
             child: const Image(
               image: AssetImage("assets/img/20.png"),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 MapController controller = MapController(
   initMapWithUserPosition: false,
   initPosition: GeoPoint(latitude: 47.4358055, longitude: 8.4737324),

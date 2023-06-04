@@ -1,7 +1,6 @@
 
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/models/add_model.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:auction_app/dio.dart';
@@ -39,7 +38,7 @@ List<add_model> add_list = [];
               "type": element.split("|")[2],
             }).then((value) {
              if(value?.data.isNotEmpty){
-               add_list.add(add_model.fromjson(element,value?.data[0]));
+               add_list.add(add_model.fromjson(element,value?.data[0],false));
                num++;
              }
             });
@@ -50,7 +49,7 @@ List<add_model> add_list = [];
               "type": element.split("|")[2],
             }).then((value) {
               if(value?.data[0]!=""){
-                add_list.add(add_model.fromjson(element,value?.data[0]));
+                add_list.add(add_model.fromjson(element,value?.data[0],true));
                 num++;
               }
             });}

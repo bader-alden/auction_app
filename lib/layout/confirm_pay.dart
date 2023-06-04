@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/dio.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +56,7 @@ class confirm_pay extends StatelessWidget {
                             color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black,
                             borderRadius: BorderRadius.circular(30)),
                       ),
-                      Container(
+                      SizedBox(
                         height: 480,
                         width: 410 * MediaQuery.of(context).size.width / 350,
                         child: Column(
@@ -267,7 +266,7 @@ class confirm_pay extends StatelessWidget {
                                                     child: is_click
                                                         ? Padding(
                                                             padding: const EdgeInsets.all(8.0),
-                                                            child: Container(
+                                                            child: SizedBox(
                                                                 height: 20,
                                                                 width: 20,
                                                                 child: const CircularProgressIndicator(

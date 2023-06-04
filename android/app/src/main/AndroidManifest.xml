@@ -35,7 +35,7 @@
                 <!-- Accepts URIs that begin with YOUR_SCHEME://YOUR_HOST -->
                 <data
                     android:scheme="https"
-                    android:host="saudisauctions.com" />
+                    android:host="mobile.saudisauctions.com" />
             </intent-filter>
 
             <!-- App Links -->
@@ -46,7 +46,7 @@
                 <!-- Accepts URIs that begin with https://YOUR_HOST -->
                 <data
                     android:scheme="https"
-                    android:host="saudisauctions.com" />
+                    android:host="mobile.saudisauctions.com" />
             </intent-filter>
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"

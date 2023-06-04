@@ -37,7 +37,7 @@ class _AddMoneyState extends State<AddMoney> {
         centerTitle: true,
         leading: back_boutton(context),
       ),
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -86,7 +86,7 @@ class _AddMoneyState extends State<AddMoney> {
             Text("المبلغ الواجب دفعه"+add_mony_price.toString()),
             SizedBox(height: 50,),
             ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>Payment(model: add_model.fromjson("a|a|mix|a", {"name":"a","price":add_mony_price.toString(),"time":"a"}), pay_type: "add")));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>Payment(model: add_model.fromjson("a|a|mix|a", {"name":"a","price":add_mony_price.toString(),"time":"a"},false), pay_type: "add")));
               add_mony_price_con.clear();
               }, child: Text("دفع"))
           ],

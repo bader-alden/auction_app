@@ -18,7 +18,7 @@ ScrollController scon = ScrollController();
 ScrollController _scrollController = ScrollController();
 list_auction_model? model;
 List<main_list_model>? main_list = [];
-Widget Home_page(BuildContext context, home_tab_con) {
+Widget Home_page_old(BuildContext context, home_tab_con) {
   return BlocProvider(
       create: (context) => HomePageListBloc()..get_main_list(),
       child: Builder(builder: (context) {
@@ -75,7 +75,7 @@ Widget Home_page(BuildContext context, home_tab_con) {
                                     shrinkWrap: true,
                                     itemCount:context.read<HomePageListBloc>().state.list?.length ,
                                     padding: EdgeInsets.all(0),
-                                    gridDelegate:SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 1), itemBuilder: (context,index){
+                                    gridDelegate:SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 1.3), itemBuilder: (context,index){
                                   return  home_page_item(index, context, context.read<HomePageListBloc>().state.list![index]);
                                 })
 
@@ -111,6 +111,238 @@ Widget Home_page(BuildContext context, home_tab_con) {
       }));
 }
 
+// Widget sqr_widget(BuildContext context, home_tab_con) {
+//   return BlocProvider(
+//     create: (context) => StreamBloc()
+//       ..sqr_void(),
+//     child: Builder(builder: (context) {
+//       return StreamBuilder(
+//           stream: context.read<StreamBloc>().sqr_stream_controller.stream,
+//           builder: (context, snapshot) {
+//             print(snapshot.connectionState);
+//             if (snapshot.data == "NOTFOUND") {
+//               return Scaffold(
+//                   body: Center(
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     const Text("العنصر المطلوب غير متاح"),
+//                     IconButton(
+//                         onPressed: () {
+//                           cache.remove_data("sqr");
+//                           Phoenix.rebirth(context);
+//                         },
+//                         icon: const Icon(Icons.delete))
+//                   ],
+//                 ),
+//               ));
+//             }
+//             if (snapshot.connectionState == ConnectionState.waiting) {
+//               return Scaffold(
+//                   body: Center(
+//                 child: Image(image: Theme.of(context).brightness == Brightness.light
+//                ? const AssetImage("assets/img/loading.gif")
+//               :  const AssetImage("assets/img/dark_loading.gif")
+//                   ,width: 150,height: 150,),
+//               ));
+//             } else {
+//               snapshot.data.runtimeType == list_auction_model ? model = snapshot.data : model = list_auction_model.fromjson(snapshot.data);
+//               return Padding(
+//                 padding: const EdgeInsets.all(4.0),
+//                 child: AspectRatio(
+//                   aspectRatio: 1,
+//                   child: Stack(
+//                     children: [
+//                       Stack(
+//                         alignment: context.read<LocaleBloc>().lang
+//                             ? AlignmentGeometry.lerp(Alignment.bottomRight, Alignment.centerRight, 0.4)!
+//                             : AlignmentGeometry.lerp(Alignment.bottomLeft, Alignment.centerLeft, 0.4)!,
+//                         children: [
+//                           Stack(
+//                             alignment: context.read<LocaleBloc>().lang ? Alignment.topRight : Alignment.topLeft,
+//                             children: [
+//                               Container(
+//                                 key: container_key,
+//                                 height: double.infinity,
+//                                 width: double.infinity,
+//                                 decoration: BoxDecoration(color: main_red, borderRadius: BorderRadius.circular(30)),
+//                               ),
+//                               Container(
+//                                   padding: const EdgeInsets.symmetric(vertical: 15),
+//                                   height: MediaQuery.of(context).size.width / 1.5 > 270 ? 270 : MediaQuery.of(context).size.width / 1.5,
+//                                   child: Image(
+//                                     image: const AssetImage("assets/img/13.png"),
+//                                     color: main_red,
+//                                     matchTextDirection: true,
+//                                   )),
+//                             ],
+//                           ),
+//                           Padding(
+//                             padding: const EdgeInsets.all(8.0),
+//                             child: TextButton(
+//                               onPressed: () {
+//                                 Navigator.push(
+//                                     context,
+//                                     MaterialPageRoute(
+//                                         builder: (context) => Test2(
+//                                               id: cache.get_data("sqr").toString().split("-")[0],
+//                                               type: cache.get_data("sqr").toString().split("-")[1],
+//                                               from: "sqr",
+//                                             )));
+//                               },
+//                               child: Container(
+//                                 decoration: BoxDecoration(color: sec_color, borderRadius: BorderRadius.circular(20)),
+//                                 child: Padding(
+//                                   padding: const EdgeInsets.all(5.0),
+//                                   child: Text(
+//                                     context.read<LocaleBloc>().home_page_sqr_buttumn,
+//                                     style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                       Padding(
+//                         padding: const EdgeInsets.all(10),
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             const SizedBox(
+//                               height: 5,
+//                             ),
+//                             Padding(
+//                               padding: const EdgeInsets.only(left: 12),
+//                               child: Text(
+//                                 context.read<LocaleBloc>().home_page_sqr_top,
+//                                 style: const TextStyle(color: Colors.white, fontSize: 17),
+//                               ),
+//                             ),
+//                             const SizedBox(
+//                               height: 5,
+//                             ),
+//                             Container(
+//                               width: 220,
+//                               child: Stack(
+//                                 children: [
+//                                   TabBar(
+//                                     isScrollable: true,
+//                                     controller: home_tab_con,
+//                                     tabs: [model!.name!].map(tabbs).toList(),
+//                                     padding: EdgeInsets.zero,
+//                                     physics: const BouncingScrollPhysics(),
+//                                     automaticIndicatorColorAdjustment: true,
+//                                     labelStyle: const TextStyle(height: 1.3),
+//                                     unselectedLabelStyle: const TextStyle(color: Colors.red),
+//                                     indicator: ContainerTabIndicator(
+//                                       color: sec_color,
+//                                       radius: BorderRadius.circular(10.0),
+//                                     ),
+//                                   ),
+//                                   Positioned(
+//                                     right: context.read<LocaleBloc>().lang ? 0 : null,
+//                                     left: context.read<LocaleBloc>().lang ? null : 0,
+//                                     width: 50,
+//                                     height: 100,
+//                                     child: Container(
+//                                       decoration: BoxDecoration(
+//                                         gradient: LinearGradient(
+//                                           end: context.read<LocaleBloc>().lang ? Alignment.centerLeft : Alignment.centerRight,
+//                                           begin: context.read<LocaleBloc>().lang ? Alignment.centerRight : Alignment.centerLeft,
+//                                           colors: [
+//                                             main_red,
+//                                             main_red.withOpacity(0.0),
+//                                           ],
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   )
+//                                 ],
+//                               ),
+//                             ),
+//                             const SizedBox(
+//                               height: 10,
+//                             ),
+//                             Container(
+//                               width: MediaQuery.of(context).size.width / 2 > 170 ? 170 : MediaQuery.of(context).size.width / 2,
+//                               decoration: BoxDecoration(border: Border.all(color: Colors.white,width: 2), borderRadius: BorderRadius.circular(15)),
+//                               child: Row(
+//                                 children: [
+//                                   Padding(
+//                                     padding: const EdgeInsets.all(4.0),
+//                                     child: CircleAvatar(
+//                                       backgroundColor: Colors.white,
+//                                       radius: 20,
+//                                       child: Container(
+//                                         padding: const EdgeInsets.all(4.0),
+//                                         child: const Image(image: AssetImage("assets/img/0.png")),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                   const SizedBox(
+//                                     width: 5,
+//                                   ),
+//                                   Column(
+//                                     children: [
+//                                       Text(context.read<LocaleBloc>().home_page_sqr_down,style: const TextStyle(color: Colors.white)),
+//                                       Directionality(
+//                                         textDirection: TextDirection.ltr,
+//                                         child: AnimatedFlipCounter(
+//                                           textStyle: const TextStyle(color: Colors.white),
+//                                           duration: const Duration(milliseconds: 500),
+//                                           value: int.parse(model!.price!),
+//                                         ),
+//                                       ),
+//                                     //  Text(model!.price! + context.read<LocaleBloc>().curunce,style: TextStyle(color:Colors.white),),
+//                                     ],
+//                                   )
+//                                 ],
+//                               ),
+//                             ),
+//                             const SizedBox(
+//                               height: 10,
+//                             ),
+//                             Expanded(
+//                               child: Container(
+//                                 // width: MediaQuery.of(context).size.width / 2 > 170 ? 170 : MediaQuery.of(context).size.width / 2,
+//                                 child: AspectRatio(
+//                                   aspectRatio: 1,
+//                                   child: Padding(
+//                                     padding: context.read<LocaleBloc>().lang
+//                                         ? EdgeInsets.only(
+//                                             right: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30,
+//                                             bottom: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30)
+//                                         : EdgeInsets.only(
+//                                             left: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30,
+//                                             bottom: MediaQuery.of(context).size.width > 400 ? 30 : MediaQuery.of(context).size.width / 400 * 30),
+//                                     child: Container(
+//                                       decoration: BoxDecoration(border: Border.all(color: Colors.white,width: 2),borderRadius: BorderRadius.circular(20)),
+//                                       child: GridView.count(
+//                                           physics: const NeverScrollableScrollPhysics(),
+//                                           crossAxisCount: 2, children: [
+//                                         one(model!,context),
+//                                         two(model!, context),
+//                                         three(model!, context),
+//                                         four(model!, context),
+//                                       ]),
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             )
+//                           ],
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               );
+//             }
+//           });
+//     }),
+//   );
+// }
 
 Widget tabbs(a) => Text(
   a,
@@ -124,7 +356,8 @@ Widget home_page_item(int index, BuildContext context, main_list_model model) {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  Test3(type: model.type, type_name: context.read<LocaleBloc>().lang ? model.eng_name! : model.ar_name!, kind: model.all_kind,is_plate: model.is_plate,)));
+
+                  Test3(type: model.type, type_name: context.read<LocaleBloc>().lang ? model.eng_name! : model.ar_name!, kind: model.all_kind,is_plate:model.is_plate)));
     },
     borderRadius: BorderRadius.circular(20),
     child: Container(
@@ -139,81 +372,56 @@ Widget home_page_item(int index, BuildContext context, main_list_model model) {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
 
-          Stack(
-            alignment: Alignment.topLeft,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  color: main_red,
-                 // shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10))),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),side: BorderSide( color:Color.fromARGB(255, 212, 175, 55),width: 1)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+          Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Stack(
+                  alignment: context.read<LocaleBloc>().lang ? Alignment.topRight : Alignment.topLeft,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: context.read<LocaleBloc>().lang ? 8 : 0, left: context.read<LocaleBloc>().lang ? 0 : 8, top: 2),
+                      child: CircleAvatar(
+                          backgroundColor: main_red,
+                          radius: 25,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image(
+                              image: NetworkImage(base_url+"/file/${model.type!}.png"),
+                            ),
+                          )),
+                    ),
+                    Stack(
+                      alignment: Alignment.center,
                       children: [
-                        SizedBox(height: 10,),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(context.read<LocaleBloc>().lang ? model.eng_name! : model.ar_name!,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 15),),
-                          //child: Text(text_list[index],style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 15),),
+                        Container(
+                          height: 23,
+                          width: 23,
+                          decoration: BoxDecoration(
+                              color: sec_color,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white, width: 2.5)),
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
                         ),
-                       // Container(height: 2,width: 90,color: Colors.amber,),
-                        Padding(
-                          // padding: EdgeInsets.only(right: context.read<LocaleBloc>().lang ? 8 : 0, left: context.read<LocaleBloc>().lang ? 0 : 8, top: 2),
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          child: Card(
-                              margin: EdgeInsets.zero,
-                              elevation: 0,
-                              color: main_red,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image(
-                                  height: 60,
-                                  width: 70,
-                                  image: NetworkImage(base_url+"/file/${model.type!}.png"),
-                                  //image: AssetImage(img_list[index]),
-                                ),
-                              )),
+                        Text(
+                          model.is_soon??true?"0":model.count!,
+                          style: const TextStyle(color: Colors.black, fontSize: 12),
                         ),
-                        //  SizedBox(height: 5,),
-                        SizedBox(height: 5,),
-
-                        //  SizedBox(height: 5,),
-                        // Text(context.read<LocaleBloc>().lang ? model.detail! : model.text!)
                       ],
                     ),
-                  ),
+                  ],
                 ),
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Material(
-                    elevation: 0,
-                    color: Color.fromARGB(255, 212, 175, 55),
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 212, 175, 55),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white, width: 2.5)),
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                    ),
-                  ),
-                  Text(
-                    model.is_soon??true?"0":model.count!,
-                    style: const TextStyle(color: Colors.white, fontSize: 13,fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ],
+                const SizedBox(
+                  width: 10,
+                ),
+                SizedBox(height: 10,),
+                Text(context.read<LocaleBloc>().lang ? model.eng_name! : model.ar_name!,style: TextStyle(fontWeight: FontWeight.bold),),
+                // Text(context.read<LocaleBloc>().lang ? model.detail! : model.text!)
+              ],
+            ),
           ),
-          SizedBox(height: 0,),
+          SizedBox(height: 10,),
           //const Spacer(),
           Container(
             child:model.is_soon??true

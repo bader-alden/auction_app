@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
 import 'package:auction_app/models/list_auction_model.dart';
-import 'package:auction_app/models/main_list_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:socket_io_client/socket_io_client.dart'as IO;
@@ -36,11 +35,11 @@ var aa;
 
   Future init_stream_void()async {
     //emit(loading_init_stream_state());
-     socket = IO.io(base_url,<String, dynamic>{
+     socket = IO.io("http://31.220.50.200:3000/",<String, dynamic>{
      'transports': ['websocket'],
      'force new connection': true,
      'query': {
-     'timeStamp': new DateTime.now().millisecondsSinceEpoch
+     'timeStamp': DateTime.now().millisecondsSinceEpoch
      }
      },
      //socket = IO.io('https://faceted-dull-evening.glitch.me',
@@ -55,11 +54,11 @@ var aa;
       // socket?.dispose();
       // socket?.destroy();
       print("desconect");
-      socket = IO.io(base_url,<String, dynamic>{
+      socket = IO.io("http://31.220.50.200:3000/",<String, dynamic>{
         'transports': ['websocket'],
         'force new connection': true,
         'query': {
-          'timeStamp': new DateTime.now().millisecondsSinceEpoch
+          'timeStamp': DateTime.now().millisecondsSinceEpoch
         }
       },
 
@@ -99,6 +98,7 @@ var aa;
     // emit(loading_list_auction_state());
     socket?.emit("get_one",{"id":int.parse(id),"type":type});
     socket?.on("res_one", (data) {
+      print(data);
       try {
         var adata ;
         adata =  json.decode(data["data"].toString().substring(1,data["data"].toString().length-1));

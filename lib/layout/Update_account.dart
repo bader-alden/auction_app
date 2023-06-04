@@ -138,7 +138,7 @@ class Update_account extends StatelessWidget {
                             tost(msg: "يجب ملئ جميع الفراغات",color: Colors.red);
                           }
                         },
-                        child: Container(
+                        child: SizedBox(
                           width: double.infinity,
                           child: Center(
                               child:is_update_loading

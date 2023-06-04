@@ -24,10 +24,11 @@ var aa;
 List<list_auction_model>? a = [];
 class Test3 extends StatelessWidget {
   final type;
+  final is_plate;
   List<all_kind_model>? kind;
   final type_name;
 
-  Test3({super.key, required this.type, this.type_name, this.kind});
+  Test3({super.key, required this.type, this.type_name, this.kind, this.is_plate});
   @override
   Widget build(BuildContext context) {
     String? filter_1;
@@ -181,78 +182,9 @@ class Test3 extends StatelessWidget {
                                   height: 2,
                                   color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                                 ),
-                                // Row(
-                                //   children: [
-                                //     ...kind!.map(kind_widget).toList(),
-                                //     InkWell(
-                                //         borderRadius: BorderRadius.circular(100),
-                                //         onTap: () {
-                                //           // StreamBloc().get_all(type, kind[0]);
-                                //           setstate(() {
-                                //             alg = 0.12;
-                                //             is_press_kind = true;
-                                //           });
-                                //         },
-                                //         child: CircleAvatar(
-                                //           radius: 30,
-                                //           backgroundColor:
-                                //               is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
-                                //           child:  Image(
-                                //             image: NetworkImage(kind![0].img!),
-                                //             height: 30,
-                                //           ),
-                                //         )),
-                                //     const SizedBox(
-                                //       width: 20,
-                                //     ),
-                                //     InkWell(
-                                //         borderRadius: BorderRadius.circular(100),
-                                //         onTap: () {
-                                //           // StreamBloc().get_all(type, kind[1]);
-                                //           setstate(() {
-                                //             alg = 0.55;
-                                //             is_press_kind = false;
-                                //           });
-                                //         },
-                                //         child: CircleAvatar(
-                                //           radius: 30,
-                                //           backgroundColor:
-                                //               !is_press_kind ? const Color.fromARGB(255, 184, 60, 60) : const Color.fromARGB(255, 220, 200, 173),
-                                //           child: const Image(
-                                //             image: AssetImage("assets/img/12.png"),
-                                //             height: 30,
-                                //           ),
-                                //         )),
-                                //   ],
-                                // ),
+
                                 const SizedBox(
                                   height: 10,
-                                ),
-                                // Stack(
-                                //   alignment: context.read<LocaleBloc>().lang
-                                //       ? AlignmentGeometry.lerp(
-                                //           Alignment.bottomLeft, Alignment.bottomCenter, 400 / MediaQuery.of(context).size.width * alg)!
-                                //       : AlignmentGeometry.lerp(
-                                //           Alignment.bottomRight, Alignment.bottomCenter, 400 / MediaQuery.of(context).size.width * alg)!,
-                                //   children: [
-                                //     Container(
-                                //       width: double.infinity,
-                                //       height: 2,
-                                //       color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                                //     ),
-                                //     RotatedBox(
-                                //         quarterTurns: 90,
-                                //         child: Image(
-                                //           image: const AssetImage("assets/img/5.png"),
-                                //           height: 15,
-                                //           width: 15,
-                                //           color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                                //           filterQuality: FilterQuality.high,
-                                //         ))
-                                //   ],
-                                // ),
-                                const SizedBox(
-                                  height: 0,
                                 ),
                               ],
                             );
@@ -502,7 +434,111 @@ class Test3 extends StatelessWidget {
                 } else {
                   a = Colors.transparent;
                 }
-                return Container(
+                if(is_plate) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        color: a,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, width: 0.9)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 75,
+                            child: ClipRRect(
+                                borderRadius: context.read<LocaleBloc>().lang
+                                    ? const BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20))
+                                    : const BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
+                                child: Image(
+                                  image: NetworkImage(model.photo!.toString()),
+                                  height: 120,
+                                )),
+                          ),
+
+                        // Expanded(child: Container(width: double.infinity,decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,image: DecorationImage(image: NetworkImage(model.photo!))),)),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                         Padding(
+                           padding: const EdgeInsets.symmetric(horizontal: 20),
+                           child: Column(
+                             crossAxisAlignment: CrossAxisAlignment.start,
+                             children: [
+                               Row(
+                                 children: [
+                                   const SizedBox(
+                                     width: 15,
+                                   ),
+                                   Text(
+                                    "تجربة",
+                                     style: const TextStyle(fontSize: 22,fontWeight: FontWeight.bold),
+                                   ),
+                                   Spacer(),
+                                   Text(
+                                     context.read<LocaleBloc>().test2_id + model.id!,
+                                     style: const TextStyle(color: Colors.grey),
+                                   ),
+                                   const SizedBox(
+                                     width: 7,
+                                   ),
+                                 ],
+                               ),
+                               const SizedBox(
+                                 height: 5,
+                               ),
+                               Row(
+                                 children: [
+                                   Row(
+                                     children: [
+                                       Text(context.read<LocaleBloc>().price+": " , style: const TextStyle(color: Colors.grey)),
+                                       ImageFiltered(
+                                           enabled: (model.is_hide??false)&&model.user_id!=cache.get_data("id").toString(),
+                                           imageFilter: ImageFilter.blur(sigmaY: 3,sigmaX: 3),
+                                           child: Text(((model.is_hide??false)&&model.user_id!=cache.get_data("id").toString()?"000000" : model.price!) + context.read<LocaleBloc>().curunce, style: const TextStyle(color: Colors.grey))),
+                                     ],
+                                   ),
+                                   Spacer(),
+                                   CircleAvatar(
+                                     radius: 12,
+                                     backgroundColor: main_red,
+                                     child: Padding(
+                                       padding: const EdgeInsets.all(5.0),
+                                       child: Image.asset("assets/img/1.png"),
+                                     ),
+                                   ),
+                                   const SizedBox(
+                                     width: 4,
+                                   ),
+                                   Text(model.num_add ?? "0"),
+                                   const SizedBox(
+                                     width: 20,
+                                   ),
+                                   Spacer(),
+                                   CircleAvatar(
+                                     radius: 12,
+                                     backgroundColor: main_red,
+                                     child: Padding(
+                                       padding: const EdgeInsets.all(5.0),
+                                       child: Image.asset("assets/img/2.png"),
+                                     ),
+                                   ),
+                                   const SizedBox(
+                                     width: 5,
+                                   ),
+                                   Timer_widget(model.time, context, Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+                                 ],
+                               ),
+                             ],
+                           ),
+                         ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return Container(
                   decoration: BoxDecoration(
                       color: a,
                       borderRadius: BorderRadius.circular(20),
@@ -534,7 +570,7 @@ class Test3 extends StatelessWidget {
                             children: [
                               Text(
                                 model.name!,
-                                style: const TextStyle(fontSize: 20),
+                                style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(
                                 height: 5,
@@ -596,6 +632,7 @@ class Test3 extends StatelessWidget {
                     ],
                   ),
                 );
+                }
               }),
             ),
           );

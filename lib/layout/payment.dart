@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
-import 'package:auction_app/layout/map_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_app/dio.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';

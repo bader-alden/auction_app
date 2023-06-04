@@ -3,26 +3,18 @@ import 'dart:async';
 import 'package:auction_app/bloc/locale/locale_bloc.dart';
 import 'package:auction_app/bloc/theme/theme_bloc.dart';
 import 'package:auction_app/cache.dart';
-import 'package:auction_app/const.dart';
 import 'package:auction_app/dio.dart';
 import 'package:auction_app/layout/auction_details.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:uni_links/uni_links.dart';
 import 'bloc/observ.dart';
 import 'bloc/theme/theme.dart';
 import 'layout/Home.dart';
-import 'package:http/http.dart'as http;
-import 'layout/Shimmer.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 // ...
 
@@ -46,7 +38,7 @@ Future<void> _initURIHandler(context) async {
         if(initialURI.queryParameters["id"] != null &&initialURI.queryParameters["type"] != null){
           Future.delayed(const Duration(milliseconds: 500)).then((value) {
             Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> Test2(type: initialURI.queryParameters["type"],id:initialURI.queryParameters["id"])));
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> Test2(type: initialURI.queryParameters["type"],id:initialURI.queryParameters["id"],)));
           });
         }else{
           Navigator.pop(context);
@@ -67,7 +59,7 @@ void _incomingLinkHandler(context) {
       if(uri?.queryParameters["id"] != null &&uri?.queryParameters["type"] != null){
         Future.delayed(const Duration(milliseconds: 500)).then((value) {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> Test2(type: uri?.queryParameters["type"],id:uri?.queryParameters["id"])));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> Test2(type: uri?.queryParameters["type"],id:uri?.queryParameters["id"],)));
         });
 
       }else{
@@ -111,69 +103,69 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message,flutterLo
   }
 }
 main()async{
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // ).then((value) => print(value.name)).onError((error, stackTrace)
-  // {print(error);});
-  // print("aaaaaaa");
+  // WidgetsFlutterBinding.ensureInitialized();
   //
-
-  await Future.delayed(Duration(seconds:3));
-  await dio.init();
-  print("aaaaaaa");
-  await cache.init();
-  if(cache.get_data("theme") == null){
-    cache.save_data("theme", "system");
-  }
-  if(cache.get_data("locale") == null){
-    cache.save_data("locale", "system");
-  }
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon'),iOS: IOSInitializationSettings()));
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
-  // flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
-
-  FirebaseMessaging.onBackgroundMessage((message) => _firebaseMessagingBackgroundHandler(message,flutterLocalNotificationsPlugin));
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    RemoteNotification? notification = message.notification;
-    AndroidNotification? android = message.notification?.android;
-    if (notification != null ) {
-      flutterLocalNotificationsPlugin.show(
-          notification.hashCode,
-          notification.title,
-          notification.body,
-          NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channel.description,
-                icon: 'app_icon',
-              ),
-              iOS: IOSNotificationDetails(
-                subtitle:notification.body,
-              )
-          ));
-    }
-  });
-
-
-
-  Bloc.observer =  MyBlocObserver();
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp().then((value) => print(value.name)).onError((error, stackTrace) {print(error);});
-  }else {
-    Firebase.app();
-  }
-  try{
-    final fcmToken = await FirebaseMessaging.instance.getToken().onError((error, stackTrace) {print(error);});
-    print(fcmToken);
-  }catch(e){
-
-  }
+  // // await Firebase.initializeApp(
+  // //   options: DefaultFirebaseOptions.currentPlatform,
+  // // ).then((value) => print(value.name)).onError((error, stackTrace)
+  // // {print(error);});
+  // // print("aaaaaaa");
+  // //
+  //
+  // await Future.delayed(Duration(seconds:3));
+  // await dio.init();
+  // print("aaaaaaa");
+  // await cache.init();
+  // if(cache.get_data("theme") == null){
+  //   cache.save_data("theme", "system");
+  // }
+  // if(cache.get_data("locale") == null){
+  //   cache.save_data("locale", "system");
+  // }
+  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  // flutterLocalNotificationsPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('app_icon'),iOS: IOSInitializationSettings()));
+  // await flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.createNotificationChannel(channel);
+  // // flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
+  //
+  // FirebaseMessaging.onBackgroundMessage((message) => _firebaseMessagingBackgroundHandler(message,flutterLocalNotificationsPlugin));
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   RemoteNotification? notification = message.notification;
+  //   AndroidNotification? android = message.notification?.android;
+  //   if (notification != null ) {
+  //     flutterLocalNotificationsPlugin.show(
+  //         notification.hashCode,
+  //         notification.title,
+  //         notification.body,
+  //         NotificationDetails(
+  //             android: AndroidNotificationDetails(
+  //               channel.id,
+  //               channel.name,
+  //               channel.description,
+  //               icon: 'app_icon',
+  //             ),
+  //             iOS: IOSNotificationDetails(
+  //               subtitle:notification.body,
+  //             )
+  //         ));
+  //   }
+  // });
+  //
+  //
+  //
+  // Bloc.observer =  MyBlocObserver();
+  // if (Firebase.apps.isEmpty) {
+  //   await Firebase.initializeApp().then((value) => print(value.name)).onError((error, stackTrace) {print(error);});
+  // }else {
+  //   Firebase.app();
+  // }
+  // try{
+  //   final fcmToken = await FirebaseMessaging.instance.getToken().onError((error, stackTrace) {print(error);});
+  //   print(fcmToken);
+  // }catch(e){
+  //
+  // }
   // final fcmToken = await FirebaseMessaging.instance.getToken().onError((error, stackTrace) {print(error);});
   // print(fcmToken);
   runApp(const First());
@@ -191,7 +183,7 @@ class _FirstState extends State<First> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-    //  future: init(),
+      future: init(),
       builder: (context,snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(

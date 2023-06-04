@@ -3,16 +3,15 @@ import 'package:auction_app/bloc/Main/Main_state.dart';
 import 'package:auction_app/bloc/locale/locale_bloc.dart';
 import 'package:auction_app/layout/Account.dart';
 import 'package:auction_app/layout/Home_page.dart';
-import 'package:auction_app/layout/add_auction.dart';
+import 'package:auction_app/layout/Home_page_new.dart';
 import 'package:auction_app/layout/auction.dart';
-import 'package:auction_app/layout/my_auction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'dart:math' as math;
 import '../bloc/stram/stream_bloc.dart';
 import '../bloc/theme/theme.dart';
+import 'Home_page_old.dart';
 import 'favotite.dart';
 import 'new_version.dart';
 

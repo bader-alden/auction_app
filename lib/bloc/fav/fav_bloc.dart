@@ -1,7 +1,5 @@
-import 'dart:async';
 
 import 'package:auction_app/cache.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:auction_app/dio.dart';

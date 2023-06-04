@@ -29,16 +29,16 @@ Widget home_list_shimmer(context){
       padding: const EdgeInsets.all(0.0),
       child: Column(
         children: [
-          CircleAvatar(radius: 25,backgroundColor: Theme.of(context).backgroundColor),
+          Container(width: 60,height: 80,color: Theme.of(context).backgroundColor,),
           const SizedBox(height: 10,),
           // Expanded(child: Container(height: 50,width: double.infinity,color: Colors.white)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(width: MediaQuery.of(context).size.width/6,height: 20,color: Theme.of(context).backgroundColor,),
+               // Container(width: MediaQuery.of(context).size.width/6,height: 20,color: Theme.of(context).backgroundColor,),
                 const SizedBox(height: 5,),
-                Container(width:  MediaQuery.of(context).size.width/3,height: 17,color: Theme.of(context).backgroundColor,),
+                Container(width:  MediaQuery.of(context).size.width/4,height: 17,color: Theme.of(context).backgroundColor,),
 
               ],
             ),

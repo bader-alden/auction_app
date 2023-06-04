@@ -86,10 +86,10 @@ class _RepoState extends State<Repo> {
                       }, child: Text("موافق"))],));
                     }
                   });
-              }, child:is_repo_loading? Container(height: 50,width: MediaQuery.of(context).size.width/2,child: Padding(
+              }, child:is_repo_loading? SizedBox(height: 50,width: MediaQuery.of(context).size.width/2,child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(child: CircularProgressIndicator(color: Colors.white,)),
-              )) : Container(height: 50,width: MediaQuery.of(context).size.width/2,child: Padding(
+              )) : SizedBox(height: 50,width: MediaQuery.of(context).size.width/2,child: Padding(
     padding: const EdgeInsets.all(8.0),
     child:Center(child: Text("إرسال"))))),
             )

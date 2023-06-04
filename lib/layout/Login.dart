@@ -8,11 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 import 'package:pinput/pinput.dart';
 
-import '../bloc/Main/Main_bloc.dart';
-import 'Home.dart';
 
 bool is_login = true;
 TextEditingController email_con = TextEditingController();
@@ -66,7 +63,7 @@ Widget Login(BuildContext context, state) {
 
                         if (cache.get_data("otp_id") != null) {
 
-                          return Container(
+                          return SizedBox(
                             width: double.infinity,
                             child: Padding(
                               padding: const EdgeInsets.all(8),
@@ -111,7 +108,7 @@ Widget Login(BuildContext context, state) {
 
                                     }
                                   },
-                                    child: Container(
+                                    child: SizedBox(
                                         height: 40,
                                         width: MediaQuery.of(context).size.width / 1.5,
                                         child: Center(
@@ -375,7 +372,7 @@ Widget Login(BuildContext context, state) {
 
                                       }
                                     },
-                                    child: Container(
+                                    child: SizedBox(
                                         height: 40,
                                         width: MediaQuery.of(context).size.width / 1.5,
                                         child: Center(

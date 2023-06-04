@@ -6,8 +6,8 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>webcredentials:saudisauctions.com</string>
-		<string>applinks:saudisauctions.com</string>
+		<string>webcredentials:mobile.saudisauctions.com</string>
+		<string>applinks:mobile.saudisauctions.com</string>
 	</array>
 </dict>
 </plist>

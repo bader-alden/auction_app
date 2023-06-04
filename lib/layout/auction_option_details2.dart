@@ -2,7 +2,6 @@ import 'package:auction_app/bloc/locale/locale_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../models/list_auction_model.dart';
 Map main_data_map={};
 class option_details2 extends StatefulWidget {
   const option_details2({Key? key,required  this.row}) : super(key: key);

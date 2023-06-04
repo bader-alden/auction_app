@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../bloc/locale/locale_bloc.dart';
 import '../bloc/theme/theme_bloc.dart';
 

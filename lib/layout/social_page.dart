@@ -2,8 +2,6 @@ import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auction_app/dio.dart';
-import 'package:social_media_flutter/widgets/icons.dart';
-import 'package:social_media_flutter/widgets/text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../bloc/locale/locale_bloc.dart';
 List social_list=[];
