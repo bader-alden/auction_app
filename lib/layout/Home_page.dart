@@ -72,6 +72,7 @@ Widget Home_page(BuildContext context, home_tab_con) {
                                     shrinkWrap: true,
                                     physics: const NeverScrollableScrollPhysics())
                                     :GridView.builder(
+                                  physics: BouncingScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount:context.read<HomePageListBloc>().state.list?.length ,
                                     padding: EdgeInsets.all(0),

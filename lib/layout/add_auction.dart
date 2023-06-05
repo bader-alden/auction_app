@@ -69,9 +69,7 @@ List<String> all_latter_val = ["A", "B", "D", "E", "G", "H", "J", "K", "L", "N",
 // ];
 
 bool is_terms_check = false;
-List<int> f1 = [];
-List<int> f2 = [];
-List<int> f3 = [];
+
 
 class add_auction extends StatelessWidget {
   const add_auction({Key? key}) : super(key: key);
@@ -106,6 +104,9 @@ class add_auction extends StatelessWidget {
     List<String> all_plate2_val = [plate_drop5_val, plate_drop6_val, plate_drop7_val];
     var city;
     String? location;
+    List<int> f1 = [];
+    List<int> f2 = [];
+    List<int> f3 = [];
     List a = [];
     List b = [];
     List all_kind = [];
@@ -199,7 +200,7 @@ class add_auction extends StatelessWidget {
                         }
                       });
                       type = a[0]!;
-                      slot = context.read<HomePageListBloc>().state.list![0];
+                      slot = context.read<HomePageListBloc>().state.list!.where((element) => !element.is_soon!).first;
                       slot?.all_kind?.forEach((element) {
                         all_kind.add(element.kind);
                         all_kind_time.add(element.time);
@@ -682,26 +683,200 @@ class add_auction extends StatelessWidget {
                                       SizedBox(
                                         width: 20,
                                       ),
+                                      if(i == 0 && f1.isEmpty || i == 1 && f2.isEmpty || i == 2 && f3.isEmpty)
                                       ElevatedButton(
-                                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(i == 0 && file_slot_1 != null || i == 1 && file_slot_2 != null || i == 2 && file_slot_3 != null ? Colors.green : Colors.red)),
+                                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(i == 0 && f1.isNotEmpty || i == 1 && f2.isNotEmpty || i == 2 && f3.isNotEmpty ? Colors.green : Colors.red)),
                                           onPressed: () async {
                                             if (i == 0) {
-                                              file_slot_1 = await FilePicker.platform.pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
-                                              File(file_slot_1!.files.first.path!).readAsBytes().then((value) => f1 = value.toList());
-                                              setstate(() {});
+                                              showDialog(context: context, builder: (context)=>AlertDialog(
+                                                title: Column(
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        await ImagePicker.platform.pickImage(source: ImageSource.camera).then((value) async {
+                                                          await value?.readAsBytes().then((value) => f1 = value.toList());
+                                                          setstate(() {});
+                                                          Navigator.pop(context);
+                                                        });
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Center(
+                                                            child: Text("إختيار من الكمرة"),
+                                                          ),
+                                                          SizedBox(width: 10,),
+                                                          Icon(Icons.camera,color: main_red,)
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 20,),
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        await ImagePicker.platform.pickImage(source: ImageSource.gallery).then((value) async {
+                                                          await value?.readAsBytes().then((value) => f1 = value.toList());
+                                                          setstate(() {});
+                                                          Navigator.pop(context);
+                                                        });
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Center(
+                                                            child: Text("إختيار من الصور"),
+                                                          ),
+                                                          SizedBox(width: 10,),
+                                                          Icon(Icons.photo,color: main_red,)
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ));
+                                              // file_slot_1 = await FilePicker.platform.pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
+                                              // File(file_slot_1!.files.first.path!).readAsBytes().then((value) => f1 = value.toList());
+
                                             }
                                             if (i == 1) {
-                                              file_slot_2 = await FilePicker.platform.pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
-                                              File(file_slot_2!.files.first.path!).readAsBytes().then((value) => f2 = value.toList());
-                                              setstate(() {});
+                                              showDialog(context: context, builder: (context)=>AlertDialog(
+                                                title: Column(
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        await ImagePicker.platform.pickImage(source: ImageSource.camera).then((value) async {
+                                                          await value?.readAsBytes().then((value) => f2 = value.toList());
+                                                          setstate(() {});
+                                                          Navigator.pop(context);
+                                                        });
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Center(
+                                                            child: Text("إختيار من الكمرة"),
+                                                          ),
+                                                          SizedBox(width: 10,),
+                                                          Icon(Icons.camera,color: main_red,)
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 20,),
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        await ImagePicker.platform.pickImage(source: ImageSource.gallery).then((value) async {
+                                                          await value?.readAsBytes().then((value) => f2 = value.toList());
+                                                          setstate(() {});
+                                                          Navigator.pop(context);
+                                                        });
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Center(
+                                                            child: Text("إختيار من الصور"),
+                                                          ),
+                                                          SizedBox(width: 10,),
+                                                          Icon(Icons.photo,color: main_red,)
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ));
+                                              // file_slot_1 = await FilePicker.platform.pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
+                                              // File(file_slot_1!.files.first.path!).readAsBytes().then((value) => f1 = value.toList());
+
                                             }
                                             if (i == 2) {
-                                              file_slot_3 = await FilePicker.platform.pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
-                                              File(file_slot_3!.files.first.path!).readAsBytes().then((value) => f3 = value.toList());
-                                              setstate(() {});
+                                              showDialog(context: context, builder: (context)=>AlertDialog(
+                                                title: Column(
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        await ImagePicker.platform.pickImage(source: ImageSource.camera).then((value) async {
+                                                          await value?.readAsBytes().then((value) => f3 = value.toList());
+                                                          setstate(() {});
+                                                          Navigator.pop(context);
+                                                        });
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Center(
+                                                            child: Text("إختيار من الكمرة"),
+                                                          ),
+                                                          SizedBox(width: 10,),
+                                                          Icon(Icons.camera,color: main_red,)
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 20,),
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        await ImagePicker.platform.pickImage(source: ImageSource.gallery).then((value) async {
+                                                          await value?.readAsBytes().then((value) => f3 = value.toList());
+                                                          setstate(() {});
+                                                          Navigator.pop(context);
+                                                        });
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Center(
+                                                            child: Text("إختيار من الصور"),
+                                                          ),
+                                                          SizedBox(width: 10,),
+                                                          Icon(Icons.photo,color: main_red,)
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ));
+                                              // file_slot_1 = await FilePicker.platform.pickFiles(allowMultiple: false, allowedExtensions: ["pdf"], type: FileType.custom);
+                                              // File(file_slot_1!.files.first.path!).readAsBytes().then((value) => f1 = value.toList());
+
                                             }
                                           },
-                                          child: i == 0 && file_slot_1 != null || i == 1 && file_slot_2 != null || i == 2 && file_slot_3 != null ? Icon(Icons.check) : Text("إضافة")),
+                                          child: i == 0 && f1.isNotEmpty || i == 1 && f2.isNotEmpty|| i == 2 && f3.isNotEmpty ? Icon(Icons.check) : Text("إضافة"))
+                                      else
+                                        Row(
+                                          children: [
+                                            ElevatedButton(
+                                                style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
+                                                onPressed: (){
+                                                  if(i==0){
+                                                    f1.clear();
+                                                    setstate((){});
+                                                  }
+                                                  if(i==1){
+                                                    f2.clear();
+                                                    setstate((){});
+                                                  }
+                                                  if(i==2){
+                                                    f3.clear();
+                                                    setstate((){});
+                                                  }
+                                                }, child: Icon(Icons.delete)),
+                                            SizedBox(width: 10,),
+                                            ElevatedButton(
+                                                style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green)),
+                                                onPressed: (){
+
+                                                  showDialog(context: context, builder: (context)=>AlertDialog(
+                                                    title: Row(
+                                                      children: [
+                                                        IconButton(onPressed: (){Navigator.pop(context);},icon: Icon(Icons.close)),
+                                                        Spacer(),
+                                                        Text(slot!.file_slot![i]),
+                                                        Spacer(),
+                                                      ],
+                                                    ),
+                                                    content: Image.memory(Uint8List.fromList(i==0?f1:i==1?f2:f3)),
+                                                  ));
+                                                }, child: Text("عرض")),
+                                          ],
+                                        ),
                                       Spacer(),
                                       Text(slot!.file_slot![i]),
                                       SizedBox(
@@ -1114,7 +1289,7 @@ class add_auction extends StatelessWidget {
                                                 FormData formData = FormData.fromMap(
                                                     //    {"file": MultipartFile.fromFileSync(file_slot_1!.files.first.path!, filename: Uuid().v4()+".pdf")});
                                                     //    {"file": f1});
-                                                    {"file": MultipartFile.fromBytes(f1, filename: Uuid().v4() + ".pdf")});
+                                                    {"file": MultipartFile.fromBytes(f1, filename: Uuid().v4() + ".png")});
                                                 //    {"file":MultipartFile(f1!.openRead(),await f1!.length(),filename: Uuid().v4()+".pdf")});
                                                 await dio
                                                     .post_data(
@@ -1137,7 +1312,7 @@ class add_auction extends StatelessWidget {
                                                 settate(() {});
                                                 FormData formData = FormData.fromMap(
                                                     //    {"file": MultipartFile.fromFileSync(file_slot_2!.files.first.path!, filename: Uuid().v4()+".pdf")});
-                                                    {"file": MultipartFile.fromBytes(f2, filename: Uuid().v4() + ".pdf")});
+                                                    {"file": MultipartFile.fromBytes(f2, filename: Uuid().v4() + ".png")});
                                                 await dio
                                                     .post_data(
                                                         url: "/uplode/uplode",
@@ -1159,7 +1334,7 @@ class add_auction extends StatelessWidget {
                                                 settate(() {});
                                                 FormData formData = FormData.fromMap(
                                                     //     {"file": MultipartFile.fromFileSync(file_slot_3!.files.first.path!, filename:Uuid().v4()+".pdf")});
-                                                    {"file": MultipartFile.fromBytes(f3, filename: Uuid().v4() + ".pdf")});
+                                                    {"file": MultipartFile.fromBytes(f3, filename: Uuid().v4() + ".png")});
                                                 await dio
                                                     .post_data(
                                                         url: "/uplode/uplode",
