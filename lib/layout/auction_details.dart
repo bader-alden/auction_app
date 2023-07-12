@@ -9,6 +9,7 @@ import 'package:auction_app/layout/auction_option_details.dart';
 import 'package:auction_app/layout/confirm_pay.dart';
 import 'package:auction_app/layout/pdf.dart';
 import 'package:auction_app/models/list_auction_model.dart';
+import 'package:auction_app/models/main_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share/share.dart';
@@ -25,11 +26,12 @@ var text_con = TextEditingController();
 
 //Map(lat: "37.759392",lng: "-122.5107336")
 class Test2 extends StatelessWidget {
-  const Test2({Key? key, this.id, this.type, this.from, this.setstates}) : super(key: key);
+  const Test2({Key? key, this.id, this.type, this.from, this.setstates, this.par_model}) : super(key: key);
   final id;
   final type;
   final from;
   final setstates;
+  final main_list_model? par_model;
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +168,7 @@ class Test2 extends StatelessWidget {
                                 physics: const BouncingScrollPhysics(),
                                 children: [
                                   SizedBox(
-                                    height: 250,
+                                    height:250,
                                     child: StatefulBuilder(builder: (context, setstate) {
                                       return Stack(
                                         alignment: Alignment.center,
@@ -436,25 +438,30 @@ class Test2 extends StatelessWidget {
                                       ],
                                     ),
                                   ),
+                                  if(!(par_model?.is_plate??false))
                                   const SizedBox(
                                     height: 10,
                                   ),
+                                  if(!(par_model?.is_plate??false))
                                   Container(
                                       padding: const EdgeInsets.symmetric(vertical: 8),
                                       child: Center(
                                           child: Text(
                                         model!.name!,
-                                        style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold,),
                                       ))),
-                                  const SizedBox(
+                                  if(!(par_model?.is_plate??false))
+                                    const SizedBox(
                                     height: 10,
                                   ),
-                                  Container(padding: const EdgeInsets.all(8), child: Center(child: Text(model.des!))),
+                                  if(!(par_model?.is_plate??false))
+                                    Container(padding: const EdgeInsets.all(8), child: Center(child: Text(model!.des!))),
                                   const SizedBox(
                                     height: 20,
                                   ),
                                   // end_test_2(model, context),
-                                  end_details(model, context),
+                                  end_details(model!, context),
                                   const SizedBox(
                                     width: 10,
                                   ),
@@ -480,6 +487,7 @@ class Test2 extends StatelessWidget {
                                   : InkWell(
                                       borderRadius: BorderRadius.circular(20),
                                       onTap: () {
+                                        print(model?.sub);
                                         var paid = model?.sub!.firstWhere((element) => element.contains("-${cache.get_data("id") ?? "]'/[;."}|"),
                                             orElse: () => "not|0");
                                         if (cache.get_data("id") != null) {
@@ -487,7 +495,8 @@ class Test2 extends StatelessWidget {
                                             "user_id":cache.get_data("id")
                                           }).then((value)  {
                                             var  user_mouny = int.parse(value?.data[0]['balance']);
-                                            if(user_mouny > int.parse(model!.price!)~/10 || user_mouny == int.parse(model!.price!)~/10){
+                                            if((user_mouny > int.parse(model!.price!)~/10 || user_mouny == int.parse(model!.price!)~/10)&&model.is_hide!){
+                                              print(paid?.split("|")[1] == "0");
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(

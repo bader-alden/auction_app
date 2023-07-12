@@ -7,6 +7,7 @@ import 'package:auction_app/bloc/theme/theme.dart';
 import 'package:auction_app/cache.dart';
 import 'package:auction_app/const.dart';
 import 'package:auction_app/layout/Home_page_new.dart';
+import 'package:auction_app/layout/Login.dart';
 import 'package:auction_app/layout/add_auction_main_data.dart';
 import 'package:cool_dropdown/cool_dropdown.dart';
 import 'package:cool_dropdown/enums/dropdown_align.dart';
@@ -31,7 +32,8 @@ import 'Terms_page.dart';
 import 'package:auction_app/dio.dart';
 import 'package:http/http.dart' as http;
 
-List<String> all_num = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+List<String> all_num = ["0","1", "2", "3", "4", "5", "6", "7", "8", "9"];
 List<String> all_latter = [
   "أ / A",
   "ب / B",
@@ -100,8 +102,12 @@ class add_auction extends StatelessWidget {
     var plate_drop7_val = "";
     List<DropdownController> all_plate = [plate_drop1, plate_drop2, plate_drop3, plate_drop4];
     List<String> all_plate_val = [plate_drop1_val, plate_drop2_val, plate_drop3_val, plate_drop4_val];
+    List<String> all_plate3_val = [plate_drop1_val, plate_drop2_val, plate_drop3_val];
     List<DropdownController> all_plate2 = [plate_drop5, plate_drop6, plate_drop7];
+    List<DropdownController> all_plate3 =  [plate_drop1, plate_drop2, plate_drop3];
+    List<DropdownController> all_plate4 = [ plate_drop6, plate_drop7];
     List<String> all_plate2_val = [plate_drop5_val, plate_drop6_val, plate_drop7_val];
+    List<String> all_plate4_val = [ plate_drop6_val, plate_drop7_val];
     var city;
     String? location;
     List<int> f1 = [];
@@ -126,9 +132,7 @@ class add_auction extends StatelessWidget {
     String file_slot_3_url = "";
     String main_photo_url = "";
     String list_photo_url = "";
-    FilePickerResult? file_slot_1;
-    FilePickerResult? file_slot_2;
-    FilePickerResult? file_slot_3;
+
     String main_data_empty = "";
     String main_data = "";
     PickedFile? main_image;
@@ -277,6 +281,7 @@ class add_auction extends StatelessWidget {
                                       hint: Text(" "),
                                       onChanged: (value) {
                                         setstate(() {
+                                          setstate((){});
                                           kind = value!;
                                           main_data = "";
                                           num_day_add_con.text = all_kind_time[all_kind.indexOf(kind)];
@@ -295,29 +300,64 @@ class add_auction extends StatelessWidget {
                             ),
                           ],
                         ),
+                        // SizedBox(
+                        //   height: 15,
+                        // ),
+                        // Text(
+                        //   "الاسم:",
+                        //   textDirection: TextDirection.rtl,
+                        //   style: TextStyle(fontSize: 20),
+                        // ),
+                        // Container(
+                        //   padding: EdgeInsets.all(4),
+                        //   decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300, borderRadius: BorderRadius.circular(8)),
+                        //   child: TextFormField(
+                        //     textDirection: TextDirection.rtl,
+                        //     decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
+                        //     controller: name_add_con,
+                        //   ),
+                        // ),
                         SizedBox(
-                          height: 15,
+                          height: 20,
                         ),
-                        Text(
-                          "الاسم:",
-                          textDirection: TextDirection.rtl,
-                          style: TextStyle(fontSize: 20),
+                        Center(
+                            child: Text(
+                              "معلومات الأساسية",
+                              style: TextStyle(fontSize: 25),
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                final main_data_pop = await Navigator.push(context, MaterialPageRoute(builder: (context) => add_auction_main_data(row: main_data_empty, old: main_data,is_car:slot?.is_car)));
+                                if (main_data_pop != null) {
+                                  setstate(() {
+                                    var _ = main_data_pop.toString().split("**");
+                                    print(main_data_pop.toString().split("^")[0].toString().split("**")[1]);
+                                    print(main_data_pop.toString().split("^")[1].toString().split("**")[1]);
+                                    name_add_con.text = main_data_pop.toString().split("^")[0].toString().split("**")[1]+" "+main_data_pop.toString().split("^")[1].toString().split("**")[1];
+                                   // print(main_data_pop.toString().split("**")[1].toString().split("^")[1]);
+                                    main_data = main_data_pop;
+                                  });
+                                }
+                              },
+                              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_data != "" ? Colors.green : main_red)),
+                              child: main_data != ""
+                                  ? Icon(
+                                Icons.check,
+                                color: Colors.white,
+                              )
+                                  : Text("تعبئة")),
                         ),
-                        Container(
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300, borderRadius: BorderRadius.circular(8)),
-                          child: TextFormField(
-                            textDirection: TextDirection.rtl,
-                            decoration: const InputDecoration(border: InputBorder.none, hintTextDirection: TextDirection.rtl),
-                            controller: name_add_con,
-                          ),
-                        ),
+                        if(!(slot?.is_plate ?? false ))
                         SizedBox(height: 15),
+                        if(!(slot?.is_plate ?? false ) )
                         Text(
                           "الوصف:",
                           textDirection: TextDirection.rtl,
                           style: TextStyle(fontSize: 20),
                         ),
+                        if(!(slot?.is_plate ?? false ) )
                         Container(
                           height: 150,
                           padding: EdgeInsets.all(4),
@@ -531,7 +571,7 @@ class add_auction extends StatelessWidget {
                                       return CustomDropdown.search(
                                           fillColor: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
                                           items: citys_list.map((e) => e["namecity"].toString()).toList(),
-                                          hintText: ":المدينة التي يوجد بها المنتج",
+                                          hintText: "المدينة التي يوجد بها المنتج",
                                           hintStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
                                           errorText: "غير موجود",
                                           onChanged: (value) {
@@ -561,111 +601,88 @@ class add_auction extends StatelessWidget {
                             // ),
                           ],
                         ),
+
                         SizedBox(
                           height: 20,
                         ),
-                        Center(
-                            child: Text(
-                          "معلومات الأساسية",
-                          style: TextStyle(fontSize: 25),
-                        )),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: ElevatedButton(
-                              onPressed: () async {
-                                final main_data_pop = await Navigator.push(context, MaterialPageRoute(builder: (context) => add_auction_main_data(row: main_data_empty, old: main_data)));
-                                if (main_data_pop != null) {
-                                  setstate(() {
-                                    main_data = main_data_pop;
-                                  });
-                                }
-                              },
-                              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(main_data != "" ? Colors.green : main_red)),
-                              child: main_data != ""
-                                  ? Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                    )
-                                  : Text("تعبئة")),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty)
-                          Center(
-                              child: Text(
-                            "معلومات إضافية",
-                            style: TextStyle(fontSize: 25),
-                          )),
-                        if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty)
-                          for (int i = 0; i < slot!.text_slot!.length; i++)
-                            Builder(builder: (context) {
-                              TextEditingController con;
-                              if (i == 0) {
-                                name_text_1 = slot!.text_slot![0];
-                                con = text_slot_0_add_con;
-                              } else if (i == 1) {
-                                name_text_2 = slot!.text_slot![1];
-                                con = text_slot_1_add_con;
-                              } else {
-                                name_text_3 = slot!.text_slot![2];
-                                con = text_slot_2_add_con;
-                              }
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        ElevatedButton(
-                                            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(con.text != "" ? Colors.green : Colors.red)),
-                                            onPressed: () {
-                                              showDialog(
-                                                  barrierDismissible: false,
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return add_rout_home(context, i, text_slot_0_add_con, text_slot_1_add_con, text_slot_2_add_con, slot, setstate);
-                                                  });
-                                            },
-                                            child: con.text != ""
-                                                ? Icon(
-                                                    Icons.check,
-                                                    color: Colors.white,
-                                                  )
-                                                : Text("إضافة")),
-                                        Spacer(),
-                                        Text(slot!.text_slot![i]),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 1,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    )
-                                  ],
-                                ),
-                              );
-                            }),
+                        // if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty)
+                        //   Center(
+                        //       child: Text(
+                        //     "معلومات إضافية",
+                        //     style: TextStyle(fontSize: 25),
+                        //   )),
+                        // if (slot?.text_slot?[0] != "" && slot!.text_slot!.isNotEmpty)
+                        //   for (int i = 0; i < slot!.text_slot!.length; i++)
+                        //     Builder(builder: (context) {
+                        //       TextEditingController con;
+                        //       if (i == 0) {
+                        //         name_text_1 = slot!.text_slot![0];
+                        //         con = text_slot_0_add_con;
+                        //       } else if (i == 1) {
+                        //         name_text_2 = slot!.text_slot![1];
+                        //         con = text_slot_1_add_con;
+                        //       } else {
+                        //         name_text_3 = slot!.text_slot![2];
+                        //         con = text_slot_2_add_con;
+                        //       }
+                        //       return Padding(
+                        //         padding: const EdgeInsets.all(8.0),
+                        //         child: Column(
+                        //           crossAxisAlignment: CrossAxisAlignment.end,
+                        //           children: [
+                        //             SizedBox(
+                        //               height: 10,
+                        //             ),
+                        //             Row(
+                        //               children: [
+                        //                 SizedBox(
+                        //                   width: 20,
+                        //                 ),
+                        //                 ElevatedButton(
+                        //                     style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(con.text != "" ? Colors.green : Colors.red)),
+                        //                     onPressed: () {
+                        //                       showDialog(
+                        //                           barrierDismissible: false,
+                        //                           context: context,
+                        //                           builder: (context) {
+                        //                             return add_rout_home(context, i, text_slot_0_add_con, text_slot_1_add_con, text_slot_2_add_con, slot, setstate);
+                        //                           });
+                        //                     },
+                        //                     child: con.text != ""
+                        //                         ? Icon(
+                        //                             Icons.check,
+                        //                             color: Colors.white,
+                        //                           )
+                        //                         : Text("إضافة")),
+                        //                 Spacer(),
+                        //                 Text(slot!.text_slot![i]),
+                        //                 SizedBox(
+                        //                   width: 20,
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //             SizedBox(
+                        //               height: 10,
+                        //             ),
+                        //             Container(
+                        //               width: double.infinity,
+                        //               height: 1,
+                        //               color: Colors.grey.shade700,
+                        //             ),
+                        //             SizedBox(
+                        //               height: 10,
+                        //             )//سيارة gtr
+                        //           ],
+                        //         ),
+                        //       );
+                        //     }),
+
+
+
                         if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "")
                           Center(
                               child: Text(
-                            "ملفات إضافية",
+                            "صور إضافية",
                             style: TextStyle(fontSize: 25),
                           )),
                         if (slot!.file_slot!.isNotEmpty && slot?.file_slot?[0] != "")
@@ -911,92 +928,18 @@ class add_auction extends StatelessWidget {
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: all_plate
-                                    .map(
-                                      (con) => CoolDropdown(
-                                        controller: con,
-                                        dropdownList: all_num.map((e) => CoolDropdownItem(label: e, value: e)).toList(),
-                                        defaultItem: null,
-                                        onChange: (value) async {
-                                          if (con.isError) {
-                                            await con.resetError();
-                                          }
-                                          all_plate_val[all_plate.indexOf(con)] = value;
-                                          con.close();
-                                        }, dropdownItemOptions: DropdownItemOptions(
-                                          selectedBoxDecoration:  BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300),
-                                          boxDecoration: BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
-                                          textStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
-                                        dropdownOptions: DropdownOptions(
-                                          color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
-                                        ),
-                                        resultOptions: ResultOptions(
-                                          textStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
-                                          padding: EdgeInsets.symmetric(horizontal: 10),
-                                          width: 60,
-                                          icon: const SizedBox(
-                                            width: 10,
-                                            height: 10,
-                                            child: CustomPaint(
-                                              painter: DropdownArrowPainter(),
-                                            ),
-                                          ),
-                                          boxDecoration: BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,borderRadius: BorderRadius.circular(7)),
-                                          openBoxDecoration: BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300),
-                                          render: ResultRender.all,
-                                          placeholder: '',
-                                          isMarquee: true,
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
+                                children:kind =="دبابات"
+                                    ?all_plate3.map((con) => plate_widg(con,context,all_plate3_val,all_plate3,false)).toList()
+                                    :all_plate.map((con) => plate_widg(con,context,all_plate_val,all_plate,false)).toList(),
                               ),
                               SizedBox(
                                 height: 20,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: all_plate2
-                                    .map(
-                                      (con) => CoolDropdown(
-                                        controller: con,
-                                        dropdownList: all_latter.map((e) => CoolDropdownItem(label: e, value: all_latter_val[all_latter.indexOf(e)])).toList(),
-                                        defaultItem: null,
-                                        onChange: (value) async {
-                                          if (con.isError) {
-                                            await con.resetError();
-                                          }
-
-                                          all_plate2_val[all_plate2.indexOf(con)] = value;
-                                          con.close();
-                                        },
-                                        dropdownItemOptions: DropdownItemOptions(
-                                          selectedBoxDecoration:  BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300),
-                                         boxDecoration: BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
-                                            textStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
-                                        dropdownOptions: DropdownOptions(
-                                          color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
-                                        ),
-                                        resultOptions: ResultOptions(
-                                          textStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
-                                          padding: EdgeInsets.symmetric(horizontal: 10),
-                                          width: 100,
-                                          icon: const SizedBox(
-                                            width: 10,
-                                            height: 10,
-                                            child: CustomPaint(
-                                              painter: DropdownArrowPainter(),
-                                            ),
-                                          ),
-                                          boxDecoration: BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,borderRadius: BorderRadius.circular(7)),
-                                          openBoxDecoration: BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300),
-                                          render: ResultRender.all,
-                                          placeholder: '',
-                                          isMarquee: true,
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
+                                children: kind =="دبابات"
+                                    ?all_plate4.map((con) => plate_widg(con,context,all_plate4_val,all_plate4,true)).toList()
+                                    :all_plate2.map((con) => plate_widg(con,context,all_plate2_val,all_plate2,true)).toList(),
                               )
                             ],
                           )
@@ -1195,7 +1138,7 @@ class add_auction extends StatelessWidget {
                               location = " ";
                             }
 
-                            if (name_add_con.text.isNotEmpty && des_add_con.text.isNotEmpty && price_add_con.text.isNotEmpty && num_day_add_con.text.isNotEmpty && city.isNotEmpty && location != null && is_terms_check && main_data != "" && slot!.is_plate! ? main_image == null:main_image!=null) {
+                            if (name_add_con.text.isNotEmpty  && price_add_con.text.isNotEmpty && num_day_add_con.text.isNotEmpty && city.isNotEmpty && location != null && is_terms_check && main_data != "" && slot!.is_plate! ? main_image == null:main_image!=null) {
                               showDialog<void>(
                                 context: context,
                                 barrierDismissible: false,
@@ -1211,10 +1154,28 @@ class add_auction extends StatelessWidget {
                                                 name_of_porsses = "الصورة الرئيسية";
                                                 settate(() {});
                                                 if(slot!.is_plate!){
-                                                  var body = "ctype=1&posted=1&Submit=&d1=" + all_plate_val[0] + "&d2=" + all_plate_val[1] + "&d3=" + all_plate_val[2] + "&d4=" + all_plate_val[3] + "&b1=" + all_plate2_val[0] + "&b2=" + all_plate2_val[1] + "&b3=" + all_plate2_val[2] + "&radio1=1&radio2=4&radio3=6&radio4=8&radio5=10&radio6=12";
-                                                await  http.post(Uri.parse("https://platesmania.com/sa/informer"), body: body, headers: {
+                                                  name_add_con.text=" ";
+                                                  des_add_con.text=" ";
+                                                  var body ="";
+                                                  if(kind!.contains("خصوصي")){
+                                                    body = "ctype=1&posted=1&Submit=&d1=" + all_plate_val[0] + "&d2=" + all_plate_val[1] + "&d3=" + all_plate_val[2] + "&d4=" + all_plate_val[3] + "&b1=" + all_plate2_val[0] + "&b2=" + all_plate2_val[1] + "&b3=" + all_plate2_val[2] + "&radio1=1&radio2=4&radio3=6&radio4=8&radio5=10&radio6=12";
+                                                    name_add_con.text=kind! +" "+ all_plate_val[0]! +all_plate_val[1] + all_plate_val[2] + all_plate_val[3] +all_plate2_val[0]+all_plate2_val[1]+all_plate2_val[2] ;
+                                                  }else if (kind!.contains("نقل")){
+                                                    body = "ctype=3&posted=٣&Submit=&d1=" + all_plate_val[0] + "&d2=" + all_plate_val[1] + "&d3=" + all_plate_val[2] + "&d4=" + all_plate_val[3] + "&b1=" + all_plate2_val[0] + "&b2=" + all_plate2_val[1] + "&b3=" + all_plate2_val[2] + "&radio1=1&radio2=4&radio3=6&radio4=8&radio5=10&radio6=12";
+                                                    name_add_con.text=kind! +" "+ all_plate_val[0]! +all_plate_val[1] + all_plate_val[2] + all_plate_val[3] +all_plate2_val[0]+all_plate2_val[1]+all_plate2_val[2] ;
+                                                  }
+                                                  else if (kind!.contains("دباب")){
+                                                    body = "ctype=6&posted=1&Submit=&d1=" + all_plate3_val[0] + "&d2=" + all_plate3_val[1] + "&d3=" + all_plate3_val[2] + "&d4=" + " " + "&b1=" +" " + "&b2=" + all_plate4_val[0] + "&b3=" + all_plate4_val[1] + "&radio1=1&radio2=4&radio3=6&radio4=8&radio5=10&radio6=13";
+                                                    name_add_con.text=kind! +" "+ all_plate3_val[0]! +all_plate3_val[1] + all_plate3_val[2]  +all_plate4_val[0]+all_plate4_val[1] ;
+
+                                                  }else{
+                                                    body = "ctype=1&posted=1&Submit=&d1=" + all_plate_val[0] + "&d2=" + all_plate_val[1] + "&d3=" + all_plate_val[2] + "&d4=" + all_plate_val[3] + "&b1=" + all_plate2_val[0] + "&b2=" + all_plate2_val[1] + "&b3=" + all_plate2_val[2] + "&radio1=1&radio2=4&radio3=6&radio4=8&radio5=10&radio6=12";
+                                                    name_add_con.text=kind! +" "+ all_plate_val[0]! +all_plate_val[1] + all_plate_val[2] + all_plate_val[3] +all_plate2_val[0]+all_plate2_val[1]+all_plate2_val[2] ;
+
+                                                  }
+                                                    await  http.post(Uri.parse("https://platesmania.com/sa/informer"), body: body, headers: {
                                                     'Host': 'platesmania.com',
-                                                    'Content-Length': '115',
+                                                   // 'Content-Length': '115',
                                                     'Cache-Control': 'max-age=0',
                                                     'Sec-Ch-Ua': '"Not:A-Brand";v="99", "Chromium";v="112"',
                                                     'Sec-Ch-Ua-Mobile': '?0',
@@ -1255,6 +1216,7 @@ class add_auction extends StatelessWidget {
                                                         })
                                                     .then((value) {
                                                   print(value?.data);
+                                                  print(value?.data);
                                                   main_photo_url = value?.data['message'];
                                                   presint = 0;
                                                   settate(() {});
@@ -1283,7 +1245,7 @@ class add_auction extends StatelessWidget {
                                                   }
                                                 });
                                               }
-                                              if (file_slot_1 != null) {
+                                              if (f1.isNotEmpty) {
                                                 name_of_porsses = "ملف " + slot!.file_slot![0];
                                                 settate(() {});
                                                 FormData formData = FormData.fromMap(
@@ -1307,7 +1269,7 @@ class add_auction extends StatelessWidget {
                                                   settate(() {});
                                                 });
                                               }
-                                              if (file_slot_2 != null) {
+                                              if (f2.isNotEmpty) {
                                                 name_of_porsses = "ملف " + slot!.file_slot![1];
                                                 settate(() {});
                                                 FormData formData = FormData.fromMap(
@@ -1329,7 +1291,7 @@ class add_auction extends StatelessWidget {
                                                   settate(() {});
                                                 });
                                               }
-                                              if (file_slot_3 != null) {
+                                              if (f3.isNotEmpty) {
                                                 name_of_porsses = "ملف " + slot!.file_slot![2];
                                                 settate(() {});
                                                 FormData formData = FormData.fromMap(
@@ -1462,6 +1424,47 @@ class add_auction extends StatelessWidget {
 
   DropdownMenuItem drop_item(item) => DropdownMenuItem(value: item, child: Center(child: Text(item)));
 }
+
+Widget plate_widg(con,context,all_plate_val,List all_plate,bool is_letter)=>CoolDropdown(
+
+  controller: con,
+  dropdownList:is_letter
+  ?all_latter.map((e) => CoolDropdownItem(label: e, value: all_latter_val[all_latter.indexOf(e)])).toList()
+  :all_num.map((e) => CoolDropdownItem(label: e, value: e)).toList(),
+  defaultItem: null,
+  onChange: (value) async {
+    if (con.isError) {
+      await con.resetError();
+    }
+    all_plate_val[all_plate.indexOf(con)] = value;
+    con.close();
+  }, dropdownItemOptions: DropdownItemOptions(
+    selectedBoxDecoration:  BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300),
+    boxDecoration: BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+    textStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
+  dropdownOptions: DropdownOptions(
+    color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,
+  ),
+  resultOptions: ResultOptions(
+    textStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+    padding: EdgeInsets.symmetric(horizontal: 10),
+    width: all_plate.length==2
+    ?80
+    :60,
+    icon: const SizedBox(
+      width: 10,
+      height: 10,
+      child: CustomPaint(
+        painter: DropdownArrowPainter(),
+      ),
+    ),
+    boxDecoration: BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300,borderRadius: BorderRadius.circular(7)),
+    openBoxDecoration: BoxDecoration(color:  Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade300),
+    render: ResultRender.all,
+    placeholder: '',
+    isMarquee: true,
+  ),
+);
 
 Widget add_rout_home(context, index, text_slot_0_add_con, text_slot_1_add_con, text_slot_2_add_con, slot, setstate) {
   TextEditingController con;
@@ -1600,3 +1603,5 @@ Widget add_rout_home(context, index, text_slot_0_add_con, text_slot_1_add_con, t
 //    ),
 //  ),
 //    );}, child: Text("sss"))
+
+

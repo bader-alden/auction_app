@@ -5,7 +5,6 @@ import 'package:auction_app/const.dart';
 import 'package:auction_app/dio.dart';
 import 'package:auction_app/layout/Terms_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
@@ -83,18 +82,13 @@ Widget Login(BuildContext context, state) {
                                           PhoneAuthProvider.credential(verificationId: cache.get_data("otp_id"), smsCode: pinputController.text);
                                       await FirebaseAuth.instance.signInWithCredential(credential).then((valuec) {
                                         if (cache.get_data("is_login")) {
-                                          FirebaseMessaging.instance.getToken().then((value) {
-                                            print(value);
                                             print(cache.get_data("num"));
-                                            context.read<AccountBloc>().add(login_event(cache.get_data("num"), value));
+                                            context.read<AccountBloc>().add(login_event(cache.get_data("num"), cache.get_data("token")));
                                              cache.remove_data("otp_id");
                                             // AccountBloc().add(login_event(number_con.text, value));
-                                          });
                                         } else {
-                                          FirebaseMessaging.instance.getToken().then((value) {
                                             cache.remove_data("otp_id");
-                                            context.read<AccountBloc>().add(register_event( value));
-                                          });
+                                            context.read<AccountBloc>().add(register_event( cache.get_data("token")));
                                         }
                                       }).onError((error, stackTrace) {
                                         print(error.toString());
@@ -309,16 +303,16 @@ Widget Login(BuildContext context, state) {
                                               print(credential);
                                               await FirebaseAuth.instance.signInWithCredential(credential).then((value) {
                                                 if (cache.get_data("is_login")) {
-                                                  FirebaseMessaging.instance.getToken().then((value) {
-                                                    context.read<AccountBloc>().add(login_event(cache.get_data("num"), value));
+
+                                                    context.read<AccountBloc>().add(login_event(cache.get_data("num"), cache.get_data("token")));
                                                     cache.remove_data("otp_id");
                                                     // AccountBloc().add(login_event(number_con.text, value));
-                                                  });
+
                                                 } else {
-                                                  FirebaseMessaging.instance.getToken().then((value) {
+
                                                     cache.remove_data("otp_id");
-                                                    context.read<AccountBloc>().add(register_event( value));
-                                                  });
+                                                    context.read<AccountBloc>().add(register_event( cache.get_data("token")));
+
                                                 }
                                               }).onError((error, stackTrace) {
                                                 print(error.toString());

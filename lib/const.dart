@@ -32,6 +32,7 @@ void tost({String? msg,Color? color}) => Fluttertoast.showToast(
 
 Widget Timer_widget(time,BuildContext context,Color text_color){
   return CountdownTimer(
+    
    // endTime:  DateTime.now().millisecondsSinceEpoch + 1000 * 190000000,
      endTime: DateTime.parse(time!).microsecondsSinceEpoch ~/ 1000,
     widgetBuilder: (_, CurrentRemainingTime? time) {

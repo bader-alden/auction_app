@@ -125,7 +125,7 @@ Widget home_page_item(int index, BuildContext context, main_list_model model) {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  Test3(type: model.type, type_name: context.read<LocaleBloc>().lang ? model.eng_name! : model.ar_name!, kind: model.all_kind,is_plate: model.is_plate,)));
+                  Test3(type: model.type, type_name: context.read<LocaleBloc>().lang ? model.eng_name! : model.ar_name!, kind: model.all_kind,is_plate: model.is_plate,model: model,)));
     },
     borderRadius: BorderRadius.circular(20),
     child: Container(

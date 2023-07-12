@@ -27,8 +27,8 @@ class Test3 extends StatelessWidget {
   final is_plate;
   List<all_kind_model>? kind;
   final type_name;
-
-  Test3({super.key, required this.type, this.type_name, this.kind, this.is_plate});
+  final main_list_model model;
+  Test3({super.key, required this.type, this.type_name, this.kind, this.is_plate, required this.model});
   @override
   Widget build(BuildContext context) {
     String? filter_1;

@@ -7,18 +7,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:http/http.dart'as http;
 import '../bloc/locale/locale_bloc.dart';
+import 'package:xml/xml.dart' as xml;
 
 List main_data_list = [];
 List<serach_tag_model> serach_tag_list = [];
 List<TextEditingController> con_list = [];
+TextEditingController con_make = TextEditingController();
+TextEditingController con_model = TextEditingController();
+List<String> make_list = [];
+List<String> model_list = [];
+bool model_loading=false;
+String? Model;
+String? Make;
 Map<int, String> row_map = {};
 
 class add_auction_main_data extends StatefulWidget {
-  const add_auction_main_data({Key? key, this.row, this.old}) : super(key: key);
+  const add_auction_main_data({Key? key, this.row, this.old, this.is_car}) : super(key: key);
   final row;
   final old;
+  final is_car;
   @override
   _add_auction_main_dataState createState() => _add_auction_main_dataState(row, old);
 }
@@ -41,12 +50,14 @@ class _add_auction_main_dataState extends State<add_auction_main_data> {
 
       main_data_list.clear();
       serach_tag_list.clear();
-      con_list.clear();
+      make_list.clear();
+   //   model_list.clear();
+     // con_list.clear();
       main_data_list = row.toString().split("^");
       try {
         main_data_list.forEach((element) async {
-          await dio.get_data(url: "/account/serach_tag", quary: {"id": element}).then((value) {
-            print(value?.data[0]);
+          await dio.get_data(url: "/account/serach_tag", quary: {"id": element}).then((value) async {
+          //  print(value?.data[0]);
             con_list.add(TextEditingController());
             try {
               serach_tag_list.add(serach_tag_model.fromjson(value?.data[0]));
@@ -56,7 +67,7 @@ class _add_auction_main_dataState extends State<add_auction_main_data> {
             } finally {
               if (serach_tag_list.length == main_data_list.length) {
                 for (int i = 0; i < main_data_list.length; i++) {
-                  print(con_list);
+               //   print(con_list);
                   if(old != "" ){
                     row_map[i] = old.toString().split("^")[i].toString().split("**")[1];
                     con_list[i].text = old.toString().split("^")[i].toString().split("**")[1];
@@ -65,17 +76,35 @@ class _add_auction_main_dataState extends State<add_auction_main_data> {
                   }
               }
                 setState(() {
-                  print(serach_tag_list);
+                //  print(serach_tag_list);
                 });
+              }
+              if(widget.is_car&&value?.data[0]['name']=="الاسم"){
+                 await http.get(Uri.parse("https://services.mobile.de/refdata/sites/GERMANY/classes/${serach_tag_list[0].tag[0]}/makes")).then((value) {
+                    print(value.body);
+                    final document = xml.XmlDocument.parse(value.body);
+                    //print(document.children);
+                    print(document.children.length);
+                    document.findElements("reference:reference").forEach((element) {
+                      make_list.addAll(element.children.map((p0) => p0.text.toString()));
+                    });
+                    print(make_list);
+                    setState(() {
+
+                    });
+                    // final studentsNode = document.findElements('reference').first;
+                    // print(studentsNode);
+                  });
               }
             }
           });
         });
+
       } catch (e) {
         print(e);
       } finally {
         setState(() {
-          print(serach_tag_list);
+      //    print(serach_tag_list);
         });
       }
 
@@ -119,6 +148,105 @@ class _add_auction_main_dataState extends State<add_auction_main_data> {
               )
             : Column(
                 children: [
+                  if(widget.is_car)
+                    Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: make_list.isEmpty
+                    ?CircularProgressIndicator()
+                    :CustomDropdown.search(
+                        fillColor: Theme.of(context).brightness == Brightness.dark
+                            ? Make==null
+                            ? Colors.grey.shade900
+                            : Colors.green.shade300
+                            : Make==null
+                            ? Colors.grey.shade300
+                            : Colors.green.shade300,
+                        items:make_list,
+                        hintText: "    الماركة التجارية",
+                        hintStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+                        errorText: "غير موجود",
+                        onChanged: (value) {
+                          setState(() {
+                            Make=value;
+                           // row_map[index] = value;
+                            print(row_map);
+                            model_loading=true;
+                          });
+                          model_list.clear();
+                          Model=null;
+                          http.get(Uri.parse("https://services.mobile.de/refdata/sites/GERMANY/classes/${serach_tag_list[0].tag[0]}/makes/$Make/models")).then((value) {
+                            print(value.body);
+                            if(value.body != ""){
+                              final document = xml.XmlDocument.parse(value.body);
+                              //print(document.children);
+                              print(document.children.length);
+                              document.findElements("reference:reference").forEach((element) {
+                                model_list.addAll(element.children.map((p0) => p0.text.toString()));
+                              });
+                              print(model_list);
+                              setState(() {
+                                // row_map[index] = value;
+                                // print(row_map);
+                                model_loading=false;
+                              });
+                              // final studentsNode = document.findElements('reference').first;
+                              // print(studentsNode);
+                            }else{
+                              Model=" ";
+                              setState(() {
+                                model_loading=false;
+                              });
+                            }
+
+                          });
+                        },
+                        listItemBuilder: (context, text) {
+                          return Center(
+                            child: Text(
+                              text,
+                              style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+                            ),
+                          );
+                        },
+                       controller: con_make
+                    ),
+                  ),
+                  if(widget.is_car&&model_list.isNotEmpty ||model_loading)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: model_loading
+                      ?CircularProgressIndicator()
+                      :CustomDropdown.search(
+                          fillColor: Theme.of(context).brightness == Brightness.dark
+                              ? Model==null
+                              ? Colors.grey.shade900
+                              : Colors.green.shade300
+                              : Model==null
+                              ? Colors.grey.shade300
+                              : Colors.green.shade300,
+                          items:model_list.isNotEmpty ?model_list:["a","b"],
+                          hintText: "   الفئة",
+                          hintStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+                          errorText: "غير موجود",
+                          onChanged: (value) {
+
+                            setState(() {
+                              Model=value;
+                              // row_map[index] = value;
+                            });
+                            // model_loading=true;
+                          },
+                          listItemBuilder: (context, text) {
+                            return Center(
+                              child: Text(
+                                text,
+                                style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+                              ),
+                            );
+                          },
+                          controller: con_model
+                      ),
+                    ),
                   Expanded(
                       child: ListView.separated(
                           physics: BouncingScrollPhysics(),
@@ -130,6 +258,9 @@ class _add_auction_main_dataState extends State<add_auction_main_data> {
                             );
                           },
                           itemBuilder: (context, index) {
+                            if(widget.is_car&&index ==0){
+                              return SizedBox();
+                            }
                             serach_tag_model model = serach_tag_list.firstWhere((element) => element.id.toString() == main_data_list[index]);
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -142,7 +273,7 @@ class _add_auction_main_dataState extends State<add_auction_main_data> {
                                           ? Colors.grey.shade300
                                           : Colors.green.shade300,
                                   items: model.tag as List<String>,
-                                  hintText: model.name,
+                                  hintText: "  "+(model.name??""),
                                   hintStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
                                   errorText: "غير موجود",
                                   onChanged: (value) {
@@ -241,6 +372,12 @@ class _add_auction_main_dataState extends State<add_auction_main_data> {
 
   bool check_is_ok() {
     var _ = true;
+    if(widget.is_car&&Model!=null &&Make!=null){
+      row_map[0]=Make! +" "+Model!;
+    }
+    print("======");
+    print(row_map[0]);
+    print("======");
     row_map.forEach((key, value) {
       if (value == " " || value == "") {
         _ = false;

@@ -18,3 +18,21 @@ class add_model{
     time= json2['created_at'];
   }
 }
+
+class add_plate{
+  late int id ;
+  late int ic ;
+  add_plate.a(d,c){
+    id=d;
+    ic=c;
+  }
+  add_plate get car {
+    return add_plate.a(1,2);
+  }
+  add_plate get transp_car {
+    return add_plate.a(1,2);
+  }
+  add_plate get motor {
+    return add_plate.a(1,2);
+  }
+}

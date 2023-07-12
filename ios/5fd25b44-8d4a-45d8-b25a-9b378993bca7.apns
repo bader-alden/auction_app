@@ -1,0 +1,15 @@
+{
+  "Simulator Target Bundle": "com.example",
+  "aps": {
+    "mutable-content": 1,
+    "alert": "Test",
+    "relevance-score": 0,
+    "interruption-level": "active",
+    "sound": "default"
+  },
+  "custom": {
+    "i": "5fd25b44-8d4a-45d8-b25a-9b378993bca7",
+    "u": "example://example.com/link/to/item",
+    "a": {}
+  }
+}

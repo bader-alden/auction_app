@@ -40,8 +40,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     print("start bloc login");
     await dio.post_data(url: "/account/login", quary: {
       "mobile_id": event.email,
-      "gsm_token": event.token.toString().split(":")[0],
-      "gsm_token2": event.token.toString().split(":")[1],
+      "gsm_token": event.token.toString(),
+      "gsm_token2": "..",
     }).then((value) {
       print(value?.data);
       print(value?.data);
@@ -64,8 +64,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   Future<FutureOr<void>> register(register_event event, Emitter<AccountState> emit) async {
     await dio.post_data(url: "/account/signin", quary: {
       "mobile_id": cache.get_data("reg").toString().split("|")[0],
-      "gsm_token": event.token.toString().split(":")[0],
-      "gsm_token2": event.token.toString().split(":")[1],
+      "gsm_token": event.token.toString(),
+      "gsm_token2": "..",
       "name": cache.get_data("reg").toString().split("|")[1],
       "email": cache.get_data("reg").toString().split("|")[2],
       "address": cache.get_data("reg").toString().split("|")[3],

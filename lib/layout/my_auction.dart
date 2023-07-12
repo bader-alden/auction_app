@@ -122,6 +122,7 @@ Widget my_auction_item(context, index, add_model model, setstate) {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     CircleAvatar(
                       radius: 25,
@@ -135,16 +136,16 @@ Widget my_auction_item(context, index, add_model model, setstate) {
                     const SizedBox(
                       width: 10,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          model.name!,
-                          style: const TextStyle(fontSize: 20),
+
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width/1.7,
+                          child: Text(
+                            model.name!,
+                            style: const TextStyle(fontSize: 18,overflow: TextOverflow.ellipsis),
+                          ),
                         ),
-                      ],
-                    ),
-                    const Spacer(),
+
+                   const Spacer(),
                     Container(
                       width: 5,
                       height: 5,

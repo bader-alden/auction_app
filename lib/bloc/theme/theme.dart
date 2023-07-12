@@ -14,7 +14,7 @@ ThemeData theme_light()  {
    // textTheme: TextTheme(bodyText1: TextStyle(color: Colors.green))
   brightness: Brightness.light,
     primaryColor: main_red,
-      appBarTheme:  AppBarTheme(backgroundColor:main_white,actionsIconTheme: IconThemeData(color: Colors.red),titleTextStyle: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),elevation: 0,systemOverlayStyle: SystemUiOverlayStyle(statusBarColor:main_white,systemNavigationBarColor: main_white)),
+      appBarTheme:  AppBarTheme(backgroundColor:main_white,actionsIconTheme: IconThemeData(color: Colors.red),titleTextStyle: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),elevation: 0,systemOverlayStyle: SystemUiOverlayStyle(statusBarColor:main_white,systemNavigationBarColor: main_white,statusBarBrightness: Brightness.light)),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: main_white,selectedItemColor: main_red), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: main_red)
   );
 }//Color(-15329770)
@@ -25,7 +25,7 @@ ThemeData theme_dark()  {
       //textTheme: TextTheme(bodyText1: TextStyle(color: Colors.white)),
     brightness: Brightness.dark,
     primaryColor: main_red,
-      appBarTheme: const AppBarTheme(backgroundColor: Color.fromRGBO(22, 22, 22, 1),elevation: 0,),
+      appBarTheme: const AppBarTheme(backgroundColor: Color.fromRGBO(22, 22, 22, 1),elevation: 0,systemOverlayStyle: SystemUiOverlayStyle(statusBarColor:Color.fromRGBO(22, 22, 22, 1),systemNavigationBarColor:Color.fromRGBO(22, 22, 22, 1) ,statusBarBrightness: Brightness.dark)),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: Color.fromRGBO(22, 22, 22, 1),selectedItemColor: main_red)
   );
 }
